@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>אלופי הכפל ⚡</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    /* Speed drill specific styles */
+    .speed-container {
+      padding: 20px;
+      max-width: 500px;
+      margin: 0 auto;
+      text-align: center;
+    }
+    .speed-header {
+      background: linear-gradient(135deg, #F39C12, #E67E22);
+      color: white;
+      padding: 16px 20px;
+      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+    }
+    .speed-header h1 { font-size: 1.3em; font-weight: 700; }
+    .speed-back {
+      position: absolute;
+      right: 16px;
+      top: 16px;
+      background: rgba(255,255,255,0.25);
+      border: none;
+      color: white;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      font-size: 1.2em;
+      cursor: pointer;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .speed-back:hover { background: rgba(255,255,255,0.4); }
+    .speed-setup h2 {
+      margin-bottom: 16px;
+      color: #E67E22;
+      font-size: 1.2em;
+    }
+    .speed-table-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      margin: 12px 0;
+    }
+    .table-select-btn {
+      padding: 12px 8px;
+      border: 2px solid #e0e0e0;
+      border-radius: var(--radius-md);
+      background: white;
+      font-family: 'Rubik', sans-serif;
+      font-size: 1.1em;
+      font-weight: 600;
+      cursor: pointer;
+      transition: border-color 0.15s, background 0.15s;
+    }
+    .table-select-btn.selected {
+      border-color: #F39C12;
+      background: #FEF3E0;
+      color: #E67E22;
+    }
+    .table-select-btn:hover { border-color: #F39C12; }
+
+    .speed-option-row {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      margin: 12px 0;
+      flex-wrap: wrap;
+    }
+    .speed-option-btn {
+      padding: 10px 20px;
+      border: 2px solid #e0e0e0;
+      border-radius: var(--radius-md);
+      background: white;
+      font-family: 'Rubik', sans-serif;
+      font-size: 0.95em;
+      cursor: pointer;
+      transition: border-color 0.15s, background 0.15s;
+    }
+    .speed-option-btn.selected {
+      border-color: var(--color-primary);
+      background: rgba(78, 205, 196, 0.1);
+    }
+
+    .start-speed-btn {
+      background: linear-gradient(135deg, #F39C12, #E67E22);
+      color: white;
+      border: none;
+      border-radius: var(--radius-lg);
+      padding: 16px 40px;
+      font-family: 'Rubik', sans-serif;
+      font-size: 1.15em;
+      font-weight: 700;
+      cursor: pointer;
+      margin-top: 20px;
+      box-shadow: 0 4px 15px rgba(243,156,18,0.3);
+      transition: transform 0.15s;
+    }
+    .start-speed-btn:hover { transform: scale(1.03); }
+    .start-speed-btn:disabled { background: #ccc; box-shadow: none; cursor: default; }
+
+    .speed-timer-bar {
+      background: #eee;
+      height: 10px;
+      border-radius: 5px;
+      margin-bottom: 8px;
+      overflow: hidden;
+    }
+    .speed-timer-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #F39C12, #E67E22);
+      border-radius: 5px;
+      transition: width 0.3s linear;
+    }
+
+    .speed-stats-row {
+      display: flex;
+      justify-content: space-around;
+      margin-bottom: 20px;
+      font-size: 0.9em;
+      color: var(--color-text-light);
+    }
+    .speed-stats-row .val {
+      font-size: 1.3em;
+      font-weight: 700;
+      color: var(--color-text);
+      display: block;
+    }
+
+    .speed-question-display {
+      font-size: 2.8em;
+      font-weight: 700;
+      color: var(--color-text);
+      margin: 24px 0;
+      direction: ltr;
+      letter-spacing: 2px;
+    }
+
+    .speed-input {
+      width: 140px;
+      padding: 14px;
+      border: 3px solid #e0e0e0;
+      border-radius: var(--radius-lg);
+      font-family: 'Rubik', sans-serif;
+      font-size: 2em;
+      text-align: center;
+      outline: none;
+      direction: ltr;
+      transition: border-color 0.15s;
+    }
+    .speed-input:focus { border-color: #F39C12; }
+    .speed-input.flash-correct { border-color: var(--color-success); background: var(--color-success-bg); }
+    .speed-input.flash-wrong { border-color: var(--color-error); background: var(--color-error-bg); }
+
+    .speed-streak {
+      margin-top: 12px;
+      font-size: 0.95em;
+      color: #F39C12;
+      font-weight: 600;
+      min-height: 24px;
+    }
+
+    .speed-result-big {
+      font-size: 3em;
+      font-weight: 700;
+      color: #F39C12;
+      margin: 10px 0;
+    }
+    .speed-result-details {
+      display: flex;
+      justify-content: space-around;
+      background: white;
+      border-radius: var(--radius-md);
+      padding: 16px;
+      margin: 16px 0;
+      box-shadow: var(--shadow-sm);
+    }
+    .speed-result-details .item { text-align: center; }
+    .speed-result-details .label { font-size: 0.8em; color: var(--color-text-light); }
+    .speed-result-details .value { font-size: 1.4em; font-weight: 700; }
+
+    .speed-mistakes-list {
+      background: white;
+      border-radius: var(--radius-md);
+      padding: 16px;
+      margin: 16px 0;
+      text-align: right;
+      box-shadow: var(--shadow-sm);
+    }
+    .speed-mistakes-list h3 { font-size: 0.9em; color: var(--color-error); margin-bottom: 10px; }
+    .mistake-item {
+      padding: 6px 0;
+      font-size: 0.9em;
+      border-bottom: 1px solid #f0f0f0;
+      direction: ltr;
+      text-align: center;
+    }
+    .mistake-item:last-child { border-bottom: none; }
+
+    .results-btn {
+      background: #F39C12;
+      color: white;
+      border: none;
+      border-radius: var(--radius-md);
+      padding: 14px 32px;
+      font-family: 'Rubik', sans-serif;
+      font-size: 1em;
+      font-weight: 600;
+      cursor: pointer;
+      margin: 8px;
+      transition: transform 0.15s;
+    }
+    .results-btn:hover { transform: scale(1.02); }
+    .results-btn.secondary {
+      background: var(--color-bg);
+      color: var(--color-primary);
+      border: 2px solid var(--color-primary);
+    }
+
+    .section-label {
+      color: var(--color-text-light);
+      margin: 16px 0 8px;
+      font-size: 0.9em;
+    }
+
+    @media (max-width: 400px) {
+      .speed-question-display { font-size: 2.2em; }
+      .speed-input { font-size: 1.6em; width: 120px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="speed-header" style="position:relative;">
+    <a href="../index.html" class="speed-back" title="חזרה">→</a>
+    <h1>⚡ אלופי הכפל</h1>
+  </div>
+
+  <div class="speed-container">
+
+    <!-- SETUP PHASE -->
+    <div id="speedSetup">
+      <h2>בחרו לוחות כפל לתרגול:</h2>
+      <div class="speed-table-grid" id="tableGrid"></div>
+
+      <p class="section-label">סוג תרגיל:</p>
+      <div class="speed-option-row">
+        <button class="speed-option-btn selected" id="drillMul" onclick="setDrillType('mul')">✖️ כפל</button>
+        <button class="speed-option-btn" id="drillDiv" onclick="setDrillType('div')">➗ חילוק</button>
+        <button class="speed-option-btn" id="drillMix" onclick="setDrillType('mix')">🔀 מעורב</button>
+      </div>
+
+      <p class="section-label">זמן:</p>
+      <div class="speed-option-row">
+        <button class="speed-option-btn" id="time30" onclick="setDrillTime(30)">30 שניות</button>
+        <button class="speed-option-btn selected" id="time60" onclick="setDrillTime(60)">דקה</button>
+        <button class="speed-option-btn" id="time120" onclick="setDrillTime(120)">2 דקות</button>
+      </div>
+
+      <button class="start-speed-btn" id="startSpeedBtn" onclick="startSpeedDrill()">!יאללה, מתחילים ⚡</button>
+    </div>
+
+    <!-- ACTIVE DRILL -->
+    <div id="speedActive" style="display:none;">
+      <div class="speed-timer-bar"><div class="speed-timer-fill" id="speedTimerFill"></div></div>
+      <div class="speed-stats-row">
+        <div><span class="val" id="speedTimeLeft">60</span>שניות</div>
+        <div><span class="val" id="speedCorrectCount">0</span>נכונים</div>
+        <div><span class="val" id="speedStreakCount">0</span>רצף 🔥</div>
+      </div>
+      <div class="speed-question-display" id="speedQuestion"></div>
+      <input class="speed-input" type="tel" id="speedInput" autocomplete="off" inputmode="numeric">
+      <div class="speed-streak" id="speedStreakMsg"></div>
+    </div>
+
+    <!-- RESULTS -->
+    <div id="speedResults" style="display:none;">
+      <h2>⏱️ סיום!</h2>
+      <div class="speed-result-big" id="speedResultScore"></div>
+      <p style="color:var(--color-text-light)">תשובות נכונות</p>
+      <div class="speed-result-details">
+        <div class="item"><div class="label">סה"כ שאלות</div><div class="value" id="speedResTotal"></div></div>
+        <div class="item"><div class="label">אחוז הצלחה</div><div class="value" id="speedResAccuracy"></div></div>
+        <div class="item"><div class="label">רצף מקסימלי</div><div class="value" id="speedResStreak"></div></div>
+      </div>
+      <div class="speed-mistakes-list" id="speedMistakesList" style="display:none">
+        <h3>💡 כדאי לתרגל:</h3>
+        <div id="speedMistakesContent"></div>
+      </div>
+      <button class="results-btn" onclick="resetDrill()">🔄 שוב!</button>
+      <a class="results-btn secondary" href="../index.html" style="text-decoration:none;display:inline-block;">🏠 חזרה לתפריט</a>
+    </div>
+
+  </div>
+
+  <script src="core.js"></script>
+  <script>
+    // ===== STATE =====
+    const params = new URLSearchParams(window.location.search);
+    const userName = decodeURIComponent(params.get('name') || '');
+    const userGender = params.get('gender') || localStorage.getItem('math_app_gender') || 'female';
+
+    let speedSelectedTables = new Set([2, 3, 4, 5]);
+    let speedDrillType = 'mul';
+    let speedDrillTime = 60;
+    let speedTimer = null;
+    let speedTimeRemaining = 0;
+    let speedCorrect = 0;
+    let speedTotal = 0;
+    let speedStreak = 0;
+    let speedMaxStreak = 0;
+    let speedMistakes = [];
+    let speedCurrentAnswer = 0;
+
+    // Gender-aware streak messages
+    const STREAK_MSGS = {
+      female: { 5: '⚡ את על גל!', 10: '🔥 רצף מטורף!', 15: '🔥🔥 מדהים!', 20: '🔥🔥🔥 בלתי ניתנת לעצירה!' },
+      male:   { 5: '⚡ אתה על גל!', 10: '🔥 רצף מטורף!', 15: '🔥🔥 מדהים!', 20: '🔥🔥🔥 בלתי ניתן לעצירה!' },
+    };
+
+    // ===== SETUP =====
+    function initSetup() {
+      document.getElementById('speedSetup').style.display = 'block';
+      document.getElementById('speedActive').style.display = 'none';
+      document.getElementById('speedResults').style.display = 'none';
+
+      const grid = document.getElementById('tableGrid');
+      grid.innerHTML = '';
+      for (let i = 2; i <= 12; i++) {
+        const b = document.createElement('button');
+        b.className = 'table-select-btn' + (speedSelectedTables.has(i) ? ' selected' : '');
+        b.textContent = i;
+        b.onclick = () => {
+          if (speedSelectedTables.has(i)) speedSelectedTables.delete(i);
+          else speedSelectedTables.add(i);
+          b.classList.toggle('selected');
+          updateStartBtn();
+        };
+        grid.appendChild(b);
+      }
+      // "All" button
+      const ab = document.createElement('button');
+      ab.className = 'table-select-btn';
+      ab.textContent = 'הכל';
+      ab.style.fontSize = '0.85em';
+      ab.onclick = () => {
+        speedSelectedTables = new Set([2,3,4,5,6,7,8,9,10,11,12]);
+        initSetup();
+      };
+      grid.appendChild(ab);
+      updateStartBtn();
+    }
+
+    function setDrillType(t) {
+      speedDrillType = t;
+      ['drillMul', 'drillDiv', 'drillMix'].forEach(id => document.getElementById(id).classList.remove('selected'));
+      document.getElementById(t === 'mul' ? 'drillMul' : t === 'div' ? 'drillDiv' : 'drillMix').classList.add('selected');
+    }
+
+    function setDrillTime(t) {
+      speedDrillTime = t;
+      ['time30', 'time60', 'time120'].forEach(id => document.getElementById(id).classList.remove('selected'));
+      document.getElementById('time' + t).classList.add('selected');
+    }
+
+    function updateStartBtn() {
+      document.getElementById('startSpeedBtn').disabled = speedSelectedTables.size === 0;
+    }
+
+    // ===== DRILL =====
+    function startSpeedDrill() {
+      if (speedSelectedTables.size === 0) return;
+      document.getElementById('speedSetup').style.display = 'none';
+      document.getElementById('speedActive').style.display = 'block';
+      document.getElementById('speedResults').style.display = 'none';
+
+      speedCorrect = 0; speedTotal = 0; speedStreak = 0; speedMaxStreak = 0; speedMistakes = [];
+      speedTimeRemaining = speedDrillTime;
+
+      document.getElementById('speedCorrectCount').textContent = '0';
+      document.getElementById('speedStreakCount').textContent = '0';
+      document.getElementById('speedStreakMsg').textContent = '';
+      document.getElementById('speedTimerFill').style.background = 'linear-gradient(90deg, #F39C12, #E67E22)';
+
+      genQuestion();
+      const inp = document.getElementById('speedInput');
+      inp.value = '';
+      inp.focus();
+      inp.oninput = onInput;
+
+      updateTimer();
+      speedTimer = setInterval(() => {
+        speedTimeRemaining--;
+        updateTimer();
+        if (speedTimeRemaining <= 0) endDrill();
+      }, 1000);
+    }
+
+    function updateTimer() {
+      document.getElementById('speedTimeLeft').textContent = speedTimeRemaining;
+      document.getElementById('speedTimerFill').style.width = (speedTimeRemaining / speedDrillTime * 100) + '%';
+      if (speedTimeRemaining <= 10) {
+        document.getElementById('speedTimerFill').style.background = 'linear-gradient(90deg, var(--color-error), #E74C3C)';
+      }
+    }
+
+    function genQuestion() {
+      const tables = [...speedSelectedTables];
+      const a = randChoice(tables);
+      const b = randInt(1, 12);
+      const p = a * b;
+      let type = speedDrillType;
+      if (type === 'mix') type = randChoice(['mul', 'div']);
+
+      if (type === 'mul') {
+        document.getElementById('speedQuestion').textContent = `${a} × ${b} = ?`;
+        speedCurrentAnswer = p;
+      } else {
+        document.getElementById('speedQuestion').textContent = `${p} ÷ ${a} = ?`;
+        speedCurrentAnswer = b;
+      }
+    }
+
+    function onInput() {
+      const inp = document.getElementById('speedInput');
+      const val = inp.value.trim();
+      if (!val) return;
+      const num = parseInt(val);
+      if (isNaN(num)) return;
+
+      if (val.length >= String(speedCurrentAnswer).length) {
+        speedTotal++;
+        const ok = num === speedCurrentAnswer;
+        if (ok) {
+          speedCorrect++;
+          speedStreak++;
+          if (speedStreak > speedMaxStreak) speedMaxStreak = speedStreak;
+          inp.classList.add('flash-correct');
+          document.getElementById('speedCorrectCount').textContent = speedCorrect;
+          document.getElementById('speedStreakCount').textContent = speedStreak;
+
+          // Gender-aware streak messages
+          const msgs = STREAK_MSGS[userGender] || STREAK_MSGS.female;
+          const sm = document.getElementById('speedStreakMsg');
+          if (speedStreak >= 20) sm.textContent = msgs[20];
+          else if (speedStreak >= 15) sm.textContent = msgs[15];
+          else if (speedStreak >= 10) sm.textContent = msgs[10];
+          else if (speedStreak >= 5) sm.textContent = msgs[5];
+          else sm.textContent = '';
+        } else {
+          speedStreak = 0;
+          inp.classList.add('flash-wrong');
+          document.getElementById('speedStreakCount').textContent = '0';
+          document.getElementById('speedStreakMsg').textContent = '';
+          speedMistakes.push(
+            document.getElementById('speedQuestion').textContent.replace('?', speedCurrentAnswer)
+          );
+        }
+
+        setTimeout(() => {
+          inp.classList.remove('flash-correct', 'flash-wrong');
+          inp.value = '';
+          genQuestion();
+        }, 200);
+      }
+    }
+
+    function endDrill() {
+      clearInterval(speedTimer);
+      speedTimer = null;
+      document.getElementById('speedInput').oninput = null;
+      document.getElementById('speedActive').style.display = 'none';
+      document.getElementById('speedResults').style.display = 'block';
+
+      document.getElementById('speedResultScore').textContent = speedCorrect;
+      document.getElementById('speedResTotal').textContent = speedTotal;
+      document.getElementById('speedResAccuracy').textContent =
+        speedTotal > 0 ? Math.round(speedCorrect / speedTotal * 100) + '%' : '-';
+      document.getElementById('speedResStreak').textContent = speedMaxStreak;
+
+      if (speedMistakes.length > 0) {
+        document.getElementById('speedMistakesList').style.display = 'block';
+        document.getElementById('speedMistakesContent').innerHTML =
+          speedMistakes.slice(0, 10).map(m => `<div class="mistake-item">${m}</div>`).join('');
+      } else {
+        document.getElementById('speedMistakesList').style.display = 'none';
+      }
+
+      if (speedCorrect >= 20 || (speedTotal > 0 && speedCorrect / speedTotal >= 0.9)) {
+        launchConfetti(60);
+      }
+    }
+
+    function resetDrill() {
+      initSetup();
+    }
+
+    // ===== INIT =====
+    initSetup();
+  </script>
+</body>
+</html>

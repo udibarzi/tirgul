@@ -333,7 +333,21 @@
       grid.innerHTML = '';
 
       const gender = getGender();
+      const nameParam = encodeURIComponent(progress.getUserName());
 
+      // Speed drill card — always shown at the top
+      const speedCard = document.createElement('a');
+      speedCard.className = 'topic-card';
+      speedCard.href = `app/speed.html?name=${nameParam}&gender=${gender}`;
+      speedCard.style.borderRight = '4px solid #F39C12';
+      speedCard.innerHTML = `
+        <div class="icon">⚡</div>
+        <div class="name">אלופי הכפל</div>
+        <div class="stats" style="color:#F39C12;">תרגול מהיר עם טיימר</div>
+      `;
+      grid.appendChild(speedCard);
+
+      // Regular topic cards
       manifest.topics
         .filter(topic => topic.grade === grade)
         .sort((a, b) => (a.order || 0) - (b.order || 0))
@@ -343,7 +357,7 @@
 
           const card = document.createElement('a');
           card.className = 'topic-card';
-          card.href = `app/quiz.html?topic=${topic.id}&name=${encodeURIComponent(progress.getUserName())}&gender=${gender}`;
+          card.href = `app/quiz.html?topic=${topic.id}&name=${nameParam}&gender=${gender}`;
 
           card.innerHTML = `
             <div class="icon">${topic.icon || '📝'}</div>
