@@ -281,17 +281,22 @@ body {
 }
 
 .back-btn {
-  background: none;
+  background: var(--color-primary-glow);
   border: none;
-  font-size: 1.4em;
+  border-radius: 20px;
+  font-size: 0.85em;
+  font-weight: 500;
   cursor: pointer;
-  padding: var(--space-sm);
-  color: var(--color-text-light);
-  transition: color 0.2s;
+  padding: 6px 14px;
+  color: var(--color-primary);
+  text-decoration: none;
+  transition: all 0.2s;
+  white-space: nowrap;
 }
 
 .back-btn:hover {
-  color: var(--color-text);
+  background: var(--color-primary);
+  color: white;
 }
 
 .quiz-topic-title {
