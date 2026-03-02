@@ -258,6 +258,33 @@
       "difficulty": 3,
       "order": 3,
       "grade": 7
+    },
+    {
+      "id": "coordinate-geometry-7",
+      "name": "מערכת צירים במישור",
+      "icon": "📍",
+      "description": "שיעורי נקודות, רבעים, שטחים, שיקוף ובניית צורות",
+      "difficulty": 2,
+      "order": 4,
+      "grade": 7
+    },
+    {
+      "id": "word-problems-7",
+      "name": "שאלות מילוליות",
+      "icon": "📝",
+      "description": "תרגום בעיות מילוליות למשוואות ופתרון",
+      "difficulty": 2,
+      "order": 5,
+      "grade": 7
+    },
+    {
+      "id": "geometry-shapes-7",
+      "name": "צורות גיאומטריות",
+      "icon": "📐",
+      "description": "מלבן, משולש, מקבילית וטרפז — שטחים והיקפים",
+      "difficulty": 2,
+      "order": 6,
+      "grade": 7
     }
   ]
 }

@@ -1,0 +1,151 @@
+{
+  "name": "צורות גיאומטריות",
+  "shuffle": true,
+  "questionsPerSession": 10,
+  "questions": [
+    {
+      "text": "מלבן ABCD: אורך 12 ס״מ, רוחב 5 ס״מ. מהו היקף המלבן?",
+      "type": "free-input",
+      "correct": [
+        "34"
+      ],
+      "explanation": "היקף = 2 × (12 + 5) = 34"
+    },
+    {
+      "text": "מלבן ABCD: אורך 12 ס״מ, רוחב 5 ס״מ. מהו שטח המלבן?",
+      "type": "free-input",
+      "correct": [
+        "60"
+      ],
+      "explanation": "שטח = 12 × 5 = 60"
+    },
+    {
+      "text": "משולש: בסיסו 10 ס״מ וגובהו לבסיס 8 ס״מ. מהו שטח המשולש?",
+      "type": "free-input",
+      "correct": [
+        "40"
+      ],
+      "explanation": "שטח = (10 × 8) / 2 = 40"
+    },
+    {
+      "text": "מקבילית ABCD: AB = 14, BC = 9. מהו היקף המקבילית?",
+      "type": "free-input",
+      "correct": [
+        "46"
+      ],
+      "explanation": "היקף = 2 × (14 + 9) = 46"
+    },
+    {
+      "text": "מקבילית ABCD: AB = 14, גובה לצלע AB = 6. מהו שטח המקבילית?",
+      "type": "free-input",
+      "correct": [
+        "84"
+      ],
+      "explanation": "שטח = בסיס × גובה = 14 × 6 = 84"
+    },
+    {
+      "text": "שטח מקבילית 72 סמ״ר ובסיסה 9 ס״מ. מהו גובה המקבילית?",
+      "type": "free-input",
+      "correct": [
+        "8"
+      ],
+      "explanation": "גובה = 72 / 9 = 8"
+    },
+    {
+      "text": "מקבילית: בסיס 9 ס״מ, צלע שנייה 10 ס״מ. מהו היקפה?",
+      "type": "free-input",
+      "correct": [
+        "38"
+      ],
+      "explanation": "היקף = 2 × (9 + 10) = 38"
+    },
+    {
+      "text": "מלבן ABCD: AB = DC = 12, BC = 6. E על DC כך ש-DE = 4, EC = 8. מהו שטח המלבן?",
+      "type": "free-input",
+      "correct": [
+        "72"
+      ],
+      "explanation": "שטח = 12 × 6 = 72"
+    },
+    {
+      "text": "מלבן ABCD: AB = 12, BC = 6. E על DC. מהו שטח המשולש ABE?",
+      "type": "free-input",
+      "correct": [
+        "36"
+      ],
+      "explanation": "בסיס AB = 12, גובה = 6. שטח = (12 × 6) / 2 = 36"
+    },
+    {
+      "text": "טרפז ABCE: AB = 12, EC = 8, גובה = 6. מהו שטח הטרפז?",
+      "type": "free-input",
+      "correct": [
+        "60"
+      ],
+      "explanation": "שטח = ((12 + 8) × 6) / 2 = 60"
+    },
+    {
+      "text": "היקף משולש שווה-שוקיים 40 ס״מ. הבסיס קצר מכל שוק ב-5. מהו אורך השוק?",
+      "type": "free-input",
+      "correct": [
+        "15"
+      ],
+      "explanation": "x + x + (x − 5) = 40, אז 3x = 45, x = 15"
+    },
+    {
+      "text": "היקף משולש שווה-שוקיים 40 ס״מ. הבסיס קצר מכל שוק ב-5. מהו אורך הבסיס?",
+      "type": "free-input",
+      "correct": [
+        "10"
+      ],
+      "explanation": "שוק = 15, בסיס = 15 − 5 = 10"
+    },
+    {
+      "text": "משולש שווה-שוקיים: בסיס 10 ס״מ, גובה לבסיס 12 ס״מ. מהו שטח המשולש?",
+      "type": "free-input",
+      "correct": [
+        "60"
+      ],
+      "explanation": "שטח = (10 × 12) / 2 = 60"
+    },
+    {
+      "text": "מלבן ABCD: AB = 16, BC = 10. מהו שטח המלבן?",
+      "type": "free-input",
+      "correct": [
+        "160"
+      ],
+      "explanation": "שטח = 16 × 10 = 160"
+    },
+    {
+      "text": "מלבן ABCD: AB = 16, BC = 10. E על BC כך ש-BE = 4. מהו שטח המשולש ABE?",
+      "type": "free-input",
+      "correct": [
+        "32"
+      ],
+      "explanation": "שטח = (4 × 16) / 2 = 32"
+    },
+    {
+      "text": "מלבן ABCD: AB = 16, BC = 10. F על CD כך ש-CF = 3, DF = 13. מהו שטח המשולש ADF?",
+      "type": "free-input",
+      "correct": [
+        "65"
+      ],
+      "explanation": "שטח = (13 × 10) / 2 = 65"
+    },
+    {
+      "text": "E על BC כך ש-EC = 6. F על CD כך ש-CF = 3. מהו שטח המשולש ECF?",
+      "type": "free-input",
+      "correct": [
+        "9"
+      ],
+      "explanation": "שטח = (6 × 3) / 2 = 9"
+    },
+    {
+      "text": "מלבן ABCD: שטח 160. שטחי המשולשים ABE = 32, ADF = 65, ECF = 9. מהו שטח המשולש AEF?",
+      "type": "free-input",
+      "correct": [
+        "54"
+      ],
+      "explanation": "שטח AEF = 160 − 32 − 65 − 9 = 54"
+    }
+  ]
+}
