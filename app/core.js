@@ -42,17 +42,27 @@ function fixBidi(text) {
   
   // Character classes for math expression detection
   // mathChar: any character that can appear INSIDE a math expression
-  const mathChar = '[\\d□÷×·+\\-−=≠<>≤≥\\/\\.\\,\\(\\)\\^²³₪%\\?\\s' +
-    '\u00B2\u00B3\u00B9' +        // superscripts ² ³ ¹
-    '\u00BC-\u00BE' +              // vulgar fractions ¼ ½ ¾
-    '\u2044' +                      // fraction slash ⁄
-    '\u2070-\u207F' +              // superscript digits ⁰⁴⁵⁶⁷⁸⁹
-    '\u2080-\u208F' +              // subscript digits ₀₁₂₃₄₅₆₇₈₉
-    '\u2150-\u215F' +              // vulgar fractions ⅓ ⅔ ⅕ etc.
+  const mathChar = '[\\d□÷×·+\\-−=≠<>≤≥\\/\\.\\,\\(\\)\\[\\]\\{\\}\\^²³₪%\\?\\s' +
+    'a-zA-Z' +                      // algebraic variables (x, y, a, b, etc.)
+    '\\|' +                          // absolute value bars |x|
+    '\u221A' +                       // square root √
+    '\u2192' +                       // right arrow →
+    '\u2212' +                       // Unicode minus −
+    '\u00B2\u00B3\u00B9' +          // superscripts ² ³ ¹
+    '\u00BC-\u00BE' +                // vulgar fractions ¼ ½ ¾
+    '\u2044' +                       // fraction slash ⁄
+    '\u2070-\u207F' +                // superscript digits ⁰⁴⁵⁶⁷⁸⁹
+    '\u2080-\u208F' +                // subscript digits ₀₁₂₃₄₅₆₇₈₉
+    '\u2150-\u215F' +                // vulgar fractions ⅓ ⅔ ⅕ etc.
     ']';
-  
+
   // mathStart: characters that can START a math expression
   const mathStart = '[\\d□\\(' +
+    'a-zA-Z' +                       // variables: x + 8, a = 3
+    '\\|' +                          // absolute value: |−5|
+    '\u221A' +                       // square root: √25
+    '\u2212' +                       // Unicode minus: −3x
+    '\\-' +                          // regular minus: -3x
     '\u00B2\u00B3\u00B9' +
     '\u00BC-\u00BE' +
     '\u2044' +
@@ -60,9 +70,11 @@ function fixBidi(text) {
     '\u2080-\u208F' +
     '\u2150-\u215F' +
     ']';
-  
+
   // mathEnd: characters that can END a math expression
   const mathEnd = '[\\d□\\)\\?' +
+    'a-zA-Z' +                       // variables: 5x, 3a
+    '\\|' +                          // absolute value: |5|
     '\u00BC-\u00BE' +
     '\u2150-\u215F' +
     '\u2080-\u208F' +
