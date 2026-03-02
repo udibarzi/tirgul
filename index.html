@@ -6,16 +6,33 @@
   <title>תרגול מתמטיקה</title>
   <link rel="stylesheet" href="app/style.css">
   <style>
-    /* Landing-specific overrides */
+    /* ======= Landing Page Design ======= */
+
     .welcome-card {
-      background: white;
-      border-radius: var(--radius-lg);
-      padding: var(--space-xl);
-      box-shadow: var(--shadow-lg);
+      background: var(--color-card);
+      border-radius: 20px;
+      padding: 36px 28px;
+      box-shadow: 0 8px 40px rgba(30, 41, 59, 0.08), 0 1px 3px rgba(0,0,0,0.04);
       width: 100%;
-      max-width: 400px;
-      animation: fadeIn 0.5s ease;
+      max-width: 420px;
+      animation: screenIn 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+      border: 1px solid rgba(226, 232, 240, 0.6);
+      position: relative;
     }
+
+    /* Decorative corner accent */
+    .welcome-card::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 80px;
+      height: 80px;
+      background: linear-gradient(135deg, var(--color-primary-glow) 0%, transparent 60%);
+      border-radius: 0 20px 0 0;
+      pointer-events: none;
+    }
+
     .returning-greeting {
       font-size: 1.2em;
       margin-bottom: var(--space-md);
@@ -30,19 +47,30 @@
       text-align: center;
       display: block;
     }
+
+    /* Stats card */
     .total-stats {
       text-align: center;
-      padding: var(--space-md);
-      background: rgba(78, 205, 196, 0.08);
+      padding: var(--space-md) var(--space-lg);
+      background: linear-gradient(135deg, rgba(74, 86, 226, 0.06) 0%, rgba(99, 102, 241, 0.04) 100%);
       border-radius: var(--radius-md);
       margin-bottom: var(--space-lg);
+      border: 1px solid rgba(74, 86, 226, 0.08);
+    }
+    .total-stats .stat-label {
+      font-size: 0.85em;
+      color: var(--color-text-light);
+      margin-bottom: 2px;
     }
     .total-stats .big-number {
-      font-size: 2em;
-      font-weight: 700;
+      font-family: var(--font-display);
+      font-size: 2.4em;
+      font-weight: 400;
       color: var(--color-primary);
+      animation: countUp 0.6s cubic-bezier(0.4, 0, 0.2, 1);
     }
-    /* Grade / Gender picker cards */
+
+    /* Grade / Gender picker */
     .picker-grid {
       display: flex;
       gap: 12px;
@@ -51,29 +79,38 @@
       margin-top: var(--space-md);
     }
     .picker-card {
-      background: white;
-      border: 2px solid #e0e0e0;
-      border-radius: var(--radius-md);
-      padding: 16px 24px;
+      background: var(--color-card);
+      border: 2px solid var(--color-border);
+      border-radius: 16px;
+      padding: 20px 24px;
       cursor: pointer;
-      transition: transform 0.15s, border-color 0.15s, box-shadow 0.15s;
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
       text-align: center;
       min-width: 100px;
       flex: 1;
+      position: relative;
     }
     .picker-card:hover {
-      transform: translateY(-2px);
+      transform: translateY(-4px);
       border-color: var(--color-primary);
-      box-shadow: 0 4px 12px rgba(78, 205, 196, 0.2);
+      box-shadow: 0 8px 24px rgba(74, 86, 226, 0.18);
+    }
+    .picker-card:active {
+      transform: translateY(-1px);
     }
     .picker-card .picker-icon {
-      font-size: 2em;
+      font-size: 2.2em;
       margin-bottom: 8px;
       display: block;
+      transition: transform 0.25s;
+    }
+    .picker-card:hover .picker-icon {
+      transform: scale(1.15);
     }
     .picker-card .picker-label {
       font-weight: 600;
       font-size: 1.05em;
+      color: var(--color-text);
     }
     .picker-subtitle {
       text-align: center;
@@ -81,17 +118,21 @@
       margin-bottom: var(--space-sm);
       font-size: 0.95em;
     }
-    /* Grade badge on topic screen */
+
+    /* Grade badge */
     .grade-badge {
       display: inline-block;
-      background: var(--color-primary);
+      background: linear-gradient(135deg, var(--color-primary), #6366F1);
       color: white;
       border-radius: 20px;
-      padding: 2px 12px;
+      padding: 3px 14px;
       font-size: 0.8em;
       font-weight: 600;
       margin-right: 8px;
+      letter-spacing: 0.02em;
     }
+
+    /* Settings row */
     .settings-row {
       display: flex;
       gap: 8px;
@@ -104,7 +145,37 @@
       font-size: 0.8em;
       color: var(--color-text-light);
       cursor: pointer;
-      text-decoration: underline;
+      text-decoration: none;
+      padding: 2px 8px;
+      border-radius: 6px;
+      transition: all 0.2s;
+    }
+    .settings-link:hover {
+      color: var(--color-primary);
+      background: var(--color-primary-glow);
+    }
+    .settings-divider {
+      color: var(--color-border);
+      font-size: 0.8em;
+    }
+
+    /* Topic card stagger animation */
+    .topic-card.animate-in {
+      animation: cardStagger 0.4s cubic-bezier(0.4, 0, 0.2, 1) backwards;
+    }
+
+    /* Speed drill card accent */
+    .topic-card.speed-card {
+      border-color: var(--color-warning);
+      background: linear-gradient(135deg, #FFFBEB 0%, #FFFFFF 40%);
+    }
+    .topic-card.speed-card::before {
+      background: var(--color-warning);
+      opacity: 1;
+    }
+    .topic-card.speed-card:hover {
+      border-color: var(--color-warning);
+      box-shadow: 0 8px 25px rgba(245, 158, 11, 0.2);
     }
   </style>
 </head>
@@ -167,13 +238,13 @@
       </div>
       <div class="settings-row">
         <a class="settings-link" id="changeNameLink">שינוי שם</a>
-        <span style="color:#ccc;">|</span>
+        <span class="settings-divider">|</span>
         <a class="settings-link" id="changeGradeLink">שינוי כיתה</a>
       </div>
     </div>
 
     <div class="total-stats" id="totalStats">
-      <div>תשובות נכונות</div>
+      <div class="stat-label">תשובות נכונות</div>
       <div class="big-number" id="totalCorrect">0</div>
     </div>
 
@@ -335,17 +406,20 @@
       const gender = getGender();
       const nameParam = encodeURIComponent(progress.getUserName());
 
+      let cardIndex = 0;
+
       // Speed drill card — always shown at the top
       const speedCard = document.createElement('a');
-      speedCard.className = 'topic-card';
+      speedCard.className = 'topic-card speed-card animate-in';
+      speedCard.style.animationDelay = `${cardIndex * 60}ms`;
       speedCard.href = `app/speed.html?name=${nameParam}&gender=${gender}`;
-      speedCard.style.borderRight = '4px solid #F39C12';
       speedCard.innerHTML = `
         <div class="icon">⚡</div>
         <div class="name">אלופי הכפל</div>
-        <div class="stats" style="color:#F39C12;">תרגול מהיר עם טיימר</div>
+        <div class="stats" style="color:var(--color-warning);">תרגול מהיר עם טיימר</div>
       `;
       grid.appendChild(speedCard);
+      cardIndex++;
 
       // Regular topic cards
       manifest.topics
@@ -356,7 +430,8 @@
           const pct = p.total > 0 ? Math.round((p.correct / p.total) * 100) : 0;
 
           const card = document.createElement('a');
-          card.className = 'topic-card';
+          card.className = 'topic-card animate-in';
+          card.style.animationDelay = `${cardIndex * 60}ms`;
           card.href = `app/quiz.html?topic=${topic.id}&name=${nameParam}&gender=${gender}`;
 
           card.innerHTML = `
@@ -373,6 +448,7 @@
           `;
 
           grid.appendChild(card);
+          cardIndex++;
         });
     }
 
