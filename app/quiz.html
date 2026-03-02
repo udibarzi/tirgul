@@ -76,6 +76,7 @@
     const params = new URLSearchParams(window.location.search);
     const topicId = params.get('topic');
     const userName = decodeURIComponent(params.get('name') || '');
+    const userGender = params.get('gender') || localStorage.getItem('math_app_gender') || 'female';
     
     const progress = new ProgressManager('math_app');
     
@@ -359,7 +360,7 @@
       feedback.className = 'feedback show ' + (isCorrect ? 'correct' : 'wrong');
       
       if (isCorrect) {
-        title.textContent = getCongratsMessage(userName, state.streak);
+        title.textContent = getCongratsMessage(userName, state.streak, userGender);
         explanation.innerHTML = '';
       } else {
         title.textContent = 'לא נכון, אבל אפשר ללמוד מזה!';

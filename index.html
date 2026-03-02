@@ -42,10 +42,74 @@
       font-weight: 700;
       color: var(--color-primary);
     }
+    /* Grade / Gender picker cards */
+    .picker-grid {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-top: var(--space-md);
+    }
+    .picker-card {
+      background: white;
+      border: 2px solid #e0e0e0;
+      border-radius: var(--radius-md);
+      padding: 16px 24px;
+      cursor: pointer;
+      transition: transform 0.15s, border-color 0.15s, box-shadow 0.15s;
+      text-align: center;
+      min-width: 100px;
+      flex: 1;
+    }
+    .picker-card:hover {
+      transform: translateY(-2px);
+      border-color: var(--color-primary);
+      box-shadow: 0 4px 12px rgba(78, 205, 196, 0.2);
+    }
+    .picker-card .picker-icon {
+      font-size: 2em;
+      margin-bottom: 8px;
+      display: block;
+    }
+    .picker-card .picker-label {
+      font-weight: 600;
+      font-size: 1.05em;
+    }
+    .picker-subtitle {
+      text-align: center;
+      color: var(--color-text-light);
+      margin-bottom: var(--space-sm);
+      font-size: 0.95em;
+    }
+    /* Grade badge on topic screen */
+    .grade-badge {
+      display: inline-block;
+      background: var(--color-primary);
+      color: white;
+      border-radius: 20px;
+      padding: 2px 12px;
+      font-size: 0.8em;
+      font-weight: 600;
+      margin-right: 8px;
+    }
+    .settings-row {
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+      align-items: center;
+      margin-top: var(--space-sm);
+      flex-wrap: wrap;
+    }
+    .settings-link {
+      font-size: 0.8em;
+      color: var(--color-text-light);
+      cursor: pointer;
+      text-decoration: underline;
+    }
   </style>
 </head>
 <body>
-  
+
   <!-- Screen 1: Name Entry (first visit) -->
   <div id="nameScreen" class="landing-container">
     <div class="welcome-card">
@@ -53,8 +117,8 @@
       <h1 class="landing-title text-center">תרגול מתמטיקה</h1>
       <p class="landing-subtitle text-center">מוכנים להתחיל לתרגל?</p>
       <div class="name-input-group">
-        <input type="text" id="nameInput" class="name-input" 
-               placeholder="מה השם שלך?" 
+        <input type="text" id="nameInput" class="name-input"
+               placeholder="מה השם שלך?"
                autocomplete="off" autofocus>
       </div>
       <div class="text-center">
@@ -62,120 +126,242 @@
       </div>
     </div>
   </div>
-  
-  <!-- Screen 2: Topic Selection -->
+
+  <!-- Screen 2: Grade Picker -->
+  <div id="gradeScreen" class="landing-container hidden">
+    <div class="welcome-card">
+      <div class="landing-logo text-center">📚</div>
+      <h1 class="landing-title text-center">שלום <span id="gradeScreenName"></span>!</h1>
+      <p class="picker-subtitle">באיזו כיתה?</p>
+      <div class="picker-grid" id="gradeGrid">
+        <!-- Populated dynamically from manifest grades -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Screen 3: Gender Picker -->
+  <div id="genderScreen" class="landing-container hidden">
+    <div class="welcome-card">
+      <div class="landing-logo text-center">👋</div>
+      <h1 class="landing-title text-center">עוד שנייה מתחילים!</h1>
+      <p class="picker-subtitle">בן או בת?</p>
+      <div class="picker-grid">
+        <div class="picker-card" onclick="selectGender('male')">
+          <span class="picker-icon">👦</span>
+          <span class="picker-label">בן</span>
+        </div>
+        <div class="picker-card" onclick="selectGender('female')">
+          <span class="picker-icon">👧</span>
+          <span class="picker-label">בת</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Screen 4: Topic Selection -->
   <div id="topicsScreen" class="topics-container hidden">
     <div class="topics-header">
       <h1>שלום <span class="user-name" id="displayName"></span> 👋</h1>
-      <a class="change-name" id="changeNameLink">שינוי שם</a>
+      <div>
+        <span class="grade-badge" id="gradeBadge"></span>
+      </div>
+      <div class="settings-row">
+        <a class="settings-link" id="changeNameLink">שינוי שם</a>
+        <span style="color:#ccc;">|</span>
+        <a class="settings-link" id="changeGradeLink">שינוי כיתה</a>
+      </div>
     </div>
-    
+
     <div class="total-stats" id="totalStats">
       <div>תשובות נכונות</div>
       <div class="big-number" id="totalCorrect">0</div>
     </div>
-    
+
     <div class="topics-grid" id="topicsGrid">
       <!-- Populated dynamically from manifest -->
     </div>
   </div>
-  
+
   <script src="app/core.js"></script>
   <script>
     const progress = new ProgressManager('math_app');
     let manifest = null;
-    
+
     // ---- Initialization ----
     async function init() {
       manifest = await loadManifest('content/manifest.json');
-      
+
       if (!manifest) {
         document.body.innerHTML = '<div style="text-align:center;padding:40px;">שגיאה בטעינת התוכן. נסו לרענן את הדף.</div>';
         return;
       }
-      
+
       const savedName = progress.getUserName();
-      if (savedName) {
-        showTopics(savedName);
+      const savedGrade = getGrade();
+      const savedGender = getGender();
+
+      if (savedName && savedGrade && savedGender) {
+        showTopics(savedName, savedGrade);
+      } else if (savedName && savedGrade && !savedGender) {
+        showGenderPicker(savedName);
+      } else if (savedName && !savedGrade) {
+        showGradePicker(savedName);
       } else {
         showNameScreen();
       }
     }
-    
+
+    // ---- LocalStorage helpers for grade/gender ----
+    function getGrade() {
+      try { return parseInt(localStorage.getItem('math_app_grade')) || 0; } catch (e) { return 0; }
+    }
+    function setGrade(g) {
+      try { localStorage.setItem('math_app_grade', String(g)); } catch (e) {}
+    }
+    function getGender() {
+      try { return localStorage.getItem('math_app_gender') || ''; } catch (e) { return ''; }
+    }
+    function setGender(g) {
+      try { localStorage.setItem('math_app_gender', g); } catch (e) {}
+    }
+
     // ---- Name Screen ----
     function showNameScreen() {
+      hideAll();
       document.getElementById('nameScreen').classList.remove('hidden');
-      document.getElementById('topicsScreen').classList.add('hidden');
-      
+
       const input = document.getElementById('nameInput');
       const btn = document.getElementById('startBtn');
-      
-      input.addEventListener('input', () => {
-        btn.disabled = !input.value.trim();
+
+      input.value = '';
+      btn.disabled = true;
+
+      // Clone to remove old listeners
+      const newInput = input.cloneNode(true);
+      input.parentNode.replaceChild(newInput, input);
+      const newBtn = btn.cloneNode(true);
+      btn.parentNode.replaceChild(newBtn, btn);
+
+      newInput.addEventListener('input', () => {
+        newBtn.disabled = !newInput.value.trim();
       });
-      
-      input.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' && input.value.trim()) {
-          startWithName(input.value.trim());
+
+      newInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' && newInput.value.trim()) {
+          startWithName(newInput.value.trim());
         }
       });
-      
-      btn.addEventListener('click', () => {
-        if (input.value.trim()) startWithName(input.value.trim());
+
+      newBtn.addEventListener('click', () => {
+        if (newInput.value.trim()) startWithName(newInput.value.trim());
       });
+
+      setTimeout(() => newInput.focus(), 100);
     }
-    
+
     function startWithName(name) {
       progress.setUserName(name);
-      showTopics(name);
+      showGradePicker(name);
     }
-    
-    // ---- Topics Screen ----
-    function showTopics(name) {
-      document.getElementById('nameScreen').classList.add('hidden');
-      document.getElementById('topicsScreen').classList.remove('hidden');
-      document.getElementById('displayName').textContent = name;
-      
-      document.getElementById('changeNameLink').onclick = () => {
-        progress.setUserName('');
-        document.getElementById('nameInput').value = '';
-        document.getElementById('startBtn').disabled = true;
-        showNameScreen();
-      };
-      
-      renderTopicGrid();
-      updateTotalStats();
-    }
-    
-    function renderTopicGrid() {
-      const grid = document.getElementById('topicsGrid');
+
+    // ---- Grade Picker ----
+    function showGradePicker(name) {
+      hideAll();
+      document.getElementById('gradeScreen').classList.remove('hidden');
+      document.getElementById('gradeScreenName').textContent = name;
+
+      const grid = document.getElementById('gradeGrid');
       grid.innerHTML = '';
-      
-      manifest.topics.forEach(topic => {
-        const p = progress.getTopicProgress(topic.id);
-        const pct = p.total > 0 ? Math.round((p.correct / p.total) * 100) : 0;
-        
-        const card = document.createElement('a');
-        card.className = 'topic-card';
-        card.href = `app/quiz.html?topic=${topic.id}&name=${encodeURIComponent(progress.getUserName())}`;
-        
-        card.innerHTML = `
-          <div class="icon">${topic.icon || '📝'}</div>
-          <div class="name">${topic.name}</div>
-          ${p.total > 0 ? `
-            <div class="progress-bar">
-              <div class="progress-fill" style="width:${pct}%"></div>
-            </div>
-            <div class="stats">${p.correct}/${p.total} (${pct}%)</div>
-          ` : `
-            <div class="stats">טרם תורגל</div>
-          `}
-        `;
-        
+
+      (manifest.grades || []).forEach(g => {
+        const card = document.createElement('div');
+        card.className = 'picker-card';
+        card.innerHTML = `<span class="picker-icon">${g.icon}</span><span class="picker-label">${g.name}</span>`;
+        card.addEventListener('click', () => selectGrade(g.id));
         grid.appendChild(card);
       });
     }
-    
+
+    function selectGrade(gradeId) {
+      setGrade(gradeId);
+      const savedGender = getGender();
+      if (savedGender) {
+        showTopics(progress.getUserName(), gradeId);
+      } else {
+        showGenderPicker(progress.getUserName());
+      }
+    }
+
+    // ---- Gender Picker ----
+    function showGenderPicker(name) {
+      hideAll();
+      document.getElementById('genderScreen').classList.remove('hidden');
+    }
+
+    function selectGender(gender) {
+      setGender(gender);
+      showTopics(progress.getUserName(), getGrade());
+    }
+
+    // ---- Topics Screen ----
+    function showTopics(name, grade) {
+      hideAll();
+      document.getElementById('topicsScreen').classList.remove('hidden');
+      document.getElementById('displayName').textContent = name;
+
+      // Show grade badge
+      const gradeInfo = (manifest.grades || []).find(g => g.id === grade);
+      document.getElementById('gradeBadge').textContent = gradeInfo ? gradeInfo.name : '';
+
+      document.getElementById('changeNameLink').onclick = () => {
+        progress.setUserName('');
+        setGrade(0);
+        setGender('');
+        showNameScreen();
+      };
+
+      document.getElementById('changeGradeLink').onclick = () => {
+        showGradePicker(name);
+      };
+
+      renderTopicGrid(grade);
+      updateTotalStats();
+    }
+
+    function renderTopicGrid(grade) {
+      const grid = document.getElementById('topicsGrid');
+      grid.innerHTML = '';
+
+      const gender = getGender();
+
+      manifest.topics
+        .filter(topic => topic.grade === grade)
+        .sort((a, b) => (a.order || 0) - (b.order || 0))
+        .forEach(topic => {
+          const p = progress.getTopicProgress(topic.id);
+          const pct = p.total > 0 ? Math.round((p.correct / p.total) * 100) : 0;
+
+          const card = document.createElement('a');
+          card.className = 'topic-card';
+          card.href = `app/quiz.html?topic=${topic.id}&name=${encodeURIComponent(progress.getUserName())}&gender=${gender}`;
+
+          card.innerHTML = `
+            <div class="icon">${topic.icon || '📝'}</div>
+            <div class="name">${topic.name}</div>
+            ${p.total > 0 ? `
+              <div class="progress-bar">
+                <div class="progress-fill" style="width:${pct}%"></div>
+              </div>
+              <div class="stats">${p.correct}/${p.total} (${pct}%)</div>
+            ` : `
+              <div class="stats">טרם תורגל</div>
+            `}
+          `;
+
+          grid.appendChild(card);
+        });
+    }
+
     function updateTotalStats() {
       const allProgress = progress.getAllProgress();
       let totalCorrect = 0;
@@ -184,7 +370,13 @@
       });
       document.getElementById('totalCorrect').textContent = totalCorrect;
     }
-    
+
+    function hideAll() {
+      ['nameScreen', 'gradeScreen', 'genderScreen', 'topicsScreen'].forEach(id => {
+        document.getElementById(id).classList.add('hidden');
+      });
+    }
+
     // ---- Boot ----
     init();
   </script>

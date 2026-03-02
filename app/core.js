@@ -624,79 +624,129 @@ class ProgressManager {
  * Categorized by enthusiasm level for streak-based selection.
  */
 const CONGRATS_MESSAGES = {
-  // Regular correct answer (no streak)
-  normal: [
-    "כל הכבוד {name}!",
-    "מצוין {name}!",
-    "נכון! יופי {name}!",
-    "תשובה נכונה!",
-    "בדיוק! {name} מדהימה!",
-    "יפה מאוד {name}!",
-    "נהדר {name}!",
-    "את צודקת {name}!",
-    "עבודה מצוינת {name}!",
-    "את כוכבת {name}!",
-    "מושלם!",
-    "אין עליך {name}!",
-    "את גאונה {name}!",
-    "תותחית {name}!",
-    "וואו, מהיר ונכון!",
-    "בול! תשובה מעולה!",
-    "את אלופה {name}!",
-    "ראש גדול {name}!",
-    "חזק מאוד!",
-    "את מדהימה!",
-  ],
-  
-  // Streak of 3+
-  streak: [
-    "רצף מדהים {name}! 🔥",
-    "{name} בלתי ניתנת לעצירה!",
-    "שלוש ברצף! {name} על אש!",
-    "רצף! {name} שוברת שיאים!",
-    "את מכונת חישוב {name}!",
-    "אף אחד לא עוצר את {name}!",
-    "רצף מטורף!",
-    "את לוהטת {name}!",
-    "{name} פשוט מעופפת!",
-    "רצף ניצחונות! כל הכבוד!",
-  ],
-  
-  // Streak of 5+
-  superStreak: [
-    "5 ברצף! {name} את מלכת המתמטיקה! 👑",
-    "{name} — את פשוט גאונה!",
-    "בלתי ייאמן! {name} מוכיחה שהיא הכי חכמה!",
-    "את מופלאה {name}! אין מילים!",
-    "רצף היסטורי! {name} שוברת את כל השיאים!",
-    "{name} את אלופת העולם במתמטיקה!",
-    "מדהים! {name} לא טועה!",
-    "גאונות טהורה {name}! 🌟",
-  ],
-  
-  // Streak of 10+
-  legendary: [
-    "10 ברצף!! {name} את אגדה! 🏆",
-    "{name} — הפרופסורים יכולים ללמוד ממך!",
-    "בלתי נתפס! {name} את בדרך לנובל!",
-    "{name} שוברת את כל מה שאפשר לשבור!",
-    "אגדת מתמטיקה חיה — {name}! ✨",
-  ],
+  female: {
+    normal: [
+      "כל הכבוד {name}!",
+      "מצוין {name}!",
+      "נכון! יופי {name}!",
+      "תשובה נכונה!",
+      "בדיוק! {name} מדהימה!",
+      "יפה מאוד {name}!",
+      "נהדר {name}!",
+      "את צודקת {name}!",
+      "עבודה מצוינת {name}!",
+      "את כוכבת {name}!",
+      "מושלם!",
+      "אין עליך {name}!",
+      "את גאונה {name}!",
+      "תותחית {name}!",
+      "וואו, מהיר ונכון!",
+      "בול! תשובה מעולה!",
+      "את אלופה {name}!",
+      "ראש גדול {name}!",
+      "חזק מאוד!",
+      "את מדהימה!",
+    ],
+    streak: [
+      "רצף מדהים {name}! 🔥",
+      "{name} בלתי ניתנת לעצירה!",
+      "שלוש ברצף! {name} על אש!",
+      "רצף! {name} שוברת שיאים!",
+      "את מכונת חישוב {name}!",
+      "אף אחד לא עוצר את {name}!",
+      "רצף מטורף!",
+      "את לוהטת {name}!",
+      "{name} פשוט מעופפת!",
+      "רצף ניצחונות! כל הכבוד!",
+    ],
+    superStreak: [
+      "5 ברצף! {name} את מלכת המתמטיקה! 👑",
+      "{name} — את פשוט גאונה!",
+      "בלתי ייאמן! {name} מוכיחה שהיא הכי חכמה!",
+      "את מופלאה {name}! אין מילים!",
+      "רצף היסטורי! {name} שוברת את כל השיאים!",
+      "{name} את אלופת העולם במתמטיקה!",
+      "מדהים! {name} לא טועה!",
+      "גאונות טהורה {name}! 🌟",
+    ],
+    legendary: [
+      "10 ברצף!! {name} את אגדה! 🏆",
+      "{name} — הפרופסורים יכולים ללמוד ממך!",
+      "בלתי נתפס! {name} את בדרך לנובל!",
+      "{name} שוברת את כל מה שאפשר לשבור!",
+      "אגדת מתמטיקה חיה — {name}! ✨",
+    ],
+  },
+  male: {
+    normal: [
+      "כל הכבוד {name}!",
+      "מצוין {name}!",
+      "נכון! יופי {name}!",
+      "תשובה נכונה!",
+      "בדיוק! {name} מדהים!",
+      "יפה מאוד {name}!",
+      "נהדר {name}!",
+      "אתה צודק {name}!",
+      "עבודה מצוינת {name}!",
+      "אתה כוכב {name}!",
+      "מושלם!",
+      "אין עליך {name}!",
+      "אתה גאון {name}!",
+      "תותח {name}!",
+      "וואו, מהיר ונכון!",
+      "בול! תשובה מעולה!",
+      "אתה אלוף {name}!",
+      "ראש גדול {name}!",
+      "חזק מאוד!",
+      "אתה מדהים!",
+    ],
+    streak: [
+      "רצף מדהים {name}! 🔥",
+      "{name} בלתי ניתן לעצירה!",
+      "שלוש ברצף! {name} על אש!",
+      "רצף! {name} שובר שיאים!",
+      "אתה מכונת חישוב {name}!",
+      "אף אחד לא עוצר את {name}!",
+      "רצף מטורף!",
+      "אתה לוהט {name}!",
+      "{name} פשוט מעופף!",
+      "רצף ניצחונות! כל הכבוד!",
+    ],
+    superStreak: [
+      "5 ברצף! {name} אתה מלך המתמטיקה! 👑",
+      "{name} — אתה פשוט גאון!",
+      "בלתי ייאמן! {name} מוכיח שהוא הכי חכם!",
+      "אתה מופלא {name}! אין מילים!",
+      "רצף היסטורי! {name} שובר את כל השיאים!",
+      "{name} אתה אלוף העולם במתמטיקה!",
+      "מדהים! {name} לא טועה!",
+      "גאונות טהורה {name}! 🌟",
+    ],
+    legendary: [
+      "10 ברצף!! {name} אתה אגדה! 🏆",
+      "{name} — הפרופסורים יכולים ללמוד ממך!",
+      "בלתי נתפס! {name} אתה בדרך לנובל!",
+      "{name} שובר את כל מה שאפשר לשבור!",
+      "אגדת מתמטיקה חיה — {name}! ✨",
+    ],
+  },
 };
 
 /**
  * Get a congratulatory message based on current streak.
  * @param {string} name - Child's name
  * @param {number} streak - Current correct-answer streak
+ * @param {string} gender - 'male' or 'female' (default: 'female')
  * @returns {string} Personalized Hebrew congratulation
  */
-function getCongratsMessage(name, streak) {
+function getCongratsMessage(name, streak, gender) {
+  const msgs = CONGRATS_MESSAGES[gender === 'male' ? 'male' : 'female'];
   let pool;
-  if (streak >= 10) pool = CONGRATS_MESSAGES.legendary;
-  else if (streak >= 5) pool = CONGRATS_MESSAGES.superStreak;
-  else if (streak >= 3) pool = CONGRATS_MESSAGES.streak;
-  else pool = CONGRATS_MESSAGES.normal;
-  
+  if (streak >= 10) pool = msgs.legendary;
+  else if (streak >= 5) pool = msgs.superStreak;
+  else if (streak >= 3) pool = msgs.streak;
+  else pool = msgs.normal;
+
   const msg = randChoice(pool);
   return msg.replace(/\{name\}/g, name || '');
 }

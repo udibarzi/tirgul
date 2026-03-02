@@ -1,14 +1,47 @@
 {
   "version": "1.0.0",
   "language": "he",
+  "grades": [
+    { "id": 4, "name": "כיתה ד׳", "icon": "4️⃣" },
+    { "id": 5, "name": "כיתה ה׳", "icon": "5️⃣" },
+    { "id": 7, "name": "כיתה ז׳", "icon": "7️⃣" }
+  ],
   "topics": [
+    {
+      "id": "fractions-4",
+      "name": "שברים פשוטים",
+      "icon": "🍕",
+      "description": "מושג השבר, השוואה, חיבור וחיסור, מספרים מעורבים, כפל בשלם",
+      "difficulty": 1,
+      "order": 1,
+      "grade": 4
+    },
+    {
+      "id": "multiply-divide-4",
+      "name": "כפל וחילוק",
+      "icon": "✖️",
+      "description": "כפל ב-10/100/1000, עשרות שלמות, סדר פעולות, כפל דו-ספרתי",
+      "difficulty": 2,
+      "order": 2,
+      "grade": 4
+    },
+    {
+      "id": "geometry-4",
+      "name": "גיאומטריה",
+      "icon": "📐",
+      "description": "יחידות מידה, היקף ושטח של מלבנים ומצולעים",
+      "difficulty": 2,
+      "order": 3,
+      "grade": 4
+    },
     {
       "id": "arithmetic-natural-numbers",
       "name": "פעולות חשבון במספרים טבעיים",
       "icon": "🔢",
       "description": "כפל, חילוק, סדר פעולות חשבון",
       "difficulty": 1,
-      "order": 1
+      "order": 1,
+      "grade": 5
     },
     {
       "id": "fraction-operations",
@@ -16,7 +49,8 @@
       "icon": "🥧",
       "description": "חיבור וחיסור שברים, מכנה משותף, שברים מעורבים",
       "difficulty": 2,
-      "order": 2
+      "order": 2,
+      "grade": 5
     },
     {
       "id": "word-problems-fractions",
@@ -24,7 +58,8 @@
       "icon": "📖",
       "description": "בעיות מילוליות עם שברים",
       "difficulty": 3,
-      "order": 3
+      "order": 3,
+      "grade": 5
     },
     {
       "id": "large-numbers",
@@ -32,7 +67,8 @@
       "icon": "🔟",
       "description": "חיבור וחיסור מספרים גדולים",
       "difficulty": 2,
-      "order": 4
+      "order": 4,
+      "grade": 5
     },
     {
       "id": "word-problems-natural",
@@ -40,7 +76,8 @@
       "icon": "📝",
       "description": "בעיות מילוליות עם מספרים טבעיים",
       "difficulty": 2,
-      "order": 5
+      "order": 5,
+      "grade": 5
     },
     {
       "id": "expression-matching",
@@ -48,7 +85,8 @@
       "icon": "🔗",
       "description": "התאמת ביטוי מתמטי לבעיה מילולית",
       "difficulty": 2,
-      "order": 6
+      "order": 6,
+      "grade": 5
     },
     {
       "id": "tables",
@@ -56,7 +94,8 @@
       "icon": "📊",
       "description": "קריאת טבלאות ופיקטוגרפים",
       "difficulty": 2,
-      "order": 7
+      "order": 7,
+      "grade": 5
     },
     {
       "id": "graphs",
@@ -64,7 +103,8 @@
       "icon": "📈",
       "description": "קריאת גרפי עמודות ותרשימי עוגה",
       "difficulty": 2,
-      "order": 8
+      "order": 8,
+      "grade": 5
     },
     {
       "id": "perimeter-area",
@@ -72,7 +112,8 @@
       "icon": "📏",
       "description": "חישוב היקף ושטח של מלבנים וריבועים",
       "difficulty": 2,
-      "order": 9
+      "order": 9,
+      "grade": 5
     },
     {
       "id": "symmetry",
@@ -80,7 +121,8 @@
       "icon": "🦋",
       "description": "צירי סימטריה בצורות ואותיות",
       "difficulty": 2,
-      "order": 10
+      "order": 10,
+      "grade": 5
     },
     {
       "id": "ratios-rates",
@@ -88,7 +130,8 @@
       "icon": "⚡",
       "description": "בעיות קצב, יחס ופרופורציה",
       "difficulty": 2,
-      "order": 11
+      "order": 11,
+      "grade": 5
     },
     {
       "id": "movement-problems",
@@ -96,7 +139,8 @@
       "icon": "🚗",
       "description": "מהירות, זמן ומרחק",
       "difficulty": 2,
-      "order": 12
+      "order": 12,
+      "grade": 5
     },
     {
       "id": "algebraic-understanding",
@@ -104,7 +148,8 @@
       "icon": "🔤",
       "description": "הצבת ערכים, מציאת משתנה חסר",
       "difficulty": 2,
-      "order": 13
+      "order": 13,
+      "grade": 5
     },
     {
       "id": "systematic-work",
@@ -112,7 +157,8 @@
       "icon": "🧮",
       "description": "ספירה שיטתית, לוחות וריבועים",
       "difficulty": 3,
-      "order": 14
+      "order": 14,
+      "grade": 5
     },
     {
       "id": "patterns-rules",
@@ -120,7 +166,8 @@
       "icon": "🔍",
       "description": "מציאת חוקיות ומספרים חריגים",
       "difficulty": 2,
-      "order": 15
+      "order": 15,
+      "grade": 5
     },
     {
       "id": "sequences-patterns",
@@ -128,7 +175,8 @@
       "icon": "🔢",
       "description": "השלמת סדרות מספריות",
       "difficulty": 2,
-      "order": 16
+      "order": 16,
+      "grade": 5
     },
     {
       "id": "even-odd",
@@ -136,7 +184,8 @@
       "icon": "🎲",
       "description": "תכונות מספרים זוגיים ואי-זוגיים",
       "difficulty": 2,
-      "order": 17
+      "order": 17,
+      "grade": 5
     },
     {
       "id": "analysis-conclusions",
@@ -144,7 +193,8 @@
       "icon": "🧪",
       "description": "חלוקה, ראשוניים, שאריות",
       "difficulty": 2,
-      "order": 18
+      "order": 18,
+      "grade": 5
     },
     {
       "id": "true-false-logic",
@@ -152,7 +202,8 @@
       "icon": "🤥",
       "description": "חידות אמת ושקר, חלוקה",
       "difficulty": 3,
-      "order": 19
+      "order": 19,
+      "grade": 5
     },
     {
       "id": "set-theory",
@@ -160,7 +211,8 @@
       "icon": "⭕",
       "description": "הכלה, היגיון ומסקנות מקבוצות",
       "difficulty": 3,
-      "order": 20
+      "order": 20,
+      "grade": 5
     },
     {
       "id": "logic-puzzles",
@@ -168,7 +220,8 @@
       "icon": "🧩",
       "description": "חידות מטבעות, ראשים ורגליים, מערכות משוואות",
       "difficulty": 3,
-      "order": 21
+      "order": 21,
+      "grade": 5
     },
     {
       "id": "intuitive-probability",
@@ -176,7 +229,35 @@
       "icon": "🎯",
       "description": "השוואת סיכויים, קוביות וקלפים",
       "difficulty": 2,
-      "order": 22
+      "order": 22,
+      "grade": 5
+    },
+    {
+      "id": "order-of-operations-7",
+      "name": "סדר פעולות חשבון",
+      "icon": "🔢",
+      "description": "מספרים שליליים, חזקות, שורשים, ערך מוחלט",
+      "difficulty": 2,
+      "order": 1,
+      "grade": 7
+    },
+    {
+      "id": "algebraic-expressions-7",
+      "name": "ביטויים אלגבריים",
+      "icon": "📐",
+      "description": "פישוט ביטויים, הצבה, סוגריים מקוננים",
+      "difficulty": 3,
+      "order": 2,
+      "grade": 7
+    },
+    {
+      "id": "equations-7",
+      "name": "משוואות",
+      "icon": "⚖️",
+      "description": "פתרון משוואות — סוגריים, זהויות וסתירות",
+      "difficulty": 3,
+      "order": 3,
+      "grade": 7
     }
   ]
 }

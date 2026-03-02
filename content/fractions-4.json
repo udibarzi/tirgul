@@ -1,0 +1,359 @@
+{
+  "id": "fractions-4",
+  "name": "שברים פשוטים",
+  "icon": "🍕",
+  "description": "מושג השבר, השוואה, חיבור וחיסור, מספרים מעורבים, כפל בשלם",
+  "questionsPerSession": 15,
+  "shuffle": true,
+  "questions": [
+    {
+      "text": "בקבוצה 24 פרחים. 3/4 מהם הם בנות. כמה בנות?",
+      "type": "free-input",
+      "correct": [
+        "18"
+      ],
+      "explanation": "24 ÷ 4 × 3 = 18"
+    },
+    {
+      "text": "בקבוצה 60 ספרים. 4/10 מהם הם בנות. כמה בנות?",
+      "type": "free-input",
+      "correct": [
+        "24"
+      ],
+      "explanation": "60 ÷ 10 × 4 = 24"
+    },
+    {
+      "text": "בקבוצה 10 ילדים. 1/2 מהם הם בנות. כמה בנות?",
+      "type": "free-input",
+      "correct": [
+        "5"
+      ],
+      "explanation": "10 ÷ 2 × 1 = 5"
+    },
+    {
+      "text": "בקבוצה 30 פרחים. 3/6 מהם הם בנות. כמה בנות?",
+      "type": "free-input",
+      "correct": [
+        "15"
+      ],
+      "explanation": "30 ÷ 6 × 3 = 15"
+    },
+    {
+      "text": "בקבוצה 30 ספרים. 1/6 מהם הם בנות. כמה בנות?",
+      "type": "free-input",
+      "correct": [
+        "5"
+      ],
+      "explanation": "30 ÷ 6 × 1 = 5"
+    },
+    {
+      "text": "בקבוצה 12 פרחים. 2/4 מהם הם בנות. כמה בנות?",
+      "type": "free-input",
+      "correct": [
+        "6"
+      ],
+      "explanation": "12 ÷ 4 × 2 = 6"
+    },
+    {
+      "text": "בקבוצה 20 ספרים. 1/4 מהם הם בנות. כמה בנות?",
+      "type": "free-input",
+      "correct": [
+        "5"
+      ],
+      "explanation": "20 ÷ 4 × 1 = 5"
+    },
+    {
+      "text": "בקבוצה 20 ילדים. 1/10 מהם הם בנות. כמה בנות?",
+      "type": "free-input",
+      "correct": [
+        "2"
+      ],
+      "explanation": "20 ÷ 10 × 1 = 2"
+    },
+    {
+      "text": "השלימו את הסימן: 2/6 ___ 5/6 — כתבו > או < או =",
+      "type": "free-input",
+      "correct": [
+        "<"
+      ],
+      "explanation": "2/6 < 5/6 כי 5 חלקים > 2 חלקים"
+    },
+    {
+      "text": "השלימו את הסימן: 2/8 ___ 4/8 — כתבו > או < או =",
+      "type": "free-input",
+      "correct": [
+        "<"
+      ],
+      "explanation": "2/8 < 4/8 כי 4 חלקים > 2 חלקים"
+    },
+    {
+      "text": "השלימו את הסימן: 2/6 ___ 4/6 — כתבו > או < או =",
+      "type": "free-input",
+      "correct": [
+        "<"
+      ],
+      "explanation": "2/6 < 4/6 כי 4 חלקים > 2 חלקים"
+    },
+    {
+      "text": "השלימו את הסימן: 1/4 ___ 3/4 — כתבו > או < או =",
+      "type": "free-input",
+      "correct": [
+        "<"
+      ],
+      "explanation": "1/4 < 3/4 כי 3 חלקים > 1 חלקים"
+    },
+    {
+      "text": "השלימו את הסימן: 1/3 ___ 2/3 — כתבו > או < או =",
+      "type": "free-input",
+      "correct": [
+        "<"
+      ],
+      "explanation": "1/3 < 2/3 כי 2 חלקים > 1 חלקים"
+    },
+    {
+      "text": "השלימו את הסימן: 1/6 ___ 5/6 — כתבו > או < או =",
+      "type": "free-input",
+      "correct": [
+        "<"
+      ],
+      "explanation": "1/6 < 5/6 כי 5 חלקים > 1 חלקים"
+    },
+    {
+      "text": "השלימו את הסימן: 1/5 ___ 4/5 — כתבו > או < או =",
+      "type": "free-input",
+      "correct": [
+        "<"
+      ],
+      "explanation": "1/5 < 4/5 כי 4 חלקים > 1 חלקים"
+    },
+    {
+      "text": "השלימו את הסימן: 6/10 ___ 3/10 — כתבו > או < או =",
+      "type": "free-input",
+      "correct": [
+        ">"
+      ],
+      "explanation": "6/10 > 3/10 כי 6 חלקים > 3 חלקים"
+    },
+    {
+      "text": "5/6 + 5/6 = ?",
+      "type": "free-input",
+      "correct": [
+        "1 2/3",
+        "1 2/3"
+      ],
+      "explanation": "5 + 5 = 10/6 = 1 2/3"
+    },
+    {
+      "text": "1/3 + 2/3 = ?",
+      "type": "free-input",
+      "correct": [
+        "1",
+        "1"
+      ],
+      "explanation": "1 + 2 = 3/3 = 1"
+    },
+    {
+      "text": "1/2 + 1/2 = ?",
+      "type": "free-input",
+      "correct": [
+        "1",
+        "1"
+      ],
+      "explanation": "1 + 1 = 2/2 = 1"
+    },
+    {
+      "text": "2/4 - 1/4 = ?",
+      "type": "free-input",
+      "correct": [
+        "1/4"
+      ],
+      "explanation": "2 - 1 = 1. תשובה: 1/4"
+    },
+    {
+      "text": "2/5 - 1/5 = ?",
+      "type": "free-input",
+      "correct": [
+        "1/5"
+      ],
+      "explanation": "2 - 1 = 1. תשובה: 1/5"
+    },
+    {
+      "text": "5/8 + 1/8 = ?",
+      "type": "free-input",
+      "correct": [
+        "3/4"
+      ],
+      "explanation": "5 + 1 = 6. תשובה: 3/4"
+    },
+    {
+      "text": "1/5 + 1/5 = ?",
+      "type": "free-input",
+      "correct": [
+        "2/5"
+      ],
+      "explanation": "1 + 1 = 2. תשובה: 2/5"
+    },
+    {
+      "text": "4/5 + 4/5 = ?",
+      "type": "free-input",
+      "correct": [
+        "1 3/5",
+        "1 3/5"
+      ],
+      "explanation": "4 + 4 = 8/5 = 1 3/5"
+    },
+    {
+      "text": "1/8 + 4/8 = ?",
+      "type": "free-input",
+      "correct": [
+        "5/8"
+      ],
+      "explanation": "1 + 4 = 5. תשובה: 5/8"
+    },
+    {
+      "text": "3/5 + 3/5 = ?",
+      "type": "free-input",
+      "correct": [
+        "1 1/5",
+        "1 1/5"
+      ],
+      "explanation": "3 + 3 = 6/5 = 1 1/5"
+    },
+    {
+      "text": "1 2/4 + 3 1/4 = ?",
+      "type": "free-input",
+      "correct": [
+        "4 3/4"
+      ],
+      "explanation": "6/4 + 13/4 = 19/4 = 4 3/4"
+    },
+    {
+      "text": "1 3/4 + 2 3/4 = ?",
+      "type": "free-input",
+      "correct": [
+        "4 1/2"
+      ],
+      "explanation": "7/4 + 11/4 = 18/4 = 4 1/2"
+    },
+    {
+      "text": "3 1/8 - 1 6/8 = ?",
+      "type": "free-input",
+      "correct": [
+        "1 3/8"
+      ],
+      "explanation": "25/8 - 14/8 = 11/8 = 1 3/8"
+    },
+    {
+      "text": "3 1/5 + 4 1/5 = ?",
+      "type": "free-input",
+      "correct": [
+        "7 2/5"
+      ],
+      "explanation": "16/5 + 21/5 = 37/5 = 7 2/5"
+    },
+    {
+      "text": "5 2/5 + 2 3/5 = ?",
+      "type": "free-input",
+      "correct": [
+        "8"
+      ],
+      "explanation": "27/5 + 13/5 = 40/5 = 8"
+    },
+    {
+      "text": "3 5/8 + 1 4/8 = ?",
+      "type": "free-input",
+      "correct": [
+        "5 1/8"
+      ],
+      "explanation": "29/8 + 12/8 = 41/8 = 5 1/8"
+    },
+    {
+      "text": "5 1/2 + 1 1/2 = ?",
+      "type": "free-input",
+      "correct": [
+        "7"
+      ],
+      "explanation": "11/2 + 3/2 = 14/2 = 7"
+    },
+    {
+      "text": "5 2/5 + 2 4/5 = ?",
+      "type": "free-input",
+      "correct": [
+        "8 1/5"
+      ],
+      "explanation": "27/5 + 14/5 = 41/5 = 8 1/5"
+    },
+    {
+      "text": "2/3 × 2 = ?",
+      "type": "free-input",
+      "correct": [
+        "1 1/3",
+        "1.3333333333333333"
+      ],
+      "explanation": "2/3 × 2 = 4/3 = 1 1/3"
+    },
+    {
+      "text": "5/6 × 3 = ?",
+      "type": "free-input",
+      "correct": [
+        "2 1/2",
+        "2.5"
+      ],
+      "explanation": "5/6 × 3 = 15/6 = 2 1/2"
+    },
+    {
+      "text": "1/2 × 5 = ?",
+      "type": "free-input",
+      "correct": [
+        "2 1/2",
+        "2.5"
+      ],
+      "explanation": "1/2 × 5 = 5/2 = 2 1/2"
+    },
+    {
+      "text": "1/2 × 2 = ?",
+      "type": "free-input",
+      "correct": [
+        "1",
+        "1"
+      ],
+      "explanation": "1/2 × 2 = 2/2 = 1"
+    },
+    {
+      "text": "3/4 × 4 = ?",
+      "type": "free-input",
+      "correct": [
+        "3",
+        "3"
+      ],
+      "explanation": "3/4 × 4 = 12/4 = 3"
+    },
+    {
+      "text": "2/3 × 4 = ?",
+      "type": "free-input",
+      "correct": [
+        "2 2/3",
+        "2.6666666666666665"
+      ],
+      "explanation": "2/3 × 4 = 8/3 = 2 2/3"
+    },
+    {
+      "text": "2/4 × 2 = ?",
+      "type": "free-input",
+      "correct": [
+        "1",
+        "1"
+      ],
+      "explanation": "2/4 × 2 = 4/4 = 1"
+    },
+    {
+      "text": "2/4 × 4 = ?",
+      "type": "free-input",
+      "correct": [
+        "2",
+        "2"
+      ],
+      "explanation": "2/4 × 4 = 8/4 = 2"
+    }
+  ]
+}
