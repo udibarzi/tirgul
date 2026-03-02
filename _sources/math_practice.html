@@ -1,0 +1,1591 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>דף תרגול למבחן מתמטיקה - 9.3.26</title>
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700&family=Frank+Ruhl+Libre:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #faf8f5;
+  --card: #ffffff;
+  --primary: #2a5da8;
+  --primary-light: #e8f0fc;
+  --accent: #e8833a;
+  --accent-light: #fef3eb;
+  --text: #2c2c2c;
+  --text-light: #6b6b6b;
+  --success: #3a8a5c;
+  --success-light: #edf7f1;
+  --border: #e2ddd6;
+  --shadow: 0 2px 12px rgba(0,0,0,0.06);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'Rubik', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.7;
+  padding: 0 0 60px;
+  -webkit-text-size-adjust: 100%;
+}
+
+.header {
+  background: linear-gradient(135deg, #2a5da8 0%, #1a3d6e 100%);
+  color: white;
+  padding: 28px 20px 24px;
+  text-align: center;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 4px 20px rgba(42,93,168,0.3);
+}
+
+.header h1 {
+  font-family: 'Frank Ruhl Libre', serif;
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.header .subtitle {
+  font-size: 0.85rem;
+  opacity: 0.85;
+}
+
+.toc {
+  padding: 16px 16px 8px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+  background: var(--card);
+  border-bottom: 1px solid var(--border);
+}
+
+.toc a {
+  display: inline-block;
+  padding: 6px 14px;
+  background: var(--primary-light);
+  color: var(--primary);
+  border-radius: 20px;
+  font-size: 0.78rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+
+.toc a:active {
+  background: var(--primary);
+  color: white;
+}
+
+.section {
+  padding: 20px 16px 8px;
+}
+
+.section-title {
+  font-family: 'Frank Ruhl Libre', serif;
+  font-size: 1.25rem;
+  color: var(--primary);
+  margin-bottom: 4px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.section-title .icon {
+  width: 32px;
+  height: 32px;
+  background: var(--primary);
+  color: white;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.section-desc {
+  font-size: 0.82rem;
+  color: var(--text-light);
+  margin-bottom: 16px;
+  padding-right: 40px;
+}
+
+.question-card {
+  background: var(--card);
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 12px;
+  box-shadow: var(--shadow);
+  border-right: 4px solid var(--border);
+}
+
+.question-card.easy { border-right-color: #3a8a5c; }
+.question-card.medium { border-right-color: #e8833a; }
+.question-card.hard { border-right-color: #c23b3b; }
+
+.q-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.q-number {
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: var(--primary);
+}
+
+.q-level {
+  font-size: 0.7rem;
+  padding: 2px 10px;
+  border-radius: 12px;
+  font-weight: 500;
+}
+
+.q-level.easy { background: var(--success-light); color: var(--success); }
+.q-level.medium { background: var(--accent-light); color: var(--accent); }
+.q-level.hard { background: #fce8e8; color: #c23b3b; }
+
+.q-text {
+  font-size: 1rem;
+  margin-bottom: 12px;
+  line-height: 1.8;
+}
+
+.q-text .math {
+  font-family: 'Rubik', monospace;
+  direction: ltr;
+  unicode-bidi: embed;
+  display: inline-block;
+  font-weight: 500;
+  background: #f5f3f0;
+  padding: 1px 6px;
+  border-radius: 4px;
+}
+
+.q-text .math-block {
+  font-family: 'Rubik', monospace;
+  direction: ltr;
+  unicode-bidi: embed;
+  display: block;
+  text-align: center;
+  font-weight: 500;
+  font-size: 1.1rem;
+  background: #f5f3f0;
+  padding: 10px;
+  border-radius: 8px;
+  margin: 10px 0;
+}
+
+.svg-container {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+  margin: 10px 0;
+  text-align: center;
+}
+
+.svg-container svg {
+  max-width: 100%;
+  height: auto;
+}
+
+.solution-toggle {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  background: var(--primary-light);
+  color: var(--primary);
+  border: none;
+  border-radius: 8px;
+  font-family: 'Rubik', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.solution-toggle:active {
+  background: var(--primary);
+  color: white;
+}
+
+.solution {
+  display: none;
+  margin-top: 12px;
+  padding: 14px;
+  background: var(--success-light);
+  border-radius: 8px;
+  border: 1px solid #c8e6d5;
+}
+
+.solution.open { display: block; }
+
+.solution-title {
+  font-weight: 700;
+  color: var(--success);
+  font-size: 0.85rem;
+  margin-bottom: 8px;
+}
+
+.solution-steps {
+  font-size: 0.9rem;
+  line-height: 2;
+}
+
+.solution-steps .step {
+  margin-bottom: 4px;
+}
+
+.solution-steps .math {
+  font-family: 'Rubik', monospace;
+  direction: ltr;
+  unicode-bidi: embed;
+  display: inline-block;
+  font-weight: 500;
+}
+
+.solution-steps .math-block {
+  font-family: 'Rubik', monospace;
+  direction: ltr;
+  unicode-bidi: embed;
+  display: block;
+  text-align: center;
+  font-weight: 500;
+  margin: 4px 0;
+  font-size: 1rem;
+}
+
+.solution-steps .answer {
+  font-weight: 700;
+  color: var(--success);
+  margin-top: 6px;
+}
+
+.show-all-btn {
+  display: block;
+  margin: 16px auto;
+  padding: 12px 28px;
+  background: var(--accent);
+  color: white;
+  border: none;
+  border-radius: 24px;
+  font-family: 'Rubik', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(232,131,58,0.3);
+}
+
+.print-note {
+  text-align: center;
+  padding: 20px;
+  font-size: 0.8rem;
+  color: var(--text-light);
+}
+
+@media print {
+  .header { position: static; }
+  .toc, .solution-toggle, .show-all-btn, .print-note { display: none; }
+  .solution { display: block !important; }
+  .question-card { break-inside: avoid; box-shadow: none; border: 1px solid #ccc; }
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>📐 דף תרגול למבחן מתמטיקה</h1>
+  <div class="subtitle">תאריך המבחן: 9.3.26 &nbsp;|&nbsp; 50 שאלות עם פתרונות מלאים</div>
+</div>
+
+<div class="toc">
+  <a href="#sec1">מערכת צירים</a>
+  <a href="#sec2">סדר פעולות</a>
+  <a href="#sec3">ביטויים אלגבריים</a>
+  <a href="#sec4">משוואות</a>
+  <a href="#sec5">שאלות מילוליות</a>
+  <a href="#sec6">צורות גיאומטריות</a>
+</div>
+
+<!-- ===================== SECTION 1: COORDINATE SYSTEM ===================== -->
+<div class="section" id="sec1">
+  <div class="section-title"><span class="icon">1</span> מערכת צירים</div>
+  <p class="section-desc">סימון וזיהוי נקודות, חישוב אורכי קטעים ושטחים</p>
+
+  <!-- Q1 -->
+  <div class="question-card easy">
+    <div class="q-header">
+      <span class="q-number">שאלה 1</span>
+      <span class="q-level easy">בסיסי</span>
+    </div>
+    <div class="q-text">
+      רשמו את הרביע שבו נמצאת כל אחת מהנקודות הבאות:
+      <br><span class="math">A(3, 5)</span> ,
+      <span class="math">B(−2, 4)</span> ,
+      <span class="math">C(−1, −6)</span> ,
+      <span class="math">D(7, −3)</span>
+    </div>
+    <button class="solution-toggle" onclick="toggleSolution(this)">📖 הצגת פתרון</button>
+    <div class="solution">
+      <div class="solution-title">פתרון:</div>
+      <div class="solution-steps">
+        <div class="step">נזכור: ברביע I שני הקואורדינטות חיוביים, ברביע II — x שלילי ו-y חיובי, ברביע III — שניהם שליליים, ברביע IV — x חיובי ו-y שלילי.</div>
+        <div class="step"><span class="math">A(3, 5)</span> — רביע I (שני הערכים חיוביים)</div>
+        <div class="step"><span class="math">B(−2, 4)</span> — רביע II (x שלילי, y חיובי)</div>
+        <div class="step"><span class="math">C(−1, −6)</span> — רביע III (שניהם שליליים)</div>
+        <div class="step"><span class="math">D(7, −3)</span> — רביע IV (x חיובי, y שלילי)</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q2 -->
+  <div class="question-card easy">
+    <div class="q-header">
+      <span class="q-number">שאלה 2</span>
+      <span class="q-level easy">בסיסי</span>
+    </div>
+    <div class="q-text">
+      הנקודה <span class="math">A(3, 2)</span> והנקודה <span class="math">B(3, 7)</span> נתונות במערכת צירים.
+      <br>חשבו את אורך הקטע AB.
+    </div>
+    <button class="solution-toggle" onclick="toggleSolution(this)">📖 הצגת פתרון</button>
+    <div class="solution">
+      <div class="solution-title">פתרון:</div>
+      <div class="solution-steps">
+        <div class="step">שתי הנקודות בעלות אותו ערך x (שתיהן x=3), ולכן הקטע אנכי.</div>
+        <div class="step">אורך קטע אנכי = ההפרש בין ערכי y:</div>
+        <div class="math-block">|7 − 2| = 5</div>
+        <div class="answer">אורך הקטע AB = 5 יחידות</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q3 -->
+  <div class="question-card easy">
+    <div class="q-header">
+      <span class="q-number">שאלה 3</span>
+      <span class="q-level easy">בסיסי</span>
+    </div>
+    <div class="q-text">
+      הנקודה <span class="math">A(−4, 3)</span> והנקודה <span class="math">B(5, 3)</span> נתונות במערכת צירים.
+      <br>חשבו את אורך הקטע AB.
+    </div>
+    <button class="solution-toggle" onclick="toggleSolution(this)">📖 הצגת פתרון</button>
+    <div class="solution">
+      <div class="solution-title">פתרון:</div>
+      <div class="solution-steps">
+        <div class="step">שתי הנקודות בעלות אותו ערך y (שתיהן y=3), ולכן הקטע אופקי.</div>
+        <div class="step">אורך קטע אופקי = ההפרש בין ערכי x:</div>
+        <div class="math-block">|5 − (−4)| = |5 + 4| = 9</div>
+        <div class="answer">אורך הקטע AB = 9 יחידות</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q4 -->
+  <div class="question-card medium">
+    <div class="q-header">
+      <span class="q-number">שאלה 4</span>
+      <span class="q-level medium">בינוני</span>
+    </div>
+    <div class="q-text">
+      נתונות הנקודות: <span class="math">A(−3, −2)</span>, <span class="math">B(4, −2)</span>, <span class="math">C(4, 5)</span>.
+      <br>א. חשבו את אורכי הצלעות AB ו-BC.
+      <br>ב. חשבו את שטח המשולש ABC (ידוע שהזווית ב-B היא ישרה).
+    </div>
+    <button class="solution-toggle" onclick="toggleSolution(this)">📖 הצגת פתרון</button>
+    <div class="solution">
+      <div class="solution-title">פתרון:</div>
+      <div class="solution-steps">
+        <div class="step"><b>א.</b></div>
+        <div class="step">AB — קטע אופקי (y=−2 בשתיהן):</div>
+        <div class="math-block">AB = |4 − (−3)| = |4 + 3| = 7</div>
+        <div class="step">BC — קטע אנכי (x=4 בשתיהן):</div>
+        <div class="math-block">BC = |5 − (−2)| = |5 + 2| = 7</div>
+        <div class="step"><b>ב.</b> הזווית ב-B ישרה, אז AB ו-BC הן הניצבים:</div>
+        <div class="math-block">S = (AB × BC) / 2 = (7 × 7) / 2 = 49/2 = 24.5</div>
+        <div class="answer">שטח המשולש = 24.5 יח"ר</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q5 -->
+  <div class="question-card medium">
+    <div class="q-header">
+      <span class="q-number">שאלה 5</span>
+      <span class="q-level medium">בינוני</span>
+    </div>
+    <div class="q-text">
+      נתון מלבן ABCD שקודקודיו:
+      <span class="math">A(−2, 1)</span>, <span class="math">B(5, 1)</span>, <span class="math">C(5, 4)</span>, <span class="math">D(−2, 4)</span>.
+      <br>חשבו את ההיקף ואת השטח של המלבן.
+    </div>
+    <button class="solution-toggle" onclick="toggleSolution(this)">📖 הצגת פתרון</button>
+    <div class="solution">
+      <div class="solution-title">פתרון:</div>
+      <div class="solution-steps">
+        <div class="step">אורך AB (אופקי):</div>
+        <div class="math-block">AB = |5 − (−2)| = 7</div>
+        <div class="step">אורך BC (אנכי):</div>
+        <div class="math-block">BC = |4 − 1| = 3</div>
+        <div class="step">היקף המלבן:</div>
+        <div class="math-block">P = 2 × (7 + 3) = 2 × 10 = 20</div>
+        <div class="step">שטח המלבן:</div>
+        <div class="math-block">S = 7 × 3 = 21</div>
+        <div class="answer">היקף = 20 יחידות, שטח = 21 יח"ר</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q6 -->
+  <div class="question-card medium">
+    <div class="q-header">
+      <span class="q-number">שאלה 6</span>
+      <span class="q-level medium">בינוני</span>
+    </div>
+    <div class="q-text">
+      נתונות הנקודות <span class="math">A(−5, −1)</span> ו-<span class="math">B(3, −1)</span>. הקטע AB הוא בסיס של משולש שגובהו 6 יחידות.
+      <br>א. חשבו את אורך הבסיס AB.
+      <br>ב. חשבו את שטח המשולש.
+      <br>ג. רשמו קואורדינטות אפשריות לקודקוד C.
+    </div>
+    <button class="solution-toggle" onclick="toggleSolution(this)">📖 הצגת פתרון</button>
+    <div class="solution">
+      <div class="solution-title">פתרון:</div>
+      <div class="solution-steps">
+        <div class="step"><b>א.</b></div>
+        <div class="math-block">AB = |3 − (−5)| = 8</div>
+        <div class="step"><b>ב.</b></div>
+        <div class="math-block">S = (8 × 6) / 2 = 24</div>
+        <div class="step"><b>ג.</b> AB הוא קטע אופקי ב-y=−1. הגובה = 6, לכן C נמצאת ב-y = −1 + 6 = 5 או y = −1 − 6 = −7.</div>
+        <div class="step">לדוגמה: <span class="math">C(0, 5)</span> או <span class="math">C(0, −7)</span></div>
+        <div class="answer">שטח המשולש = 24 יח"ר</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q7 -->
+  <div class="question-card hard">
+    <div class="q-header">
+      <span class="q-number">שאלה 7</span>
+      <span class="q-level hard">מתקדם</span>
+    </div>
+    <div class="q-text">
+      נתון מקבילית ABCD עם הקודקודים:
+      <span class="math">A(−3, 0)</span>, <span class="math">B(2, 0)</span>, <span class="math">C(4, 3)</span>, <span class="math">D(−1, 3)</span>.
+      <br>א. חשבו את אורך AB.
+      <br>ב. מהו גובה המקבילית על הצלע AB?
+      <br>ג. חשבו את שטח המקבילית.
+    </div>
+    <button class="solution-toggle" onclick="toggleSolution(this)">📖 הצגת פתרון</button>
+    <div class="solution">
+      <div class="solution-title">פתרון:</div>
+      <div class="solution-steps">
+        <div class="step"><b>א.</b> AB אופקי (y=0):</div>
+        <div class="math-block">AB = |2 − (−3)| = 5</div>
+        <div class="step"><b>ב.</b> AB על ציר y=0, CD על y=3. הגובה הוא המרחק בין שני הקווים האופקיים:</div>
+        <div class="math-block">h = |3 − 0| = 3</div>
+        <div class="step"><b>ג.</b></div>
+        <div class="math-block">S = AB × h = 5 × 3 = 15</div>
+        <div class="answer">שטח המקבילית = 15 יח"ר</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q8 -->
+  <div class="question-card hard">
+    <div class="q-header">
+      <span class="q-number">שאלה 8</span>
+      <span class="q-level hard">מתקדם</span>
+    </div>
+    <div class="q-text">
+      נתון מלבן ABCD שקודקודיו: <span class="math">A(−4, −3)</span>, <span class="math">B(6, −3)</span>, <span class="math">C(6, 5)</span>, <span class="math">D(−4, 5)</span>.
+      <br>הנקודה <span class="math">E(6, 1)</span> נמצאת על הצלע BC.
+      <br>א. חשבו את שטח המלבן ABCD.
+      <br>ב. חשבו את שטח המשולש ABE.
+      <br>ג. חשבו את שטח הטרפז AECD.
+    </div>
+    <button class="solution-toggle" onclick="toggleSolution(this)">📖 הצגת פתרון</button>
+    <div class="solution">
+      <div class="solution-title">פתרון:</div>
+      <div class="solution-steps">
+        <div class="step"><b>א.</b></div>
+        <div class="math-block">AB = |6 − (−4)| = 10</div>
+        <div class="math-block">BC = |5 − (−3)| = 8</div>
+        <div class="math-block">S(ABCD) = 10 × 8 = 80</div>
+        <div class="step"><b>ב.</b> בסיס AB = 10, גובה = המרחק מ-E אל הישר y=−3:</div>
+        <div class="math-block">h = |1 − (−3)| = 4</div>
+        <div class="math-block">S(ABE) = (10 × 4) / 2 = 20</div>
+        <div class="step"><b>ג.</b> שטח הטרפז = שטח המלבן − שטח המשולש:</div>
+        <div class="math-block">S(AECD) = 80 − 20 = 60</div>
+        <div class="answer">שטח המלבן = 80, שטח המשולש = 20, שטח הטרפז = 60 יח"ר</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== SECTION 2: ORDER OF OPERATIONS ===================== -->
+<div class="section" id="sec2">
+  <div class="section-title"><span class="icon">2</span> סדר פעולות חשבון</div>
+  <p class="section-desc">מספרים מכוונים, חזקות, שורשים, ערך מוחלט ומספרים נגדיים</p>
+
+  <!-- Q9 -->
+  <div class="question-card easy">
+    <div class="q-header">
+      <span class="q-number">שאלה 9</span>
+      <span class="q-level easy">בסיסי</span>
+    </div>
+    <div class="q-text">חשבו:
+      <div class="math-block">(−3) + 8 − (−5) + (−2)</div>
+    </div>
+    <button class="solution-toggle" onclick="toggleSolution(this)">📖 הצגת פתרון</button>
+    <div class="solution">
+      <div class="solution-title">פתרון:</div>
+      <div class="solution-steps">
+        <div class="math-block">(−3) + 8 − (−5) + (−2)</div>
+        <div class="math-block">= −3 + 8 + 5 − 2</div>
+        <div class="math-block">= 8</div>
+        <div class="answer">תשובה: 8</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q10 -->
+  <div class="question-card easy">
+    <div class="q-header">
+      <span class="q-number">שאלה 10</span>
+      <span class="q-level easy">בסיסי</span>
+    </div>
+    <div class="q-text">חשבו:
+      <div class="math-block">(−2)³ + (−1)⁴</div>
+    </div>
+    <button class="solution-toggle" onclick="toggleSolution(this)">📖 הצגת פתרון</button>
+    <div class="solution">
+      <div class="solution-title">פתרון:</div>
+      <div class="solution-steps">
+        <div class="math-block">(−2)³ = (−2)×(−2)×(−2) = −8</div>
+        <div class="math-block">(−1)⁴ = 1</div>
+        <div class="math-block">−8 + 1 = −7</div>
+        <div class="answer">תשובה: −7</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q11 -->
+  <div class="question-card easy">
+    <div class="q-header">
+      <span class="q-number">שאלה 11</span>
+      <span class="q-level easy">בסיסי</span>
+    </div>
+    <div class="q-text">חשבו:
+      <div class="math-block">|−7| − |3| + |−2|</div>
+    </div>
+    <button class="solution-toggle" onclick="toggleSolution(this)">📖 הצגת פתרון</button>
+    <div class="solution">
+      <div class="solution-title">פתרון:</div>
+      <div class="solution-steps">
+        <div class="math-block">|−7| = 7,  |3| = 3,  |−2| = 2</div>
+        <div class="math-block">7 − 3 + 2 = 6</div>
+        <div class="answer">תשובה: 6</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q12 -->
+  <div class="question-card medium">
+    <div class="q-header">
+      <span class="q-number">שאלה 12</span>
+      <span class="q-level medium">בינוני</span>
+    </div>
+    <div class="q-text">חשבו:
+      <div class="math-block">(−3)² − √49 + |−4| × (−2)</div>
+    </div>
+    <button class="solution-toggle" onclick="toggleSolution(this)">📖 הצגת פתרון</button>
+    <div class="solution">
+      <div class="solution-title">פתרון:</div>
+      <div class="solution-steps">
+        <div class="step">נחשב כל ביטוי בנפרד:</div>
+        <div class="math-block">(−3)² = 9</div>
+        <div class="math-block">√49 = 7</div>
+        <div class="math-block">|−4| × (−2) = 4 × (−2) = −8</div>
+        <div class="step">נציב:</div>
+        <div class="math-block">9 − 7 + (−8) = 9 − 7 − 8 = −6</div>
+        <div class="answer">תשובה: −6</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q13 -->
+  <div class="question-card medium">
+    <div class="q-header">
+      <span class="q-number">שאלה 13</span>
+      <span class="q-level medium">בינוני</span>
+    </div>
+    <div class="q-text">חשבו:
+      <div class="math-block">−5 × (−2)² + 3 × (−4) − √36</div>
+    </div>
+    <button class="solution-toggle" onclick="toggleSolution(this)">📖 הצגת פתרון</button>
+    <div class="solution">
+      <div class="solution-title">פתרון:</div>
+      <div class="solution-steps">
+        <div class="math-block">(−2)² = 4</div>
+        <div class="math-block">−5 × 4 = −20</div>
+        <div class="math-block">3 × (−4) = −12</div>
+        <div class="math-block">√36 = 6</div>
+        <div class="math-block">−20 + (−12) − 6 = −38</div>
+        <div class="answer">תשובה: −38</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q14 -->
+  <div class="question-card medium">
+    <div class="q-header">
+      <span class="q-number">שאלה 14</span>
+      <span class="q-level medium">בינוני</span>
+    </div>
+    <div class="q-text">חשבו:
+      <div class="math-block">(−1)⁵ + (−1)⁶ + (−1)⁷ + (−1)⁸</div>
+    </div>
+    <button class="solution-toggle" onclick="toggleSolution(this)">📖 הצגת פתרון</button>
+    <div class="solution">
+      <div class="solution-title">פתרון:</div>
+      <div class="solution-steps">
+        <div class="step">כלל: (−1) בחזקה אי-זוגית = −1, בחזקה זוגית = 1</div>
+        <div class="math-block">(−1)⁵ = −1</div>
+        <div class="math-block">(−1)⁶ = 1</div>
+        <div class="math-block">(−1)⁷ = −1</div>
+        <div class="math-block">(−1)⁸ = 1</div>
+        <div class="math-block">−1 + 1 + (−1) + 1 = 0</div>
+        <div class="answer">תשובה: 0</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q15 -->
+  <div class="question-card hard">
+    <div class="q-header">
+      <span class="q-number">שאלה 15</span>
+      <span class="q-level hard">מתקדם</span>
+    </div>
+    <div class="q-text">חשבו:
+      <div class="math-block">−(−3)² + √(64) × |−2| − (−5) × (−1)³ + √81</div>
+    </div>
+    <button class="solution-toggle" onclick="toggleSolution(this)">📖 הצגת פתרון</button>
+    <div class="solution">
+      <div class="solution-title">פתרון:</div>
+      <div class="solution-steps">
+        <div class="step">שימו לב: <span class="math">−(−3)²</span> זה מינוס של (−3)² :</div>
+        <div class="math-block">(−3)² = 9  →  −(−3)² = −9</div>
+        <div class="math-block">√64 × |−2| = 8 × 2 = 16</div>
+        <div class="math-block">(−5) × (−1)³ = (−5) × (−1) = 5</div>
+        <div class="step">−(−5)×(−1)³ = −5 (זה מינוס של 5)</div>
+        <div class="step">רגע — נחזור לביטוי המקורי:</div>
+        <div class="math-block">−9 + 16 − (−5) × (−1) + 9</div>
+        <div class="math-block">= −9 + 16 − (5) + 9</div>
+        <div class="math-block">= −9 + 16 − 5 + 9 = 11</div>
+        <div class="answer">תשובה: 11</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q16 -->
+  <div class="question-card hard">
+    <div class="q-header">
+      <span class="q-number">שאלה 16</span>
+      <span class="q-level hard">מתקדם</span>
+    </div>
+    <div class="q-text">חשבו:
+      <div class="math-block">(√25 − (−3)²)³ + |−10 + 3| × (−2)²</div>
+    </div>
+    <button class="solution-toggle" onclick="toggleSolution(this)">📖 הצגת פתרון</button>
+    <div class="solution">
+      <div class="solution-title">פתרון:</div>
+      <div class="solution-steps">
+        <div class="step">נחשב את הסוגריים קודם:</div>
+        <div class="math-block">√25 − (−3)² = 5 − 9 = −4</div>
+        <div class="math-block">(−4)³ = −64</div>
+        <div class="math-block">|−10 + 3| = |−7| = 7</div>
+        <div class="math-block">(−2)² = 4</div>
+        <div class="math-block">7 × 4 = 28</div>
+        <div class="math-block">−64 + 28 = −36</div>
+        <div class="answer">תשובה: −36</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q17 -->
+  <div class="question-card hard">
+    <div class="q-header">
+      <span class="q-number">שאלה 17</span>
+      <span class="q-level hard">מתקדם</span>
+    </div>
+    <div class="q-text">
+      נתון ש-a הוא המספר הנגדי של −4 ו-b הוא הערך המוחלט של −9.
+      <br>חשבו:
+      <div class="math-block">a² − 2ab + b</div>
+    </div>
+    <button class="solution-toggle" onclick="toggleSolution(this)">📖 הצגת פתרון</button>
+    <div class="solution">
+      <div class="solution-title">פתרון:</div>
+      <div class="solution-steps">
+        <div class="step">המספר הנגדי של −4 הוא 4, לכן <span class="math">a = 4</span>.</div>
+        <div class="step">הערך המוחלט של −9 הוא 9, לכן <span class="math">b = 9</span>.</div>
+        <div class="math-block">a² − 2ab + b = 4² − 2×4×9 + 9</div>
+        <div class="math-block">= 16 − 72 + 9 = −47</div>
+        <div class="answer">תשובה: −47</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== SECTION 3: ALGEBRAIC EXPRESSIONS ===================== -->
+<div class="section" id="sec3">
+  <div class="section-title"><span class="icon">3</span> ביטויים אלגבריים</div>
+  <p class="section-desc">פישוט ביטויים והצבה</p>
+
+  <!-- Q18 -->
+  <div class="question-card easy">
+    <div class="q-header">
+      <span class="q-number">שאלה 18</span>
+      <span class="q-level easy">בסיסי</span>
+    </div>
+    <div class="q-text">פשטו את הביטוי:
+      <div class="math-block">3x + 7 − 5x + 2</div>
+    </div>
+    <button class="solution-toggle" onclick="toggleSolution(this)">📖 הצגת פתרון</button>
+    <div class="solution">
+      <div class="solution-title">פתרון:</div>
+      <div class="solution-steps">
+        <div class="step">נקבץ איברים דומים:</div>
+        <div class="math-block">(3x − 5x) + (7 + 2) = −2x + 9</div>
+        <div class="answer">תשובה: −2x + 9</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q19 -->
+  <div class="question-card easy">
+    <div class="q-header">
+      <span class="q-number">שאלה 19</span>
+      <span class="q-level easy">בסיסי</span>
+    </div>
+    <div class="q-text">פשטו את הביטוי:
+      <div class="math-block">4(x + 3) − 2x</div>
+    </div>
+    <button class="solution-toggle" onclick="toggleSolution(this)">📖 הצגת פתרון</button>
+    <div class="solution">
+      <div class="solution-title">פתרון:</div>
+      <div class="solution-steps">
+        <div class="step">נפתח סוגריים:</div>
+        <div class="math-block">4x + 12 − 2x</div>
+        <div class="step">נקבץ:</div>
+        <div class="math-block">2x + 12</div>
+        <div class="answer">תשובה: 2x + 12</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q20 -->
+  <div class="question-card medium">
+    <div class="q-header">
+      <span class="q-number">שאלה 20</span>
+      <span class="q-level medium">בינוני</span>
+    </div>
+    <div class="q-text">פשטו את הביטוי:
+      <div class="math-block">5(2x − 1) − 3(x + 4) + 7</div>
+    </div>
+    <button class="solution-toggle" onclick="toggleSolution(this)">📖 הצגת פתרון</button>
+    <div class="solution">
+      <div class="solution-title">פתרון:</div>
+      <div class="solution-steps">
+        <div class="step">נפתח סוגריים:</div>
+        <div class="math-block">10x − 5 − 3x − 12 + 7</div>
+        <div class="step">נקבץ:</div>
+        <div class="math-block">(10x − 3x) + (−5 − 12 + 7) = 7x − 10</div>
+        <div class="answer">תשובה: 7x − 10</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q21 -->
+  <div class="question-card medium">
+    <div class="q-header">
+      <span class="q-number">שאלה 21</span>
+      <span class="q-level medium">בינוני</span>
+    </div>
+    <div class="q-text">
+      הציבו <span class="math">x = −3</span> בביטוי:
+      <div class="math-block">2x² − 5x + 1</div>
+    </div>
+    <button class="solution-toggle" onclick="toggleSolution(this)">📖 הצגת פתרון</button>
+    <div class="solution">
+      <div class="solution-title">פתרון:</div>
+      <div class="solution-steps">
+        <div class="math-block">2(−3)² − 5(−3) + 1</div>
+        <div class="math-block">= 2 × 9 − (−15) + 1</div>
+        <div class="math-block">= 18 + 15 + 1 = 34</div>
+        <div class="answer">תשובה: 34</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q22 -->
+  <div class="question-card medium">
+    <div class="q-header">
+      <span class="q-number">שאלה 22</span>
+      <span class="q-level medium">בינוני</span>
+    </div>
+    <div class="q-text">פשטו את הביטוי:
+      <div class="math-block">−2(3x − 4) + 4(x + 1) − (2x − 6)</div>
+    </div>
+    <button class="solution-toggle" onclick="toggleSolution(this)">📖 הצגת פתרון</button>
+    <div class="solution">
+      <div class="solution-title">פתרון:</div>
+      <div class="solution-steps">
+        <div class="step">נפתח סוגריים:</div>
+        <div class="math-block">−6x + 8 + 4x + 4 − 2x + 6</div>
+        <div class="step">נקבץ:</div>
+        <div class="math-block">(−6x + 4x − 2x) + (8 + 4 + 6) = −4x + 18</div>
+        <div class="answer">תשובה: −4x + 18</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q23 -->
+  <div class="question-card hard">
+    <div class="q-header">
+      <span class="q-number">שאלה 23</span>
+      <span class="q-level hard">מתקדם</span>
+    </div>
+    <div class="q-text">
+      הציבו <span class="math">a = −2</span> ו-<span class="math">b = 3</span> בביטוי:
+      <div class="math-block">3a² − 2ab + b² − (a + b)²</div>
+    </div>
+    <button class="solution-toggle" onclick="toggleSolution(this)">📖 הצגת פתרון</button>
+    <div class="solution">
+      <div class="solution-title">פתרון:</div>
+      <div class="solution-steps">
+        <div class="math-block">3(−2)² − 2(−2)(3) + 3² − (−2+3)²</div>
+        <div class="math-block">= 3×4 − 2×(−6) + 9 − (1)²</div>
+        <div class="math-block">= 12 + 12 + 9 − 1 = 32</div>
+        <div class="answer">תשובה: 32</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q24 -->
+  <div class="question-card hard">
+    <div class="q-header">
+      <span class="q-number">שאלה 24</span>
+      <span class="q-level hard">מתקדם</span>
+    </div>
+    <div class="q-text">פשטו את הביטוי:
+      <div class="math-block">3(2x − 1) − 2[4x − 3(x + 2)] + 5</div>
+    </div>
+    <button class="solution-toggle" onclick="toggleSolution(this)">📖 הצגת פתרון</button>
+    <div class="solution">
+      <div class="solution-title">פתרון:</div>
+      <div class="solution-steps">
+        <div class="step">נפתח את הסוגריים הפנימיים קודם:</div>
+        <div class="math-block">4x − 3(x + 2) = 4x − 3x − 6 = x − 6</div>
+        <div class="step">כעת:</div>
+        <div class="math-block">3(2x − 1) − 2(x − 6) + 5</div>
+        <div class="math-block">= 6x − 3 − 2x + 12 + 5</div>
+        <div class="math-block">= 4x + 14</div>
+        <div class="answer">תשובה: 4x + 14</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q25 -->
+  <div class="question-card hard">
+    <div class="q-header">
+      <span class="q-number">שאלה 25</span>
+      <span class="q-level hard">מתקדם</span>
+    </div>
+    <div class="q-text">
+      הציבו <span class="math">x = −1</span> בביטוי וחשבו:
+      <div class="math-block">|2x − 3| + (−x)³ − √(x²) + 4x</div>
+    </div>
+    <button class="solution-toggle" onclick="toggleSolution(this)">📖 הצגת פתרון</button>
+    <div class="solution">
+      <div class="solution-title">פתרון:</div>
+      <div class="solution-steps">
+        <div class="math-block">|2(−1) − 3| = |−2 − 3| = |−5| = 5</div>
+        <div class="math-block">(−(−1))³ = (1)³ = 1</div>
+        <div class="math-block">√((−1)²) = √1 = 1</div>
+        <div class="math-block">4(−1) = −4</div>
+        <div class="math-block">5 + 1 − 1 + (−4) = 1</div>
+        <div class="answer">תשובה: 1</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== SECTION 4: EQUATIONS ===================== -->
+<div class="section" id="sec4">
+  <div class="section-title"><span class="icon">4</span> פתרון משוואות</div>
+  <p class="section-desc">פישוט ופתרון משוואות באמצעות פעולות על האגפים</p>
+
+  <!-- Q26 -->
+  <div class="question-card easy">
+    <div class="q-header">
+      <span class="q-number">שאלה 26</span>
+      <span class="q-level easy">בסיסי</span>
+    </div>
+    <div class="q-text">פתרו את המשוואה:
+      <div class="math-block">3x + 7 = 22</div>
+    </div>
+    <button class="solution-toggle" onclick="toggleSolution(this)">📖 הצגת פתרון</button>
+    <div class="solution">
+      <div class="solution-title">פתרון:</div>
+      <div class="solution-steps">
+        <div class="math-block">3x + 7 = 22  / −7</div>
+        <div class="math-block">3x = 15  / ÷3</div>
+        <div class="math-block">x = 5</div>
+        <div class="step">בדיקה: <span class="math">3×5 + 7 = 15 + 7 = 22 ✓</span></div>
+        <div class="answer">x = 5</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q27 -->
+  <div class="question-card easy">
+    <div class="q-header">
+      <span class="q-number">שאלה 27</span>
+      <span class="q-level easy">בסיסי</span>
+    </div>
+    <div class="q-text">פתרו את המשוואה:
+      <div class="math-block">5x − 4 − 4x = 20</div>
+    </div>
+    <button class="solution-toggle" onclick="toggleSolution(this)">📖 הצגת פתרון</button>
+    <div class="solution">
+      <div class="solution-title">פתרון:</div>
+      <div class="solution-steps">
+        <div class="step">נקבץ איברים דומים באגף שמאל:</div>
+        <div class="math-block">x − 4 = 20  / +4</div>
+        <div class="math-block">x = 24</div>
+        <div class="step">בדיקה: <span class="math">5×24 − 4 − 4×24 = 120 − 4 − 96 = 20 ✓</span></div>
+        <div class="answer">x = 24</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q28 -->
+  <div class="question-card easy">
+    <div class="q-header">
+      <span class="q-number">שאלה 28</span>
+      <span class="q-level easy">בסיסי</span>
+    </div>
+    <div class="q-text">פתרו את המשוואה:
+      <div class="math-block">2(x + 3) = 14</div>
+    </div>
+    <button class="solution-toggle" onclick="toggleSolution(this)">📖 הצגת פתרון</button>
+    <div class="solution">
+      <div class="solution-title">פתרון:</div>
+      <div class="solution-steps">
+        <div class="step">נפתח סוגריים:</div>
+        <div class="math-block">2x + 6 = 14  / −6</div>
+        <div class="math-block">2x = 8  / ÷2</div>
+        <div class="math-block">x = 4</div>
+        <div class="step">בדיקה: <span class="math">2(4+3) = 2×7 = 14 ✓</span></div>
+        <div class="answer">x = 4</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q29 -->
+  <div class="question-card medium">
+    <div class="q-header">
+      <span class="q-number">שאלה 29</span>
+      <span class="q-level medium">בינוני</span>
+    </div>
+    <div class="q-text">פתרו את המשוואה:
+      <div class="math-block">5(x + 2) − 4x = 10</div>
+    </div>
+    <button class="solution-toggle" onclick="toggleSolution(this)">📖 הצגת פתרון</button>
+    <div class="solution">
+      <div class="solution-title">פתרון:</div>
+      <div class="solution-steps">
+        <div class="math-block">5x + 10 − 4x = 10</div>
+        <div class="math-block">x + 10 = 10  / −10</div>
+        <div class="math-block">x = 0</div>
+        <div class="step">בדיקה: <span class="math">5(0+2) − 4×0 = 10 − 0 = 10 ✓</span></div>
+        <div class="answer">x = 0</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q30 -->
+  <div class="question-card medium">
+    <div class="q-header">
+      <span class="q-number">שאלה 30</span>
+      <span class="q-level medium">בינוני</span>
+    </div>
+    <div class="q-text">פתרו את המשוואה:
+      <div class="math-block">5x − 7(x + 1) = 1</div>
+    </div>
+    <button class="solution-toggle" onclick="toggleSolution(this)">📖 הצגת פתרון</button>
+    <div class="solution">
+      <div class="solution-title">פתרון:</div>
+      <div class="solution-steps">
+        <div class="math-block">5x − 7x − 7 = 1</div>
+        <div class="math-block">−2x − 7 = 1  / +7</div>
+        <div class="math-block">−2x = 8  / ÷(−2)</div>
+        <div class="math-block">x = −4</div>
+        <div class="step">בדיקה: <span class="math">5(−4) − 7(−4+1) = −20 − 7(−3) = −20 + 21 = 1 ✓</span></div>
+        <div class="answer">x = −4</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q31 -->
+  <div class="question-card medium">
+    <div class="q-header">
+      <span class="q-number">שאלה 31</span>
+      <span class="q-level medium">בינוני</span>
+    </div>
+    <div class="q-text">פתרו את המשוואה:
+      <div class="math-block">x + 2(x − 6) = 33</div>
+    </div>
+    <button class="solution-toggle" onclick="toggleSolution(this)">📖 הצגת פתרון</button>
+    <div class="solution">
+      <div class="solution-title">פתרון:</div>
+      <div class="solution-steps">
+        <div class="math-block">x + 2x − 12 = 33</div>
+        <div class="math-block">3x − 12 = 33  / +12</div>
+        <div class="math-block">3x = 45  / ÷3</div>
+        <div class="math-block">x = 15</div>
+        <div class="step">בדיקה: <span class="math">15 + 2(15−6) = 15 + 18 = 33 ✓</span></div>
+        <div class="answer">x = 15</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q32 -->
+  <div class="question-card medium">
+    <div class="q-header">
+      <span class="q-number">שאלה 32</span>
+      <span class="q-level medium">בינוני</span>
+    </div>
+    <div class="q-text">פתרו את המשוואה:
+      <div class="math-block">4(x + 6) + 3(1 + x) = 6</div>
+    </div>
+    <button class="solution-toggle" onclick="toggleSolution(this)">📖 הצגת פתרון</button>
+    <div class="solution">
+      <div class="solution-title">פתרון:</div>
+      <div class="solution-steps">
+        <div class="math-block">4x + 24 + 3 + 3x = 6</div>
+        <div class="math-block">7x + 27 = 6  / −27</div>
+        <div class="math-block">7x = −21  / ÷7</div>
+        <div class="math-block">x = −3</div>
+        <div class="step">בדיקה: <span class="math">4(−3+6) + 3(1−3) = 4×3 + 3×(−2) = 12 − 6 = 6 ✓</span></div>
+        <div class="answer">x = −3</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q33 -->
+  <div class="question-card hard">
+    <div class="q-header">
+      <span class="q-number">שאלה 33</span>
+      <span class="q-level hard">מתקדם</span>
+    </div>
+    <div class="q-text">פתרו את המשוואה:
+      <div class="math-block">8(x + 3) − 5x + 2(x − 5) = 24</div>
+    </div>
+    <button class="solution-toggle" onclick="toggleSolution(this)">📖 הצגת פתרון</button>
+    <div class="solution">
+      <div class="solution-title">פתרון:</div>
+      <div class="solution-steps">
+        <div class="math-block">8x + 24 − 5x + 2x − 10 = 24</div>
+        <div class="math-block">5x + 14 = 24  / −14</div>
+        <div class="math-block">5x = 10  / ÷5</div>
+        <div class="math-block">x = 2</div>
+        <div class="step">בדיקה: <span class="math">8(5) − 10 + 2(−3) = 40 − 10 − 6 = 24 ✓</span></div>
+        <div class="answer">x = 2</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q34 -->
+  <div class="question-card hard">
+    <div class="q-header">
+      <span class="q-number">שאלה 34</span>
+      <span class="q-level hard">מתקדם</span>
+    </div>
+    <div class="q-text">פתרו את המשוואה:
+      <div class="math-block">3(3x − 2) − 5(x + 2) = 4</div>
+    </div>
+    <button class="solution-toggle" onclick="toggleSolution(this)">📖 הצגת פתרון</button>
+    <div class="solution">
+      <div class="solution-title">פתרון:</div>
+      <div class="solution-steps">
+        <div class="math-block">9x − 6 − 5x − 10 = 4</div>
+        <div class="math-block">4x − 16 = 4  / +16</div>
+        <div class="math-block">4x = 20  / ÷4</div>
+        <div class="math-block">x = 5</div>
+        <div class="step">בדיקה: <span class="math">3(13) − 5(7) = 39 − 35 = 4 ✓</span></div>
+        <div class="answer">x = 5</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q35 -->
+  <div class="question-card hard">
+    <div class="q-header">
+      <span class="q-number">שאלה 35</span>
+      <span class="q-level hard">מתקדם</span>
+    </div>
+    <div class="q-text">פתרו את המשוואה:
+      <div class="math-block">−x + 8x − 3(2x + 1) + 3 = 7 · (−2)</div>
+    </div>
+    <button class="solution-toggle" onclick="toggleSolution(this)">📖 הצגת פתרון</button>
+    <div class="solution">
+      <div class="solution-title">פתרון:</div>
+      <div class="solution-steps">
+        <div class="step">אגף ימין: <span class="math">7 × (−2) = −14</span></div>
+        <div class="step">אגף שמאל:</div>
+        <div class="math-block">−x + 8x − 6x − 3 + 3 = −14</div>
+        <div class="math-block">x + 0 = −14</div>
+        <div class="math-block">x = −14</div>
+        <div class="step">בדיקה: <span class="math">−(−14) + 8(−14) − 3(2(−14)+1) + 3 = 14 − 112 − 3(−27) + 3 = 14 − 112 + 81 + 3 = −14 ✓</span></div>
+        <div class="answer">x = −14</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== SECTION 5: WORD PROBLEMS ===================== -->
+<div class="section" id="sec5">
+  <div class="section-title"><span class="icon">5</span> שאלות מילוליות</div>
+  <p class="section-desc">תרגום מילים למשוואות ופתרון</p>
+
+  <!-- Q36 -->
+  <div class="question-card easy">
+    <div class="q-header">
+      <span class="q-number">שאלה 36</span>
+      <span class="q-level easy">בסיסי</span>
+    </div>
+    <div class="q-text">
+      חשבו שלושה מספרים עוקבים שסכומם 48.
+    </div>
+    <button class="solution-toggle" onclick="toggleSolution(this)">📖 הצגת פתרון</button>
+    <div class="solution">
+      <div class="solution-title">פתרון:</div>
+      <div class="solution-steps">
+        <div class="step">נסמן את המספר הראשון ב-x. המספרים הם: x, x+1, x+2.</div>
+        <div class="math-block">x + (x+1) + (x+2) = 48</div>
+        <div class="math-block">3x + 3 = 48  / −3</div>
+        <div class="math-block">3x = 45  / ÷3</div>
+        <div class="math-block">x = 15</div>
+        <div class="answer">המספרים הם: 15, 16, 17</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q37 -->
+  <div class="question-card easy">
+    <div class="q-header">
+      <span class="q-number">שאלה 37</span>
+      <span class="q-level easy">בסיסי</span>
+    </div>
+    <div class="q-text">
+      גיל האבא גדול פי 4 מגיל הבן. סכום גיליהם הוא 50. מצאו את גיל כל אחד.
+    </div>
+    <button class="solution-toggle" onclick="toggleSolution(this)">📖 הצגת פתרון</button>
+    <div class="solution">
+      <div class="solution-title">פתרון:</div>
+      <div class="solution-steps">
+        <div class="step">נסמן את גיל הבן ב-x. גיל האבא: 4x.</div>
+        <div class="math-block">x + 4x = 50</div>
+        <div class="math-block">5x = 50  / ÷5</div>
+        <div class="math-block">x = 10</div>
+        <div class="answer">גיל הבן: 10, גיל האבא: 40</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q38 -->
+  <div class="question-card medium">
+    <div class="q-header">
+      <span class="q-number">שאלה 38</span>
+      <span class="q-level medium">בינוני</span>
+    </div>
+    <div class="q-text">
+      היקף מלבן הוא 52 ס"מ. אורכו גדול מרוחבו ב-6 ס"מ. מצאו את אורך וברוחב המלבן ואת שטחו.
+    </div>
+    <button class="solution-toggle" onclick="toggleSolution(this)">📖 הצגת פתרון</button>
+    <div class="solution">
+      <div class="solution-title">פתרון:</div>
+      <div class="solution-steps">
+        <div class="step">נסמן את הרוחב ב-x. האורך: x + 6.</div>
+        <div class="step">היקף מלבן = 2 × (אורך + רוחב):</div>
+        <div class="math-block">2(x + x + 6) = 52</div>
+        <div class="math-block">2(2x + 6) = 52</div>
+        <div class="math-block">4x + 12 = 52  / −12</div>
+        <div class="math-block">4x = 40  / ÷4</div>
+        <div class="math-block">x = 10</div>
+        <div class="step">רוחב = 10 ס"מ, אורך = 16 ס"מ.</div>
+        <div class="math-block">S = 10 × 16 = 160</div>
+        <div class="answer">רוחב: 10 ס"מ, אורך: 16 ס"מ, שטח: 160 סמ"ר</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q39 -->
+  <div class="question-card medium">
+    <div class="q-header">
+      <span class="q-number">שאלה 39</span>
+      <span class="q-level medium">בינוני</span>
+    </div>
+    <div class="q-text">
+      בכיתה יש 32 תלמידים. מספר הבנות גדול ממספר הבנים ב-4. כמה בנות וכמה בנים בכיתה?
+    </div>
+    <button class="solution-toggle" onclick="toggleSolution(this)">📖 הצגת פתרון</button>
+    <div class="solution">
+      <div class="solution-title">פתרון:</div>
+      <div class="solution-steps">
+        <div class="step">נסמן את מספר הבנים ב-x. מספר הבנות: x + 4.</div>
+        <div class="math-block">x + (x + 4) = 32</div>
+        <div class="math-block">2x + 4 = 32  / −4</div>
+        <div class="math-block">2x = 28  / ÷2</div>
+        <div class="math-block">x = 14</div>
+        <div class="answer">14 בנים ו-18 בנות</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q40 -->
+  <div class="question-card medium">
+    <div class="q-header">
+      <span class="q-number">שאלה 40</span>
+      <span class="q-level medium">בינוני</span>
+    </div>
+    <div class="q-text">
+      שלושה חברים אספו כסף לצדקה. השני אסף פי 2 מהראשון, והשלישי אסף 15 ₪ יותר מהראשון. ביחד אספו 175 ₪. כמה אסף כל אחד?
+    </div>
+    <button class="solution-toggle" onclick="toggleSolution(this)">📖 הצגת פתרון</button>
+    <div class="solution">
+      <div class="solution-title">פתרון:</div>
+      <div class="solution-steps">
+        <div class="step">נסמן את סכום הראשון ב-x. השני: 2x, השלישי: x + 15.</div>
+        <div class="math-block">x + 2x + (x + 15) = 175</div>
+        <div class="math-block">4x + 15 = 175  / −15</div>
+        <div class="math-block">4x = 160  / ÷4</div>
+        <div class="math-block">x = 40</div>
+        <div class="answer">הראשון: 40 ₪, השני: 80 ₪, השלישי: 55 ₪</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q41 -->
+  <div class="question-card hard">
+    <div class="q-header">
+      <span class="q-number">שאלה 41</span>
+      <span class="q-level hard">מתקדם</span>
+    </div>
+    <div class="q-text">
+      שני הצלעות של מלבן הן <span class="math">3x + 1</span> ו-<span class="math">x + 5</span>. היקף המלבן הוא 60 ס"מ. מצאו את צלעות המלבן ואת שטחו.
+    </div>
+    <button class="solution-toggle" onclick="toggleSolution(this)">📖 הצגת פתרון</button>
+    <div class="solution">
+      <div class="solution-title">פתרון:</div>
+      <div class="solution-steps">
+        <div class="math-block">2(3x + 1 + x + 5) = 60</div>
+        <div class="math-block">2(4x + 6) = 60</div>
+        <div class="math-block">8x + 12 = 60  / −12</div>
+        <div class="math-block">8x = 48  / ÷8</div>
+        <div class="math-block">x = 6</div>
+        <div class="step">הצלעות: <span class="math">3(6)+1 = 19</span> ו-<span class="math">6+5 = 11</span></div>
+        <div class="math-block">S = 19 × 11 = 209</div>
+        <div class="answer">צלעות: 19 ס"מ ו-11 ס"מ, שטח: 209 סמ"ר</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q42 -->
+  <div class="question-card hard">
+    <div class="q-header">
+      <span class="q-number">שאלה 42</span>
+      <span class="q-level hard">מתקדם</span>
+    </div>
+    <div class="q-text">
+      במעגל קסם, סכום כל שורה, עמודה ואלכסון שווה. הנה מעגל הקסם:
+      <br><br>
+      <table style="border-collapse:collapse;margin:0 auto;direction:ltr;text-align:center;">
+        <tr><td style="border:1px solid #ccc;padding:8px 16px;"><span class="math">x + 2</span></td><td style="border:1px solid #ccc;padding:8px 16px;"><span class="math">2x − 7</span></td><td style="border:1px solid #ccc;padding:8px 16px;"><span class="math">x</span></td></tr>
+        <tr><td style="border:1px solid #ccc;padding:8px 16px;"><span class="math">x − 3</span></td><td style="border:1px solid #ccc;padding:8px 16px;">?</td><td style="border:1px solid #ccc;padding:8px 16px;"><span class="math">x + 8</span></td></tr>
+        <tr><td style="border:1px solid #ccc;padding:8px 16px;"><span class="math">x + 1</span></td><td style="border:1px solid #ccc;padding:8px 16px;"><span class="math">x + 10</span></td><td style="border:1px solid #ccc;padding:8px 16px;"><span class="math">x − 6</span></td></tr>
+      </table>
+      <br>
+      א. מצאו את x אם סכום השורה הראשונה שווה לסכום השורה השלישית.
+      <br>ב. מהו סכום כל שורה?
+    </div>
+    <button class="solution-toggle" onclick="toggleSolution(this)">📖 הצגת פתרון</button>
+    <div class="solution">
+      <div class="solution-title">פתרון:</div>
+      <div class="solution-steps">
+        <div class="step"><b>א.</b> סכום שורה 1:</div>
+        <div class="math-block">(x+2) + (2x−7) + x = 4x − 5</div>
+        <div class="step">סכום שורה 3:</div>
+        <div class="math-block">(x+1) + (x+10) + (x−6) = 3x + 5</div>
+        <div class="step">נשווה:</div>
+        <div class="math-block">4x − 5 = 3x + 5  / −3x</div>
+        <div class="math-block">x − 5 = 5  / +5</div>
+        <div class="math-block">x = 10</div>
+        <div class="step"><b>ב.</b> סכום כל שורה:</div>
+        <div class="math-block">4(10) − 5 = 35</div>
+        <div class="answer">x = 10, סכום כל שורה = 35</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q43 -->
+  <div class="question-card hard">
+    <div class="q-header">
+      <span class="q-number">שאלה 43</span>
+      <span class="q-level hard">מתקדם</span>
+    </div>
+    <div class="q-text">
+      שטח משולש ישר-זווית הוא 60 סמ"ר. אחד הניצבים ארוך מהשני ב-7 ס"מ. מצאו את אורכי הניצבים.
+    </div>
+    <button class="solution-toggle" onclick="toggleSolution(this)">📖 הצגת פתרון</button>
+    <div class="solution">
+      <div class="solution-title">פתרון:</div>
+      <div class="solution-steps">
+        <div class="step">נסמן את הניצב הקצר ב-x. הניצב הארוך: x + 7.</div>
+        <div class="math-block">(x(x + 7)) / 2 = 60</div>
+        <div class="math-block">x(x + 7) = 120</div>
+        <div class="step">ננסה ערכים: אם x = 8 → 8 × 15 = 120 ✓</div>
+        <div class="answer">הניצבים: 8 ס"מ ו-15 ס"מ</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== SECTION 6: GEOMETRIC SHAPES ===================== -->
+<div class="section" id="sec6">
+  <div class="section-title"><span class="icon">6</span> צורות גיאומטריות</div>
+  <p class="section-desc">מלבן, משולש ומקבילית — כתיב מתמטי, שטחים והיקפים</p>
+
+  <!-- Q44 -->
+  <div class="question-card easy">
+    <div class="q-header">
+      <span class="q-number">שאלה 44</span>
+      <span class="q-level easy">בסיסי</span>
+    </div>
+    <div class="q-text">
+      נתון מלבן ABCD שאורכו 12 ס"מ ורוחבו 5 ס"מ. חשבו את ההיקף ואת השטח.
+    </div>
+    <button class="solution-toggle" onclick="toggleSolution(this)">📖 הצגת פתרון</button>
+    <div class="solution">
+      <div class="solution-title">פתרון:</div>
+      <div class="solution-steps">
+        <div class="step">היקף מלבן = 2 × (אורך + רוחב):</div>
+        <div class="math-block">P = 2 × (12 + 5) = 2 × 17 = 34 ס"מ</div>
+        <div class="step">שטח מלבן = אורך × רוחב:</div>
+        <div class="math-block">S = 12 × 5 = 60 סמ"ר</div>
+        <div class="answer">היקף: 34 ס"מ, שטח: 60 סמ"ר</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q45 -->
+  <div class="question-card easy">
+    <div class="q-header">
+      <span class="q-number">שאלה 45</span>
+      <span class="q-level easy">בסיסי</span>
+    </div>
+    <div class="q-text">
+      נתון משולש שבסיסו 10 ס"מ וגובהו לבסיס זה 8 ס"מ. חשבו את שטח המשולש.
+    </div>
+    <button class="solution-toggle" onclick="toggleSolution(this)">📖 הצגת פתרון</button>
+    <div class="solution">
+      <div class="solution-title">פתרון:</div>
+      <div class="solution-steps">
+        <div class="step">שטח משולש = (בסיס × גובה) / 2:</div>
+        <div class="math-block">S = (10 × 8) / 2 = 80 / 2 = 40 סמ"ר</div>
+        <div class="answer">שטח המשולש: 40 סמ"ר</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q46 -->
+  <div class="question-card medium">
+    <div class="q-header">
+      <span class="q-number">שאלה 46</span>
+      <span class="q-level medium">בינוני</span>
+    </div>
+    <div class="q-text">
+      נתונה מקבילית ABCD. הצלע AB = 14 ס"מ, הצלע BC = 9 ס"מ. הגובה לצלע AB הוא 6 ס"מ.
+      <br>א. חשבו את היקף המקבילית.
+      <br>ב. חשבו את שטח המקבילית.
+    </div>
+    <button class="solution-toggle" onclick="toggleSolution(this)">📖 הצגת פתרון</button>
+    <div class="solution">
+      <div class="solution-title">פתרון:</div>
+      <div class="solution-steps">
+        <div class="step"><b>א.</b> במקבילית, צלעות נגדיות שוות: AB = CD = 14, BC = AD = 9.</div>
+        <div class="math-block">P = 2 × (14 + 9) = 2 × 23 = 46 ס"מ</div>
+        <div class="step"><b>ב.</b> שטח מקבילית = בסיס × גובה:</div>
+        <div class="math-block">S = 14 × 6 = 84 סמ"ר</div>
+        <div class="answer">היקף: 46 ס"מ, שטח: 84 סמ"ר</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q47 -->
+  <div class="question-card medium">
+    <div class="q-header">
+      <span class="q-number">שאלה 47</span>
+      <span class="q-level medium">בינוני</span>
+    </div>
+    <div class="q-text">
+      שטח מקבילית הוא 72 סמ"ר. בסיס המקבילית הוא 9 ס"מ.
+      <br>א. מהו גובה המקבילית?
+      <br>ב. אם הצלע השנייה של המקבילית היא 10 ס"מ, מהו היקפה?
+    </div>
+    <button class="solution-toggle" onclick="toggleSolution(this)">📖 הצגת פתרון</button>
+    <div class="solution">
+      <div class="solution-title">פתרון:</div>
+      <div class="solution-steps">
+        <div class="step"><b>א.</b> S = בסיס × גובה → גובה = S / בסיס:</div>
+        <div class="math-block">h = 72 / 9 = 8 ס"מ</div>
+        <div class="step"><b>ב.</b></div>
+        <div class="math-block">P = 2 × (9 + 10) = 38 ס"מ</div>
+        <div class="answer">גובה: 8 ס"מ, היקף: 38 ס"מ</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q48 -->
+  <div class="question-card hard">
+    <div class="q-header">
+      <span class="q-number">שאלה 48</span>
+      <span class="q-level hard">מתקדם</span>
+    </div>
+    <div class="q-text">
+      נתון מלבן ABCD. הנקודה E נמצאת על הצלע DC כך ש-<span class="math">DE = 4</span> ס"מ ו-<span class="math">EC = 8</span> ס"מ. גובה המלבן (BC) הוא 6 ס"מ.
+      <br>א. חשבו את שטח המלבן.
+      <br>ב. חשבו את שטח המשולש ABE.
+      <br>ג. חשבו את שטח הטרפז ABCE (רמז: הפרש שטחים).
+    </div>
+    <button class="solution-toggle" onclick="toggleSolution(this)">📖 הצגת פתרון</button>
+    <div class="solution">
+      <div class="solution-title">פתרון:</div>
+      <div class="solution-steps">
+        <div class="step"><b>א.</b> DC = DE + EC = 4 + 8 = 12. AB = DC = 12 (מלבן).</div>
+        <div class="math-block">S(ABCD) = 12 × 6 = 72 סמ"ר</div>
+        <div class="step"><b>ב.</b> בסיס AB = 12, גובה = BC = 6 (E על הצלע הנגדית):</div>
+        <div class="math-block">S(ABE) = (12 × 6) / 2 = 36 סמ"ר</div>
+        <div class="step"><b>ג.</b> טרפז ABCE: ניתן גם לחשב ישירות. בסיסי הטרפז הם AB = 12 ו-EC = 8, וגובהו 6.</div>
+        <div class="math-block">S(ABCE) = ((12 + 8) × 6) / 2 = (20 × 6) / 2 = 60 סמ"ר</div>
+        <div class="step">אפשר גם: S(ABCD) − S(ADE) = 72 − (4×6/2) = 72 − 12 = 60 ✓</div>
+        <div class="answer">שטח המלבן: 72, שטח המשולש: 36, שטח הטרפז: 60 סמ"ר</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q49 -->
+  <div class="question-card hard">
+    <div class="q-header">
+      <span class="q-number">שאלה 49</span>
+      <span class="q-level hard">מתקדם</span>
+    </div>
+    <div class="q-text">
+      היקף משולש שווה-שוקיים הוא 40 ס"מ. הבסיס קצר מכל שוק ב-5 ס"מ.
+      <br>א. מצאו את אורכי צלעות המשולש.
+      <br>ב. אם הגובה לבסיס הוא 12 ס"מ, חשבו את שטח המשולש.
+    </div>
+    <button class="solution-toggle" onclick="toggleSolution(this)">📖 הצגת פתרון</button>
+    <div class="solution">
+      <div class="solution-title">פתרון:</div>
+      <div class="solution-steps">
+        <div class="step"><b>א.</b> נסמן את השוק ב-x. הבסיס: x − 5.</div>
+        <div class="math-block">x + x + (x − 5) = 40</div>
+        <div class="math-block">3x − 5 = 40  / +5</div>
+        <div class="math-block">3x = 45  / ÷3</div>
+        <div class="math-block">x = 15</div>
+        <div class="step">שוק = 15 ס"מ, בסיס = 10 ס"מ.</div>
+        <div class="step"><b>ב.</b></div>
+        <div class="math-block">S = (10 × 12) / 2 = 60 סמ"ר</div>
+        <div class="answer">צלעות: 15, 15, 10 ס"מ. שטח: 60 סמ"ר</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q50 -->
+  <div class="question-card hard">
+    <div class="q-header">
+      <span class="q-number">שאלה 50</span>
+      <span class="q-level hard">מתקדם</span>
+    </div>
+    <div class="q-text">
+      נתון מלבן ABCD שבתוכו סומן משולש AEF, כאשר E נמצאת על BC ו-F נמצאת על CD.
+      <br>AB = 16 ס"מ, BC = 10 ס"מ, BE = 4 ס"מ, CF = 3 ס"מ.
+      <br>א. חשבו את שטח המלבן ABCD.
+      <br>ב. חשבו את שטח המשולש ABE, את שטח המשולש ADF, ואת שטח המשולש ECF.
+      <br>ג. חשבו את שטח המשולש AEF.
+    </div>
+    <button class="solution-toggle" onclick="toggleSolution(this)">📖 הצגת פתרון</button>
+    <div class="solution">
+      <div class="solution-title">פתרון:</div>
+      <div class="solution-steps">
+        <div class="step"><b>א.</b></div>
+        <div class="math-block">S(ABCD) = 16 × 10 = 160 סמ"ר</div>
+        <div class="step"><b>ב.</b></div>
+        <div class="step">△ABE: בסיס BE = 4, גובה AB = 16:</div>
+        <div class="math-block">S(ABE) = (4 × 16) / 2 = 32 סמ"ר</div>
+        <div class="step">DF = DC − CF = 16 − 3 = 13 (כי DC = AB = 16)</div>
+        <div class="step">△ADF: בסיס DF = 13, גובה AD = 10 (כי AD = BC):</div>
+        <div class="math-block">S(ADF) = (13 × 10) / 2 = 65 סמ"ר</div>
+        <div class="step">EC = BC − BE = 10 − 4 = 6</div>
+        <div class="step">△ECF: בסיס EC = 6, גובה CF = 3:</div>
+        <div class="math-block">S(ECF) = (6 × 3) / 2 = 9 סמ"ר</div>
+        <div class="step"><b>ג.</b> שטח המשולש AEF = שטח המלבן − שלושת המשולשים:</div>
+        <div class="math-block">S(AEF) = 160 − 32 − 65 − 9 = 54 סמ"ר</div>
+        <div class="answer">שטח AEF = 54 סמ"ר</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<button class="show-all-btn" onclick="toggleAll()">📋 הצג/הסתר את כל הפתרונות</button>
+
+<div class="print-note">
+  💡 להדפסה: בחרו "הדפסה" בדפדפן — הפתרונות יוצגו אוטומטית בגרסת ההדפסה.
+</div>
+
+<script>
+function toggleSolution(btn) {
+  const sol = btn.nextElementSibling;
+  sol.classList.toggle('open');
+  btn.textContent = sol.classList.contains('open') ? '🔒 הסתרת פתרון' : '📖 הצגת פתרון';
+}
+
+let allOpen = false;
+function toggleAll() {
+  allOpen = !allOpen;
+  document.querySelectorAll('.solution').forEach(s => {
+    if (allOpen) s.classList.add('open');
+    else s.classList.remove('open');
+  });
+  document.querySelectorAll('.solution-toggle').forEach(btn => {
+    btn.textContent = allOpen ? '🔒 הסתרת פתרון' : '📖 הצגת פתרון';
+  });
+}
+</script>
+</body>
+</html>

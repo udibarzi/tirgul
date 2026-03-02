@@ -1,0 +1,1039 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>דף תרגול – מערכת צירים במישור – נועה</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;600;700&family=Frank+Ruhl+Libre:wght@400;700&display=swap');
+
+  :root {
+    --bg: #faf8f4;
+    --card: #ffffff;
+    --primary: #2d6a9f;
+    --primary-light: #e8f1f8;
+    --accent: #e8734a;
+    --accent-light: #fef0eb;
+    --text: #2c2c2c;
+    --text-light: #6b7280;
+    --border: #e5e0d8;
+    --grid: #d4dce4;
+    --axis: #2c2c2c;
+    --point: #e8734a;
+    --shape-fill: rgba(45,106,159,0.08);
+    --shape-stroke: #2d6a9f;
+    --success: #16a34a;
+    --success-light: #f0fdf4;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Rubik', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+    padding: 0;
+  }
+
+  .header {
+    background: linear-gradient(135deg, #2d6a9f 0%, #1e4d7a 100%);
+    color: white;
+    padding: 2.5rem 2rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .header::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: repeating-linear-gradient(
+      45deg,
+      transparent,
+      transparent 20px,
+      rgba(255,255,255,0.02) 20px,
+      rgba(255,255,255,0.02) 40px
+    );
+  }
+
+  .header h1 {
+    font-family: 'Frank Ruhl Libre', serif;
+    font-size: 2.4rem;
+    font-weight: 700;
+    position: relative;
+    margin-bottom: 0.3rem;
+  }
+
+  .header .subtitle {
+    font-size: 1.1rem;
+    opacity: 0.9;
+    font-weight: 300;
+    position: relative;
+  }
+
+  .header .name-badge {
+    display: inline-block;
+    background: rgba(255,255,255,0.15);
+    border: 1px solid rgba(255,255,255,0.3);
+    border-radius: 20px;
+    padding: 0.3rem 1.2rem;
+    margin-top: 0.8rem;
+    font-size: 1rem;
+    position: relative;
+  }
+
+  .container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 1.5rem;
+  }
+
+  .section-title {
+    font-family: 'Frank Ruhl Libre', serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--primary);
+    margin: 2rem 0 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 3px solid var(--primary);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .section-title .icon {
+    font-size: 1.3rem;
+  }
+
+  .difficulty {
+    display: inline-block;
+    font-size: 0.7rem;
+    padding: 0.15rem 0.6rem;
+    border-radius: 10px;
+    font-weight: 500;
+    margin-right: 0.5rem;
+    vertical-align: middle;
+  }
+
+  .diff-easy { background: #dcfce7; color: #166534; }
+  .diff-medium { background: #fef3c7; color: #92400e; }
+  .diff-hard { background: #fee2e2; color: #991b1b; }
+
+  .question-block {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.2rem;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    transition: box-shadow 0.2s;
+    page-break-inside: avoid;
+  }
+
+  .question-block:hover {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  }
+
+  .q-number {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    background: var(--primary);
+    color: white;
+    border-radius: 50%;
+    font-weight: 600;
+    font-size: 0.9rem;
+    margin-left: 0.6rem;
+    flex-shrink: 0;
+  }
+
+  .q-header {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 0.8rem;
+  }
+
+  .q-text {
+    font-size: 1rem;
+    line-height: 1.8;
+  }
+
+  .q-text .sub {
+    display: block;
+    padding-right: 1.5rem;
+    margin-top: 0.3rem;
+  }
+
+  .sub-label {
+    font-weight: 600;
+    color: var(--primary);
+    margin-left: 0.3rem;
+  }
+
+  .diagram-container {
+    display: flex;
+    justify-content: center;
+    margin: 1rem 0;
+  }
+
+  .diagram-container svg {
+    max-width: 100%;
+    height: auto;
+  }
+
+  .answer-section {
+    margin-top: 0.8rem;
+    border-top: 1px dashed var(--border);
+    padding-top: 0.8rem;
+  }
+
+  .answer-toggle {
+    background: var(--primary-light);
+    color: var(--primary);
+    border: 1px solid #c5d9e8;
+    border-radius: 8px;
+    padding: 0.4rem 1rem;
+    cursor: pointer;
+    font-family: 'Rubik', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 500;
+    transition: all 0.2s;
+  }
+
+  .answer-toggle:hover {
+    background: var(--primary);
+    color: white;
+  }
+
+  .answer-content {
+    display: none;
+    margin-top: 0.6rem;
+    padding: 0.8rem;
+    background: var(--success-light);
+    border: 1px solid #bbf7d0;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    color: #166534;
+    direction: rtl;
+  }
+
+  .answer-content.show { display: block; }
+
+  .show-all-btn {
+    display: block;
+    margin: 2rem auto;
+    background: var(--accent);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    padding: 0.8rem 2rem;
+    cursor: pointer;
+    font-family: 'Rubik', sans-serif;
+    font-size: 1rem;
+    font-weight: 500;
+    transition: all 0.2s;
+  }
+
+  .show-all-btn:hover {
+    background: #d4612f;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(232,115,74,0.3);
+  }
+
+  .tip-box {
+    background: #fffbeb;
+    border: 1px solid #fde68a;
+    border-radius: 8px;
+    padding: 0.8rem 1rem;
+    margin: 0.5rem 0;
+    font-size: 0.85rem;
+    color: #92400e;
+  }
+
+  .tip-box::before {
+    content: '💡 ';
+  }
+
+  .footer {
+    text-align: center;
+    padding: 2rem;
+    color: var(--text-light);
+    font-size: 0.85rem;
+    border-top: 1px solid var(--border);
+    margin-top: 2rem;
+  }
+
+  /* Grid lines */
+  .grid-line { stroke: var(--grid); stroke-width: 0.5; }
+  .axis-line { stroke: var(--axis); stroke-width: 1.5; }
+  .axis-arrow { fill: var(--axis); }
+  .point-dot { fill: var(--point); }
+  .point-label { 
+    font-family: 'Rubik', sans-serif; 
+    font-size: 11px; 
+    font-weight: 600; 
+    fill: var(--text);
+  }
+  .axis-label {
+    font-family: 'Rubik', sans-serif;
+    font-size: 10px;
+    fill: var(--text-light);
+  }
+  .axis-name {
+    font-family: 'Rubik', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    fill: var(--primary);
+  }
+  .shape-line { stroke: var(--shape-stroke); stroke-width: 1.5; stroke-dasharray: 4,2; }
+  .shape-fill { fill: var(--shape-fill); stroke: var(--shape-stroke); stroke-width: 1; }
+
+  @media print {
+    .header { background: white; color: var(--text); border-bottom: 3px solid var(--primary); }
+    .answer-toggle, .show-all-btn { display: none; }
+    .answer-content { display: block !important; }
+    .question-block { box-shadow: none; border: 1px solid #ccc; break-inside: avoid; }
+  }
+
+  @media (max-width: 600px) {
+    .header h1 { font-size: 1.8rem; }
+    .container { padding: 1rem; }
+    .question-block { padding: 1rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>מערכת צירים במישור</h1>
+  <div class="subtitle">דף תרגול מקיף – כיתה ז׳</div>
+  <div class="name-badge">✏️ נועה – בהצלחה!</div>
+</div>
+
+<div class="container">
+
+<!-- ============ SECTION 1 ============ -->
+<div class="section-title"><span class="icon">📐</span> חלק א׳ – קריאת שיעורים וחישובי שטח בסיסיים <span class="difficulty diff-easy">בסיסי</span></div>
+
+<!-- Q1 -->
+<div class="question-block">
+  <div class="q-header"><span class="q-number">1</span><div class="q-text">נתונות הנקודות המסומנות בסרטוט.</div></div>
+  <div class="diagram-container" id="diag1"></div>
+  <div class="q-text">
+    <span class="sub"><span class="sub-label">(א)</span> רשמו את שיעורי כל הנקודות המסומנות בסרטוט.</span>
+    <span class="sub"><span class="sub-label">(ב)</span> חברו את הנקודות A, B ו-C. חשבו את שטח המשולש ABC.</span>
+    <span class="sub"><span class="sub-label">(ג)</span> חברו את הנקודות D, E ו-F. חשבו את שטח המשולש DEF.</span>
+    <span class="sub"><span class="sub-label">(ד)</span> מצאו זוג נקודות שיש להן אותו שיעור x. מצאו זוג נקודות שיש להן אותו שיעור y.</span>
+  </div>
+  <div class="answer-section">
+    <button class="answer-toggle" onclick="toggleAnswer(this)">הצג תשובות</button>
+    <div class="answer-content">
+      (א) A(2,5) , B(6,5) , C(4,1) , D(−3,4) , E(−5,1) , F(−1,1)<br>
+      (ב) בסיס AB = 4, גובה = 4 → שטח = ½·4·4 = <b>8 יחידות שטח</b><br>
+      (ג) בסיס EF = 4, גובה = 3 → שטח = ½·4·3 = <b>6 יחידות שטח</b><br>
+      (ד) שיעור y זהה: B ו-A (שתיהן y=5), וגם C, E, F (שלושתן y=1). שיעור x זהה: אין זוג עם אותו x בדיוק.
+    </div>
+  </div>
+</div>
+
+<!-- Q2 -->
+<div class="question-block">
+  <div class="q-header"><span class="q-number">2</span><div class="q-text">נתון המלבן ABCD בסרטוט.</div></div>
+  <div class="diagram-container" id="diag2"></div>
+  <div class="q-text">
+    <span class="sub"><span class="sub-label">(א)</span> רשמו את שיעורי הקדקודים A, B, C, D.</span>
+    <span class="sub"><span class="sub-label">(ב)</span> חשבו את אורכי צלעות המלבן AB ו-BC.</span>
+    <span class="sub"><span class="sub-label">(ג)</span> חשבו את שטח המלבן ואת היקפו.</span>
+    <span class="sub"><span class="sub-label">(ד)</span> סמנו נקודה M שנמצאת בדיוק באמצע הצלע AB. מהם שיעוריה?</span>
+    <span class="sub"><span class="sub-label">(ה)</span> חברו את M עם D ועם C. חשבו את שטח המשולש MDC.</span>
+  </div>
+  <div class="answer-section">
+    <button class="answer-toggle" onclick="toggleAnswer(this)">הצג תשובות</button>
+    <div class="answer-content">
+      (א) A(1,6) , B(7,6) , C(7,2) , D(1,2)<br>
+      (ב) AB = 6, BC = 4<br>
+      (ג) שטח = 6×4 = <b>24 יח״ש</b>, היקף = 2(6+4) = <b>20 יח״א</b><br>
+      (ד) M(4,6)<br>
+      (ה) בסיס DC = 6, גובה מ-M ל-DC = 4 → שטח = ½·6·4 = <b>12 יח״ש</b>
+    </div>
+  </div>
+</div>
+
+<!-- Q3 -->
+<div class="question-block">
+  <div class="q-header"><span class="q-number">3</span><div class="q-text">נתון הריבוע ABCD בסרטוט.</div></div>
+  <div class="diagram-container" id="diag3"></div>
+  <div class="q-text">
+    <span class="sub"><span class="sub-label">(א)</span> רשמו את שיעורי קדקודי הריבוע.</span>
+    <span class="sub"><span class="sub-label">(ב)</span> חשבו את שטח הריבוע.</span>
+    <span class="sub"><span class="sub-label">(ג)</span> סמנו נקודה P(−1,3). האם P נמצאת בתוך הריבוע, מחוצה לו, או על אחת מצלעותיו?</span>
+    <span class="sub"><span class="sub-label">(ד)</span> מצאו נקודה E על ציר ה-y כך שהמשולש ABE ייווצר. חשבו את שטחו.</span>
+  </div>
+  <div class="answer-section">
+    <button class="answer-toggle" onclick="toggleAnswer(this)">הצג תשובות</button>
+    <div class="answer-content">
+      (א) A(−3,5) , B(2,5) , C(2,0) , D(−3,0)<br>
+      (ב) צלע = 5 → שטח = 5×5 = <b>25 יח״ש</b><br>
+      (ג) P(−1,3): שיעור x בין −3 ל-2, שיעור y בין 0 ל-5 → P נמצאת <b>בתוך</b> הריבוע.<br>
+      (ד) E נמצאת על ציר y, למשל E(0,0) = D... נבחר E(0,y) כך שהיא על ציר y. בסיס AB=5, גובה = המרחק מ-E לקו y=5. אם E(0,0): גובה=5, שטח = ½·5·5 = <b>12.5 יח״ש</b>. (ישנן תשובות נכונות רבות)
+    </div>
+  </div>
+</div>
+
+<!-- Q4 -->
+<div class="question-block">
+  <div class="q-header"><span class="q-number">4</span><div class="q-text">בסרטוט מסומנות נקודות על מערכת הצירים.</div></div>
+  <div class="diagram-container" id="diag4"></div>
+  <div class="q-text">
+    <span class="sub"><span class="sub-label">(א)</span> רשמו את שיעורי הנקודות A, B, C, D, E.</span>
+    <span class="sub"><span class="sub-label">(ב)</span> באיזה רביע נמצאת כל נקודה?</span>
+    <span class="sub"><span class="sub-label">(ג)</span> חברו את הנקודות A ו-B. מהו אורך הקטע AB?</span>
+    <span class="sub"><span class="sub-label">(ד)</span> סמנו את ראשית הצירים כ-O. חשבו את שטח המשולש AOB.</span>
+    <span class="sub"><span class="sub-label">(ה)</span> חברו את C, D ו-E. חשבו את שטח המשולש CDE.</span>
+  </div>
+  <div class="answer-section">
+    <button class="answer-toggle" onclick="toggleAnswer(this)">הצג תשובות</button>
+    <div class="answer-content">
+      (א) A(−4,3) , B(3,3) , C(5,−2) , D(1,−4) , E(−2,−1)<br>
+      (ב) A – רביע II, B – רביע I, C – רביע IV, D – רביע IV, E – רביע III<br>
+      (ג) שתי הנקודות באותו y=3, לכן AB = 3−(−4) = <b>7 יח״א</b><br>
+      (ד) בסיס AB = 7, גובה = המרחק מ-O(0,0) לקו y=3 = 3 → שטח = ½·7·3 = <b>10.5 יח״ש</b><br>
+      (ה) בסיס CD: נחשב. C(5,−2), D(1,−4). נשתמש בנוסחת השרוך:<br>
+      שטח = ½|5(−4−(−1)) + 1(−1−(−2)) + (−2)(−2−(−4))| = ½|5(−3) + 1(1) + (−2)(2)| = ½|−15+1−4| = ½·18 = <b>9 יח״ש</b>
+    </div>
+  </div>
+</div>
+
+<!-- Q5 -->
+<div class="question-block">
+  <div class="q-header"><span class="q-number">5</span><div class="q-text">נתונות 3 נקודות: A(0,4) , B(6,0) , C(0,0).</div></div>
+  <div class="diagram-container" id="diag5"></div>
+  <div class="q-text">
+    <span class="sub"><span class="sub-label">(א)</span> סרטטו את המשולש ABC. מהו סוג המשולש? נמקו.</span>
+    <span class="sub"><span class="sub-label">(ב)</span> חשבו את שטח המשולש ABC.</span>
+    <span class="sub"><span class="sub-label">(ג)</span> מצאו נקודה D על ציר ה-x (שיעור y = 0) כך ששטח המשולש ABD יהיה שווה לשטח ABC.</span>
+    <span class="sub"><span class="sub-label">(ד)</span> האם קיימת נקודה נוספת על ציר ה-x שמקיימת את התנאי בסעיף (ג)? נמקו.</span>
+  </div>
+  <div class="answer-section">
+    <button class="answer-toggle" onclick="toggleAnswer(this)">הצג תשובות</button>
+    <div class="answer-content">
+      (א) המשולש הוא <b>ישר-זווית</b> ב-C, כי C נמצאת בראשית הצירים וצלעות AC ו-BC נמצאות על הצירים (זוויות ישרות).<br>
+      (ב) AC = 4, BC = 6 → שטח = ½·6·4 = <b>12 יח״ש</b><br>
+      (ג) בסיס AB: הגובה מ-D לקו AB צריך לתת שטח 12. אבל אפשר להשתמש בדרך אחרת: D על ציר x, אז D(x,0). בסיס AD... דרך קלה יותר: C(0,0) נמצאת על ציר x. כל נקודה D(x,0) על ציר x כך שהמרחק שלה מקו AB שווה למרחק של C מקו AB. בגלל שגובה זהה וצד AB זהה, D צריכה להיות <b>בצד הנגדי</b> של AB מ-C, כלומר D(6,0) = B... אבל בשיטה פשוטה: אם הבסיס הוא AB, אז צריך גובה זהה. כלומר D(−6,0) או D(12,0) יכולות לעבוד. נבדוק: בסיס AB, גובה מ-C הוא h. שטח ABC = ½·|AB|·h = 12. D צריכה להיות באותו מרחק h מקו AB. מכיוון ש-C על ציר x וגם D על ציר x, D = <b>(−6, 0)</b>.<br>
+      (ד) כן, <b>D(12,0)</b> היא נקודה סימטרית בצד השני של AB עם אותו מרחק.
+    </div>
+  </div>
+</div>
+
+<!-- ============ SECTION 2 ============ -->
+<div class="section-title"><span class="icon">📏</span> חלק ב׳ – מלבנים, ריבועים ונקודות על צלעות <span class="difficulty diff-medium">בינוני</span></div>
+
+<!-- Q6 -->
+<div class="question-block">
+  <div class="q-header"><span class="q-number">6</span><div class="q-text">נתון מלבן ABCD כאשר הקדקודים הם:</div></div>
+  <div class="q-text" style="text-align:center; font-weight:600; direction:ltr; margin-bottom:0.5rem;">
+    A(−4, 3) &nbsp; B(3, 3) &nbsp; C(3, −2) &nbsp; D(−4, −2)
+  </div>
+  <div class="diagram-container" id="diag6"></div>
+  <div class="q-text">
+    <span class="sub"><span class="sub-label">(א)</span> חשבו את אורכי צלעות המלבן.</span>
+    <span class="sub"><span class="sub-label">(ב)</span> חשבו את שטח המלבן ואת היקפו.</span>
+    <span class="sub"><span class="sub-label">(ג)</span> באילו רבעים נמצא המלבן?</span>
+    <span class="sub"><span class="sub-label">(ד)</span> מצאו נקודה על הצלע AB ששיעור ה-x שלה הוא 0. מהם שיעוריה?</span>
+    <span class="sub"><span class="sub-label">(ה)</span> מצאו נקודה על הצלע CD ששיעור ה-x שלה הוא 0. מהם שיעוריה?</span>
+    <span class="sub"><span class="sub-label">(ו)</span> מצאו נקודה על הצלע AD ששיעור ה-y שלה הוא 0. מהם שיעוריה?</span>
+    <span class="sub"><span class="sub-label">(ז)</span> מצאו נקודה על הצלע BC ששיעור ה-y שלה הוא 0. מהם שיעוריה?</span>
+    <span class="sub"><span class="sub-label">(ח)</span> סמנו נקודה W(0,0). האם W בתוך המלבן? נמקו.</span>
+  </div>
+  <div class="answer-section">
+    <button class="answer-toggle" onclick="toggleAnswer(this)">הצג תשובות</button>
+    <div class="answer-content">
+      (א) AB = CD = 7, BC = AD = 5<br>
+      (ב) שטח = 7×5 = <b>35 יח״ש</b>, היקף = 2(7+5) = <b>24 יח״א</b><br>
+      (ג) המלבן משתרע על <b>כל ארבעת הרבעים</b> (כי x מ-−4 עד 3 ו-y מ-−2 עד 3)<br>
+      (ד) על AB: y=3, x=0 → <b>(0,3)</b><br>
+      (ה) על CD: y=−2, x=0 → <b>(0,−2)</b><br>
+      (ו) על AD: x=−4, y=0 → <b>(−4,0)</b><br>
+      (ז) על BC: x=3, y=0 → <b>(3,0)</b><br>
+      (ח) W(0,0): x בין −4 ל-3 ✓, y בין −2 ל-3 ✓ → <b>כן</b>, W בתוך המלבן.
+    </div>
+  </div>
+</div>
+
+<!-- Q7 -->
+<div class="question-block">
+  <div class="q-header"><span class="q-number">7</span><div class="q-text">נתון ריבוע ABCD בסרטוט, הנמצא ברביע השלישי.</div></div>
+  <div class="diagram-container" id="diag7"></div>
+  <div class="q-text">
+    <span class="sub"><span class="sub-label">(א)</span> רשמו את שיעורי קדקודי הריבוע.</span>
+    <span class="sub"><span class="sub-label">(ב)</span> חשבו את שטח הריבוע.</span>
+    <span class="sub"><span class="sub-label">(ג)</span> סרטטו ריבוע נוסף EFGH ברביע הראשון, כך שצלעו שווה לצלע הריבוע ABCD. רשמו את שיעורי הקדקודים E, F, G, H.</span>
+    <span class="sub"><span class="sub-label">(ד)</span> אילו מבין הנקודות הבאות נמצאות בתוך הריבוע ABCD?</span>
+    <span class="sub" style="text-align:center; direction:ltr;">(−3,−1) &nbsp; (−6,−4) &nbsp; (−1,−5) &nbsp; (−4,−3) &nbsp; (0,−2)</span>
+  </div>
+  <div class="answer-section">
+    <button class="answer-toggle" onclick="toggleAnswer(this)">הצג תשובות</button>
+    <div class="answer-content">
+      (א) A(−5,−1) , B(−1,−1) , C(−1,−5) , D(−5,−5)<br>
+      (ב) צלע = 4 → שטח = <b>16 יח״ש</b><br>
+      (ג) למשל: E(1,1) , F(5,1) , G(5,5) , H(1,5) (תשובות רבות אפשריות)<br>
+      (ד) בתוך ABCD: x בין −5 ל-−1, y בין −5 ל-−1.<br>
+      • (−3,−1): על הצלע AB (לא בתוך)<br>
+      • (−6,−4): x=−6 מחוץ לטווח → <b>מחוץ</b><br>
+      • (−1,−5): על הקדקוד C → <b>על הריבוע</b><br>
+      • (−4,−3): x∈(−5,−1), y∈(−5,−1) → <b>בתוך</b> ✓<br>
+      • (0,−2): x=0 מחוץ לטווח → <b>מחוץ</b>
+    </div>
+  </div>
+</div>
+
+<!-- Q8 -->
+<div class="question-block">
+  <div class="q-header"><span class="q-number">8</span><div class="q-text">נתונות שתי נקודות A(−2,4) ו-B(4,4). הן מהוות צלע אחת של מלבן ABCD.</div></div>
+  <div class="q-text">
+    <span class="sub"><span class="sub-label">(א)</span> מהו אורך הצלע AB?</span>
+    <span class="sub"><span class="sub-label">(ב)</span> אם שטח המלבן הוא 18 יחידות שטח, מהו אורך הצלע BC?</span>
+    <span class="sub"><span class="sub-label">(ג)</span> מצאו את שיעורי הקדקודים C ו-D (ישנן שתי אפשרויות – מצאו את שתיהן!).</span>
+    <span class="sub"><span class="sub-label">(ד)</span> עבור כל אפשרות, ציינו באילו רבעים נמצא המלבן.</span>
+  </div>
+  <div class="answer-section">
+    <button class="answer-toggle" onclick="toggleAnswer(this)">הצג תשובות</button>
+    <div class="answer-content">
+      (א) AB = 4−(−2) = <b>6 יח״א</b><br>
+      (ב) שטח = AB × BC → 18 = 6 × BC → BC = <b>3 יח״א</b><br>
+      (ג) <b>אפשרות 1</b> (מלבן מתחת ל-AB): C(4,1) , D(−2,1)<br>
+      <b>אפשרות 2</b> (מלבן מעל AB): C(4,7) , D(−2,7)<br>
+      (ד) אפשרות 1: רבעים I ו-II. אפשרות 2: רבעים I ו-II (שניהם מעל ציר x).
+    </div>
+  </div>
+</div>
+
+<!-- Q9 -->
+<div class="question-block">
+  <div class="q-header"><span class="q-number">9</span><div class="q-text">נתון המלבן ABCD בסרטוט.</div></div>
+  <div class="diagram-container" id="diag9"></div>
+  <div class="q-text">
+    <span class="sub"><span class="sub-label">(א)</span> השלימו את שיעורי הנקודות A ו-C.</span>
+    <span class="sub"><span class="sub-label">(ב)</span> חשבו את שטח המלבן.</span>
+    <span class="sub"><span class="sub-label">(ג)</span> סמנו נקודה P הנמצאת על הצלע AD ועל ציר ה-x. מהם שיעורי P?</span>
+    <span class="sub"><span class="sub-label">(ד)</span> סמנו נקודה Q הנמצאת על הצלע BC ועל ציר ה-x. מהם שיעורי Q?</span>
+    <span class="sub"><span class="sub-label">(ה)</span> חשבו את שטח המלבן PQGB כאשר G = B וזהו המלבן שנוצר מ-P ו-Q עד B. (רמז: חשבו על המלבן PBQP... בעצם חשבו את אורך PQ ואת הגובה מ-P עד B.)</span>
+  </div>
+  <div class="tip-box">שימו לב: כשנקודה נמצאת על ציר ה-x, שיעור ה-y שלה הוא 0.</div>
+  <div class="answer-section">
+    <button class="answer-toggle" onclick="toggleAnswer(this)">הצג תשובות</button>
+    <div class="answer-content">
+      (א) A(−3,5) , C(4,−3) (A בפינה שמאלית-עליונה, C בפינה ימנית-תחתונה)<br>
+      B(4,5) , D(−3,−3)<br>
+      (ב) AB = 7, AD = 8 → שטח = <b>56 יח״ש</b><br>
+      (ג) על AD: x=−3, y=0 → P(−3,0)<br>
+      (ד) על BC: x=4, y=0 → Q(4,0)<br>
+      (ה) PQ = 7, גובה מ-PQ ל-AB = 5 → שטח PQBA = 7×5 = <b>35 יח״ש</b>
+    </div>
+  </div>
+</div>
+
+<!-- ============ SECTION 3 ============ -->
+<div class="section-title"><span class="icon">🔺</span> חלק ג׳ – משולשים, גבהים ושטחים <span class="difficulty diff-medium">בינוני</span></div>
+
+<!-- Q10 -->
+<div class="question-block">
+  <div class="q-header"><span class="q-number">10</span><div class="q-text">נתון משולש ישר-זווית ABC כאשר:</div></div>
+  <div class="q-text" style="text-align:center; font-weight:600; direction:ltr; margin-bottom:0.5rem;">
+    A(−4, 0) &nbsp; B(−4, −6) &nbsp; C(2, −6)
+  </div>
+  <div class="diagram-container" id="diag10"></div>
+  <div class="q-text">
+    <span class="sub"><span class="sub-label">(א)</span> ציינו באיזו נקודה הזווית הישרה.</span>
+    <span class="sub"><span class="sub-label">(ב)</span> חשבו את אורכי הניצבים AB ו-BC.</span>
+    <span class="sub"><span class="sub-label">(ג)</span> חשבו את שטח המשולש.</span>
+    <span class="sub"><span class="sub-label">(ד)</span> באילו רבעים נמצא המשולש?</span>
+    <span class="sub"><span class="sub-label">(ה)</span> סמנו נקודה D(2,0). חברו A ל-D ו-C ל-D. מהו סוג המרובע ABCD?</span>
+    <span class="sub"><span class="sub-label">(ו)</span> חשבו את שטח ABCD.</span>
+  </div>
+  <div class="answer-section">
+    <button class="answer-toggle" onclick="toggleAnswer(this)">הצג תשובות</button>
+    <div class="answer-content">
+      (א) הזווית הישרה בנקודה <b>B</b> (AB אנכית, BC אופקית).<br>
+      (ב) AB = |0−(−6)| = <b>6</b>, BC = |2−(−4)| = <b>6</b><br>
+      (ג) שטח = ½·6·6 = <b>18 יח״ש</b><br>
+      (ד) A על ציר x (בין רבעים II ו-III), B ו-C ברביע III. המשולש נמצא ברבעים <b>II ו-III</b>.<br>
+      (ה) D(2,0). AD אופקית (y=0), DC אנכית (x=2). ABCD הוא <b>מלבן</b> (כל הזוויות ישרות).<br>
+      (ו) שטח = AB × BC = 6 × 6 = <b>36 יח״ש</b> (זה בעצם ריבוע!)
+    </div>
+  </div>
+</div>
+
+<!-- Q11 -->
+<div class="question-block">
+  <div class="q-header"><span class="q-number">11</span><div class="q-text">נתון משולש קהה-זווית ABC כאשר:</div></div>
+  <div class="q-text" style="text-align:center; font-weight:600; direction:ltr; margin-bottom:0.5rem;">
+    A(−2, 5) &nbsp; B(4, −1) &nbsp; C(−2, −1)
+  </div>
+  <div class="diagram-container" id="diag11"></div>
+  <div class="q-text">
+    <span class="sub"><span class="sub-label">(א)</span> סרטטו את המשולש במערכת צירים.</span>
+    <span class="sub"><span class="sub-label">(ב)</span> מהו אורך הצלע BC? מהו אורך הצלע AC?</span>
+    <span class="sub"><span class="sub-label">(ג)</span> חשבו את שטח המשולש ABC.</span>
+    <span class="sub"><span class="sub-label">(ד)</span> מצאו נקודה D על ציר ה-y כך ששטח המשולש BCD יהיה שווה ל-12 יחידות שטח.</span>
+  </div>
+  <div class="answer-section">
+    <button class="answer-toggle" onclick="toggleAnswer(this)">הצג תשובות</button>
+    <div class="answer-content">
+      (ב) BC = 4−(−2) = <b>6</b>, AC = 5−(−1) = <b>6</b><br>
+      (ג) ניצבים: BC = 6 (בסיס), AC = 6 (גובה) → שטח = ½·6·6 = <b>18 יח״ש</b><br>
+      (ד) בסיס BC = 6. שטח BCD = 12 → ½·6·h = 12 → h = 4. D על ציר y, כלומר D(0,y). הגובה מ-D לקו y=−1 (שעליו BC) הוא |y−(−1)| = |y+1| = 4. לכן y+1=4 → y=3, או y+1=−4 → y=−5. <b>D(0,3)</b> או <b>D(0,−5)</b>.
+    </div>
+  </div>
+</div>
+
+<!-- Q12 -->
+<div class="question-block">
+  <div class="q-header"><span class="q-number">12</span><div class="q-text">נתון המשולש בסרטוט עם הנקודות:</div></div>
+  <div class="diagram-container" id="diag12"></div>
+  <div class="q-text">
+    <span class="sub"><span class="sub-label">(א)</span> רשמו את שיעורי הנקודות A, B, C.</span>
+    <span class="sub"><span class="sub-label">(ב)</span> מהו הגובה מנקודה A לצלע BC? (רמז: BC נמצאת על ציר ה-x)</span>
+    <span class="sub"><span class="sub-label">(ג)</span> חשבו את שטח המשולש ABC.</span>
+    <span class="sub"><span class="sub-label">(ד)</span> מצאו נקודה D ברביע השני, כך ששטח המשולש BCD יהיה זהה לשטח ABC.</span>
+  </div>
+  <div class="answer-section">
+    <button class="answer-toggle" onclick="toggleAnswer(this)">הצג תשובות</button>
+    <div class="answer-content">
+      (א) A(2,4) , B(−3,0) , C(5,0)<br>
+      (ב) BC על ציר x (y=0). גובה מ-A = |4−0| = <b>4</b><br>
+      (ג) BC = 5−(−3) = 8. שטח = ½·8·4 = <b>16 יח״ש</b><br>
+      (ד) צריך שטח BCD = 16. בסיס BC = 8. → ½·8·h = 16 → h = 4. D ברביע II, כלומר x<0, y>0. גובה מ-D לציר x = y = 4. למשל <b>D(−1,4)</b> או <b>D(−2,4)</b> וכו׳.
+    </div>
+  </div>
+</div>
+
+<!-- ============ SECTION 4 ============ -->
+<div class="section-title"><span class="icon">🧠</span> חלק ד׳ – שאלות מאתגרות <span class="difficulty diff-hard">מתקדם</span></div>
+
+<!-- Q13 -->
+<div class="question-block">
+  <div class="q-header"><span class="q-number">13</span><div class="q-text">באילו רבעים ניתן לסמן נקודה ששיעורי ה-x וה-y שלה:</div></div>
+  <div class="q-text">
+    <span class="sub"><span class="sub-label">(א)</span> זהים? (x = y) – תנו 3 דוגמאות.</span>
+    <span class="sub"><span class="sub-label">(ב)</span> מנוגדים? (y = −x) – תנו 3 דוגמאות.</span>
+    <span class="sub"><span class="sub-label">(ג)</span> שיעור ה-x כפול משיעור ה-y? (x = 2y) – תנו 3 דוגמאות.</span>
+  </div>
+  <div class="answer-section">
+    <button class="answer-toggle" onclick="toggleAnswer(this)">הצג תשובות</button>
+    <div class="answer-content">
+      (א) x=y: רביע I (למשל (2,2), (5,5)) ורביע III (למשל (−3,−3)). גם ראשית הצירים (0,0).<br>
+      (ב) y=−x: רביע II (למשל (−2,2), (−5,5)) ורביע IV (למשל (3,−3)). גם (0,0).<br>
+      (ג) x=2y: רביע I: (4,2), (6,3). רביע III: (−4,−2). גם (0,0). ורביע I ו-III.
+    </div>
+  </div>
+</div>
+
+<!-- Q14 -->
+<div class="question-block">
+  <div class="q-header"><span class="q-number">14</span><div class="q-text">נתון המצולע (מחומש) ABCDE בסרטוט.</div></div>
+  <div class="diagram-container" id="diag14"></div>
+  <div class="q-text">
+    <span class="sub"><span class="sub-label">(א)</span> רשמו את שיעורי כל הקדקודים.</span>
+    <span class="sub"><span class="sub-label">(ב)</span> חלקו את המצולע למשולשים או מלבנים, וחשבו את שטחו הכולל.</span>
+    <span class="sub"><span class="sub-label">(ג)</span> מהו היקף המצולע? (ניתן להשתמש בסרגל או לחשב ידנית)</span>
+  </div>
+  <div class="tip-box">רמז: אפשר לחלק את המצולע למלבן ומשולש, או לשני משולשים וטרפז.</div>
+  <div class="answer-section">
+    <button class="answer-toggle" onclick="toggleAnswer(this)">הצג תשובות</button>
+    <div class="answer-content">
+      (א) A(−4,4) , B(3,4) , C(3,−1) , D(0,−4) , E(−4,−1)<br>
+      (ב) נחלק: מלבן ABCE (A עד B עד C עד E) + משולש ECD.<br>
+      מלבן: AB=7, AE=5 → שטח = 35.<br>
+      משולש ECD: בסיס EC=7, צריך גובה... E(−4,−1), C(3,−1), D(0,−4). בסיס EC=7 (על y=−1), גובה = |−4−(−1)| = 3. שטח = ½·7·3 = 10.5.<br>
+      <b>סה״כ = 35 + 10.5 = 45.5 יח״ש</b>
+    </div>
+  </div>
+</div>
+
+<!-- Q15 -->
+<div class="question-block">
+  <div class="q-header"><span class="q-number">15</span><div class="q-text">נתון מלבן ABCD כאשר:</div></div>
+  <div class="q-text" style="text-align:center; font-weight:600; direction:ltr; margin-bottom:0.5rem;">
+    A(−5, 3) &nbsp; B(1, 3) &nbsp; C(1, −1) &nbsp; D(−5, −1)
+  </div>
+  <div class="q-text">
+    <span class="sub"><span class="sub-label">(א)</span> חשבו את שטח המלבן.</span>
+    <span class="sub"><span class="sub-label">(ב)</span> סמנו נקודה E(−2,3) על צלע AB, ונקודה F(−2,−1) על צלע DC.</span>
+    <span class="sub"><span class="sub-label">(ג)</span> הקטע EF מחלק את המלבן לשני מלבנים. חשבו את שטח כל אחד מהם.</span>
+    <span class="sub"><span class="sub-label">(ד)</span> סמנו נקודה G(1,1) על צלע BC. חברו E ל-G. חשבו את שטח המשולש EBG.</span>
+    <span class="sub"><span class="sub-label">(ה)</span> מצאו נקודה H על צלע AD כך ששטח המשולש EDH יהיה 4 יחידות שטח.</span>
+  </div>
+  <div class="answer-section">
+    <button class="answer-toggle" onclick="toggleAnswer(this)">הצג תשובות</button>
+    <div class="answer-content">
+      (א) AB = 6, AD = 4 → שטח = <b>24 יח״ש</b><br>
+      (ב) E(−2,3), F(−2,−1) ✓<br>
+      (ג) מלבן שמאלי AEFD: 3×4 = <b>12 יח״ש</b>. מלבן ימני EBCF: 3×4 = <b>12 יח״ש</b>.<br>
+      (ד) EB = 1−(−2) = 3, BG = 3−1 = 2 → שטח EBG = ½·3·2 = <b>3 יח״ש</b><br>
+      (ה) בסיס ED: E(−2,3), D(−5,−1)... נשתמש בגישה אחרת. EF אנכי, DE אלכסוני. קשה. נשתמש בנוסחה: בסיס ED, גובה מ-H. H על AD, כלומר H(−5,y) כאשר −1≤y≤3. שטח EDH = 4.<br>
+      בשיטת שרוך: E(−2,3), D(−5,−1), H(−5,y): שטח = ½|−2(−1−y) + (−5)(y−3) + (−5)(3−(−1))| = ½|−2(−1−y) −5(y−3) −5·4| = ½|2+2y−5y+15−20| = ½|−3y−3| = ½·3|y+1|.<br>
+      ½·3|y+1| = 4 → |y+1| = 8/3 ≈ 2.67. y = 5/3 או y = −11/3. y=5/3 ∈ [−1,3] ✓. → <b>H(−5, 5/3)</b>
+    </div>
+  </div>
+</div>
+
+<!-- Q16 -->
+<div class="question-block">
+  <div class="q-header"><span class="q-number">16</span><div class="q-text">נתון משולש ABC עם A(0,6), B(−4,0), C(4,0).</div></div>
+  <div class="diagram-container" id="diag16"></div>
+  <div class="q-text">
+    <span class="sub"><span class="sub-label">(א)</span> חשבו את שטח המשולש ABC.</span>
+    <span class="sub"><span class="sub-label">(ב)</span> המשולש הזה סימטרי. מהו ציר הסימטריה שלו?</span>
+    <span class="sub"><span class="sub-label">(ג)</span> סמנו נקודה D(0,−6). מהו סוג המרובע ABDC?</span>
+    <span class="sub"><span class="sub-label">(ד)</span> חשבו את שטח ABDC.</span>
+    <span class="sub"><span class="sub-label">(ה)</span> מצאו נקודה E על ציר ה-y כך שהמשולש BCE הוא ישר-זווית ב-E ושטחו 12 יחידות שטח.</span>
+  </div>
+  <div class="answer-section">
+    <button class="answer-toggle" onclick="toggleAnswer(this)">הצג תשובות</button>
+    <div class="answer-content">
+      (א) BC = 8, גובה = 6 → שטח = ½·8·6 = <b>24 יח״ש</b><br>
+      (ב) <b>ציר ה-y</b> (x=0) – ציר הסימטריה.<br>
+      (ג) A(0,6) ו-D(0,−6) סימטריים ביחס ל-BC. ABDC הוא <b>דלתון</b> (שני זוגות צלעות שוות סמוכות).<br>
+      (ד) שטח = שטח ABC + שטח BDC = 24 + ½·8·6 = 24 + 24 = <b>48 יח״ש</b><br>
+      (ה) E על ציר y: E(0,y). BC על ציר x. BE ו-CE הם הניצבים (E על ציר y, ב-E זווית ישרה אם E הוא רגל הגובה...). בעצם, E(0,y), B(−4,0), C(4,0). בסיס BC = 8, גובה |y| → שטח = ½·8·|y| = 12 → |y| = 3. <b>E(0,3)</b> או <b>E(0,−3)</b>.
+    </div>
+  </div>
+</div>
+
+<!-- Q17 -->
+<div class="question-block">
+  <div class="q-header"><span class="q-number">17</span><div class="q-text">שאלת אתגר – מלבנים מקוננים</div></div>
+  <div class="q-text">
+    נתון מלבן גדול ABCD כאשר A(−6,4), B(6,4), C(6,−2), D(−6,−2).<br>
+    בתוך המלבן נמצא מלבן קטן EFGH כאשר E(−3,3), F(3,3), G(3,0), H(−3,0).
+    <span class="sub"><span class="sub-label">(א)</span> חשבו את שטח המלבן הגדול ואת שטח המלבן הקטן.</span>
+    <span class="sub"><span class="sub-label">(ב)</span> חשבו את שטח האזור שבין שני המלבנים (שטח המלבן הגדול פחות הקטן).</span>
+    <span class="sub"><span class="sub-label">(ג)</span> סמנו נקודה P(0,4) על צלע AB ונקודה Q(0,−2) על צלע DC. הקטע PQ מחלק את המלבן הגדול לשני חלקים שווים. כמה משטח המלבן הקטן נמצא בכל חלק?</span>
+  </div>
+  <div class="answer-section">
+    <button class="answer-toggle" onclick="toggleAnswer(this)">הצג תשובות</button>
+    <div class="answer-content">
+      (א) גדול: 12×6 = <b>72 יח״ש</b>. קטן: 6×3 = <b>18 יח״ש</b>.<br>
+      (ב) <b>72 − 18 = 54 יח״ש</b><br>
+      (ג) PQ עובר ב-x=0, שזה בדיוק מרכז המלבן הקטן (H(−3,0) עד G(3,0)). לכן PQ מחלק גם את המלבן הקטן לשני חצאים שווים: <b>9 יח״ש</b> בכל צד.
+    </div>
+  </div>
+</div>
+
+<!-- Q18 -->
+<div class="question-block">
+  <div class="q-header"><span class="q-number">18</span><div class="q-text">שאלת חשיבה – נקודות מיוחדות</div></div>
+  <div class="q-text">
+    נתון מלבן ABCD כאשר A(1,5), B(7,5), C(7,1), D(1,1).
+    <span class="sub"><span class="sub-label">(א)</span> מצאו את שיעורי מרכז המלבן (נקודת חיתוך האלכסונים).</span>
+    <span class="sub"><span class="sub-label">(ב)</span> סמנו נקודה E באמצע צלע AB ונקודה F באמצע צלע CD. מהם שיעוריהן?</span>
+    <span class="sub"><span class="sub-label">(ג)</span> חברו E ל-F. מה אורך הקטע EF?</span>
+    <span class="sub"><span class="sub-label">(ד)</span> הקטע EF מחלק את המלבן לשני חלקים. האם הם שווים בשטחם? נמקו.</span>
+    <span class="sub"><span class="sub-label">(ה)</span> מצאו נקודה G כך שהמשולש EFG שטחו 6 יחידות שטח ו-G נמצאת בתוך המלבן.</span>
+  </div>
+  <div class="answer-section">
+    <button class="answer-toggle" onclick="toggleAnswer(this)">הצג תשובות</button>
+    <div class="answer-content">
+      (א) מרכז = ((1+7)/2, (5+1)/2) = <b>(4, 3)</b><br>
+      (ב) E = ((1+7)/2, 5) = <b>(4,5)</b>. F = ((1+7)/2, 1) = <b>(4,1)</b>.<br>
+      (ג) EF = |5−1| = <b>4 יח״א</b><br>
+      (ד) <b>כן</b>. כל חלק הוא מלבן 3×4 = 12 יח״ש. סה״כ 24 = שטח המלבן (6×4). ✓<br>
+      (ה) בסיס EF = 4, שטח = 6 → ½·4·h = 6 → h = 3. G צריכה להיות במרחק 3 מקו x=4 בתוך המלבן. <b>G(1,3)</b> או <b>G(7,3)</b>.
+    </div>
+  </div>
+</div>
+
+<!-- Q19 -->
+<div class="question-block">
+  <div class="q-header"><span class="q-number">19</span><div class="q-text">שאלת אתגר – שיקוף</div></div>
+  <div class="q-text">
+    נתונה נקודה A(3,2).
+    <span class="sub"><span class="sub-label">(א)</span> מצאו את שיעורי הנקודה A׳, שהיא השיקוף של A דרך ציר ה-x.</span>
+    <span class="sub"><span class="sub-label">(ב)</span> מצאו את שיעורי הנקודה A״, שהיא השיקוף של A דרך ציר ה-y.</span>
+    <span class="sub"><span class="sub-label">(ג)</span> מצאו את שיעורי הנקודה A‴, שהיא השיקוף של A דרך ראשית הצירים (שיקוף דרך שני הצירים).</span>
+    <span class="sub"><span class="sub-label">(ד)</span> חברו את A, A׳, A‴, A״ (בסדר הזה). מהו סוג המרובע שנוצר?</span>
+    <span class="sub"><span class="sub-label">(ה)</span> חשבו את שטח המרובע.</span>
+  </div>
+  <div class="tip-box">שיקוף דרך ציר x: שיעור ה-y מתהפך. שיקוף דרך ציר y: שיעור ה-x מתהפך.</div>
+  <div class="answer-section">
+    <button class="answer-toggle" onclick="toggleAnswer(this)">הצג תשובות</button>
+    <div class="answer-content">
+      (א) A׳ = <b>(3,−2)</b><br>
+      (ב) A״ = <b>(−3,2)</b><br>
+      (ג) A‴ = <b>(−3,−2)</b><br>
+      (ד) A(3,2), A׳(3,−2), A‴(−3,−2), A״(−3,2) → זהו <b>מלבן</b> (ואף ריבוע? לא, כי 6≠4). מלבן.<br>
+      (ה) אורך = 6, רוחב = 4 → שטח = <b>24 יח״ש</b>
+    </div>
+  </div>
+</div>
+
+<!-- Q20 -->
+<div class="question-block">
+  <div class="q-header"><span class="q-number">20</span><div class="q-text">שאלת אתגר – בניית צורות</div></div>
+  <div class="q-text">
+    <span class="sub"><span class="sub-label">(א)</span> מצאו 4 נקודות שהן קדקודי ריבוע ששטחו 16 יחידות שטח, ומרכזו בראשית הצירים (0,0). רשמו את שיעורי הקדקודים.</span>
+    <span class="sub"><span class="sub-label">(ב)</span> מצאו 3 נקודות שהן קדקודי משולש שווה-שוקיים ששטחו 10 יחידות שטח, כך שהבסיס נמצא על ציר ה-x.</span>
+    <span class="sub"><span class="sub-label">(ג)</span> מצאו 4 נקודות שהן קדקודי מלבן שהיקפו 20 יחידות אורך ושטחו 24 יחידות שטח.</span>
+  </div>
+  <div class="answer-section">
+    <button class="answer-toggle" onclick="toggleAnswer(this)">הצג תשובות</button>
+    <div class="answer-content">
+      (א) צלע = 4. מרכז ב-(0,0) → (2,2), (−2,2), (−2,−2), (2,−2). <b>שטח = 16</b> ✓<br>
+      (ב) בסיס על ציר x, נבחר למשל (−5,0) ו-(5,0). בסיס = 10. שטח = ½·10·h = 10 → h = 2. קדקוד: (0,2). → <b>A(−5,0), B(5,0), C(0,2)</b>. שטח = 10 ✓<br>
+      (ג) היקף 20 → 2(a+b)=20 → a+b=10. שטח 24 → a·b=24. a+b=10, ab=24 → a=4, b=6 (או להיפך).<br>
+      <b>A(0,0), B(6,0), C(6,4), D(0,4)</b>. היקף=20, שטח=24 ✓
+    </div>
+  </div>
+</div>
+
+<button class="show-all-btn" onclick="toggleAllAnswers()">הצג/הסתר את כל התשובות</button>
+
+<div class="footer">
+  בהצלחה במבחן, נועה! 🌟<br>
+  <small>דף תרגול זה נוצר עבור נועה • מערכת צירים במישור • כיתה ז׳</small>
+</div>
+
+</div><!-- end container -->
+
+<script>
+// ===== Toggle answers =====
+function toggleAnswer(btn) {
+  const content = btn.nextElementSibling;
+  content.classList.toggle('show');
+  btn.textContent = content.classList.contains('show') ? 'הסתר תשובות' : 'הצג תשובות';
+}
+
+let allShown = false;
+function toggleAllAnswers() {
+  allShown = !allShown;
+  document.querySelectorAll('.answer-content').forEach(el => {
+    el.classList.toggle('show', allShown);
+  });
+  document.querySelectorAll('.answer-toggle').forEach(btn => {
+    btn.textContent = allShown ? 'הסתר תשובות' : 'הצג תשובות';
+  });
+}
+
+// ===== SVG Coordinate System Generator =====
+function createCoordSystem(containerId, config) {
+  const {
+    xMin, xMax, yMin, yMax,
+    points = [],
+    shapes = [],
+    lines = [],
+    width = 360, height = 360
+  } = config;
+
+  const margin = 35;
+  const w = width - 2 * margin;
+  const h = height - 2 * margin;
+  const xRange = xMax - xMin;
+  const yRange = yMax - yMin;
+
+  function sx(x) { return margin + (x - xMin) / xRange * w; }
+  function sy(y) { return margin + (yMax - y) / yRange * h; }
+
+  let svg = `<svg width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" xmlns="http://www.w3.org/2000/svg" style="background:#fafafa;border-radius:8px;border:1px solid #e5e0d8;">`;
+
+  // Grid lines
+  for (let x = Math.ceil(xMin); x <= Math.floor(xMax); x++) {
+    const px = sx(x);
+    svg += `<line x1="${px}" y1="${margin}" x2="${px}" y2="${height-margin}" class="grid-line"/>`;
+  }
+  for (let y = Math.ceil(yMin); y <= Math.floor(yMax); y++) {
+    const py = sy(y);
+    svg += `<line x1="${margin}" y1="${py}" x2="${width-margin}" y2="${py}" class="grid-line"/>`;
+  }
+
+  // Axes
+  const ox = sx(0), oy = sy(0);
+  if (xMin <= 0 && xMax >= 0) {
+    svg += `<line x1="${ox}" y1="${margin-5}" x2="${ox}" y2="${height-margin+5}" class="axis-line"/>`;
+    svg += `<polygon points="${ox-4},${margin+2} ${ox+4},${margin+2} ${ox},${margin-8}" class="axis-arrow"/>`;
+    svg += `<text x="${ox+8}" y="${margin-2}" class="axis-name">y</text>`;
+  }
+  if (yMin <= 0 && yMax >= 0) {
+    svg += `<line x1="${margin-5}" y1="${oy}" x2="${width-margin+5}" y2="${oy}" class="axis-line"/>`;
+    svg += `<polygon points="${width-margin-2},${oy-4} ${width-margin-2},${oy+4} ${width-margin+8},${oy}" class="axis-arrow"/>`;
+    svg += `<text x="${width-margin+10}" y="${oy+4}" class="axis-name">x</text>`;
+  }
+
+  // Axis numbers
+  for (let x = Math.ceil(xMin); x <= Math.floor(xMax); x++) {
+    if (x === 0) continue;
+    const px = sx(x);
+    if (yMin <= 0 && yMax >= 0) {
+      svg += `<line x1="${px}" y1="${oy-3}" x2="${px}" y2="${oy+3}" stroke="#2c2c2c" stroke-width="1"/>`;
+      svg += `<text x="${px}" y="${oy+14}" text-anchor="middle" class="axis-label">${x}</text>`;
+    }
+  }
+  for (let y = Math.ceil(yMin); y <= Math.floor(yMax); y++) {
+    if (y === 0) continue;
+    const py = sy(y);
+    if (xMin <= 0 && xMax >= 0) {
+      svg += `<line x1="${ox-3}" y1="${py}" x2="${ox+3}" y2="${py}" stroke="#2c2c2c" stroke-width="1"/>`;
+      svg += `<text x="${ox-8}" y="${py+4}" text-anchor="end" class="axis-label">${y}</text>`;
+    }
+  }
+
+  // Shapes (filled polygons)
+  shapes.forEach(shape => {
+    const pts = shape.points.map(p => `${sx(p[0])},${sy(p[1])}`).join(' ');
+    svg += `<polygon points="${pts}" class="shape-fill" ${shape.dash ? 'stroke-dasharray="4,2"' : ''}/>`;
+  });
+
+  // Lines
+  lines.forEach(line => {
+    svg += `<line x1="${sx(line[0][0])}" y1="${sy(line[0][1])}" x2="${sx(line[1][0])}" y2="${sy(line[1][1])}" class="shape-line"/>`;
+  });
+
+  // Points
+  points.forEach(p => {
+    const px = sx(p.x), py = sy(p.y);
+    svg += `<circle cx="${px}" cy="${py}" r="4" class="point-dot"/>`;
+    const dx = p.labelDx || 6;
+    const dy = p.labelDy || -8;
+    svg += `<text x="${px+dx}" y="${py+dy}" class="point-label">${p.label}</text>`;
+  });
+
+  svg += `</svg>`;
+  document.getElementById(containerId).innerHTML = svg;
+}
+
+// ===== Generate all diagrams =====
+window.addEventListener('DOMContentLoaded', () => {
+
+  // Q1: Points in multiple quadrants
+  createCoordSystem('diag1', {
+    xMin: -6, xMax: 7, yMin: -1, yMax: 6,
+    points: [
+      {x:2, y:5, label:'A'}, {x:6, y:5, label:'B'}, {x:4, y:1, label:'C'},
+      {x:-3, y:4, label:'D'}, {x:-5, y:1, label:'E'}, {x:-1, y:1, label:'F'}
+    ],
+    shapes: []
+  });
+
+  // Q2: Rectangle in Q1
+  createCoordSystem('diag2', {
+    xMin: -1, xMax: 9, yMin: 0, yMax: 8,
+    points: [
+      {x:1, y:6, label:'A'}, {x:7, y:6, label:'B'}, {x:7, y:2, label:'C'}, {x:1, y:2, label:'D'}
+    ],
+    shapes: [{points: [[1,6],[7,6],[7,2],[1,2]]}]
+  });
+
+  // Q3: Square crossing Q1 and Q2
+  createCoordSystem('diag3', {
+    xMin: -5, xMax: 4, yMin: -2, yMax: 7,
+    points: [
+      {x:-3, y:5, label:'A'}, {x:2, y:5, label:'B'}, {x:2, y:0, label:'C'}, {x:-3, y:0, label:'D'}
+    ],
+    shapes: [{points: [[-3,5],[2,5],[2,0],[-3,0]]}]
+  });
+
+  // Q4: Points in all quadrants
+  createCoordSystem('diag4', {
+    xMin: -6, xMax: 7, yMin: -5, yMax: 5,
+    points: [
+      {x:-4, y:3, label:'A'}, {x:3, y:3, label:'B'}, {x:5, y:-2, label:'C'},
+      {x:1, y:-4, label:'D'}, {x:-2, y:-1, label:'E'}
+    ]
+  });
+
+  // Q5: Right triangle on axes
+  createCoordSystem('diag5', {
+    xMin: -2, xMax: 8, yMin: -1, yMax: 6,
+    points: [
+      {x:0, y:4, label:'A', labelDx:-18}, {x:6, y:0, label:'B'}, {x:0, y:0, label:'C', labelDx:-15, labelDy:14}
+    ],
+    shapes: [{points: [[0,4],[6,0],[0,0]]}]
+  });
+
+  // Q6: Rectangle crossing all quadrants
+  createCoordSystem('diag6', {
+    xMin: -6, xMax: 5, yMin: -4, yMax: 5,
+    points: [
+      {x:-4, y:3, label:'A', labelDx:-18}, {x:3, y:3, label:'B'}, {x:3, y:-2, label:'C'}, {x:-4, y:-2, label:'D', labelDx:-18}
+    ],
+    shapes: [{points: [[-4,3],[3,3],[3,-2],[-4,-2]]}]
+  });
+
+  // Q7: Square in Q3
+  createCoordSystem('diag7', {
+    xMin: -7, xMax: 2, yMin: -7, yMax: 1,
+    points: [
+      {x:-5, y:-1, label:'A', labelDx:-18}, {x:-1, y:-1, label:'B'}, {x:-1, y:-5, label:'C'}, {x:-5, y:-5, label:'D', labelDx:-18}
+    ],
+    shapes: [{points: [[-5,-1],[-1,-1],[-1,-5],[-5,-5]]}]
+  });
+
+  // Q9: Rectangle crossing Q1,Q2,Q3,Q4 with partial coordinates
+  createCoordSystem('diag9', {
+    xMin: -5, xMax: 6, yMin: -5, yMax: 7,
+    points: [
+      {x:-3, y:5, label:'A(__,__)', labelDx:-50}, {x:4, y:5, label:'B(4,5)'},
+      {x:4, y:-3, label:'C(__,__)'}, {x:-3, y:-3, label:'D(−3,−3)', labelDx:-60}
+    ],
+    shapes: [{points: [[-3,5],[4,5],[4,-3],[-3,-3]]}]
+  });
+
+  // Q10: Right triangle in Q2/Q3
+  createCoordSystem('diag10', {
+    xMin: -6, xMax: 4, yMin: -8, yMax: 2,
+    points: [
+      {x:-4, y:0, label:'A', labelDx:-15, labelDy:-8}, {x:-4, y:-6, label:'B', labelDx:-15},
+      {x:2, y:-6, label:'C'}
+    ],
+    shapes: [{points: [[-4,0],[-4,-6],[2,-6]]}]
+  });
+
+  // Q11: Obtuse triangle
+  createCoordSystem('diag11', {
+    xMin: -4, xMax: 6, yMin: -3, yMax: 7,
+    points: [
+      {x:-2, y:5, label:'A', labelDx:-15}, {x:4, y:-1, label:'B'}, {x:-2, y:-1, label:'C', labelDx:-15}
+    ],
+    shapes: [{points: [[-2,5],[4,-1],[-2,-1]]}]
+  });
+
+  // Q12: Triangle with base on x-axis
+  createCoordSystem('diag12', {
+    xMin: -5, xMax: 7, yMin: -2, yMax: 6,
+    points: [
+      {x:2, y:4, label:'A'}, {x:-3, y:0, label:'B', labelDx:-15}, {x:5, y:0, label:'C'}
+    ],
+    shapes: [{points: [[2,4],[-3,0],[5,0]]}]
+  });
+
+  // Q14: Pentagon
+  createCoordSystem('diag14', {
+    xMin: -6, xMax: 5, yMin: -6, yMax: 6,
+    points: [
+      {x:-4, y:4, label:'A', labelDx:-15}, {x:3, y:4, label:'B'}, {x:3, y:-1, label:'C'},
+      {x:0, y:-4, label:'D'}, {x:-4, y:-1, label:'E', labelDx:-15}
+    ],
+    shapes: [{points: [[-4,4],[3,4],[3,-1],[0,-4],[-4,-1]]}]
+  });
+
+  // Q16: Isosceles triangle
+  createCoordSystem('diag16', {
+    xMin: -6, xMax: 6, yMin: -2, yMax: 8,
+    points: [
+      {x:0, y:6, label:'A', labelDx:6, labelDy:-8}, {x:-4, y:0, label:'B', labelDx:-18}, {x:4, y:0, label:'C'}
+    ],
+    shapes: [{points: [[0,6],[-4,0],[4,0]]}]
+  });
+
+});
+</script>
+
+</body>
+</html>

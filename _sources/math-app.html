@@ -1,0 +1,978 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>🧮 תרגול מתמטיקה - הכנה למבחן</title>
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --primary: #6C5CE7;
+  --primary-light: #A29BFE;
+  --success: #00B894;
+  --danger: #E17055;
+  --warning: #FDCB6E;
+  --bg: #F8F9FD;
+  --card: #FFFFFF;
+  --text: #2D3436;
+  --text-light: #636E72;
+  --shadow: 0 4px 15px rgba(108, 92, 231, 0.15);
+  --radius: 16px;
+  --fractions-color: #E84393;
+  --fractions-bg: #FDE8F0;
+  --multiply-color: #6C5CE7;
+  --multiply-bg: #EDE8FD;
+  --geometry-color: #00B894;
+  --geometry-bg: #E0F5EE;
+  --speed-color: #F39C12;
+  --speed-bg: #FEF3E0;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'Rubik', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  direction: rtl;
+  overflow-x: hidden;
+}
+
+.app-header {
+  background: linear-gradient(135deg, var(--primary), #A29BFE);
+  color: white;
+  padding: 20px;
+  text-align: center;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 4px 20px rgba(108, 92, 231, 0.3);
+}
+
+.app-header h1 { font-size: 1.4em; font-weight: 700; }
+.app-header .subtitle { font-size: 0.85em; opacity: 0.9; margin-top: 4px; }
+
+.back-btn {
+  position: absolute;
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(255,255,255,0.2);
+  border: none;
+  color: white;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  font-size: 1.2em;
+  cursor: pointer;
+  display: none;
+}
+
+.back-btn:hover { background: rgba(255,255,255,0.3); }
+
+.main-menu { padding: 20px; max-width: 600px; margin: 0 auto; }
+
+.greeting { text-align: center; padding: 20px 0; font-size: 1.2em; color: var(--primary); font-weight: 600; }
+
+.category-card {
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 20px;
+  margin-bottom: 16px;
+  box-shadow: var(--shadow);
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+  border-right: 5px solid;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.category-card:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(108,92,231,0.25); }
+.category-card.fractions { border-color: var(--fractions-color); }
+.category-card.multiply { border-color: var(--multiply-color); }
+.category-card.geometry { border-color: var(--geometry-color); }
+.category-card.speed { border-color: var(--speed-color); }
+
+.category-icon {
+  width: 56px; height: 56px; border-radius: 14px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.8em; flex-shrink: 0;
+}
+
+.fractions .category-icon { background: var(--fractions-bg); }
+.multiply .category-icon { background: var(--multiply-bg); }
+.geometry .category-icon { background: var(--geometry-bg); }
+.speed .category-icon { background: var(--speed-bg); }
+
+.category-info h3 { font-size: 1.1em; margin-bottom: 4px; }
+.category-info p { font-size: 0.8em; color: var(--text-light); line-height: 1.4; }
+
+.category-progress { margin-top: 8px; background: #EEE; height: 6px; border-radius: 3px; overflow: hidden; }
+.category-progress-fill { height: 100%; border-radius: 3px; transition: width 0.3s; }
+.fractions .category-progress-fill { background: var(--fractions-color); }
+.multiply .category-progress-fill { background: var(--multiply-color); }
+.geometry .category-progress-fill { background: var(--geometry-color); }
+.speed .category-progress-fill { background: var(--speed-color); }
+
+.subtopic-list { padding: 20px; max-width: 600px; margin: 0 auto; }
+.subtopic-card {
+  background: var(--card); border-radius: 12px; padding: 16px 20px; margin-bottom: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06); cursor: pointer; transition: transform 0.15s;
+  display: flex; justify-content: space-between; align-items: center;
+}
+.subtopic-card:hover { transform: translateX(-4px); }
+.subtopic-card .name { font-weight: 500; font-size: 0.95em; }
+.subtopic-card .score { font-size: 0.8em; color: var(--text-light); background: var(--bg); padding: 4px 10px; border-radius: 20px; }
+
+/* Quiz */
+.quiz-container { padding: 20px; max-width: 600px; margin: 0 auto; }
+.progress-bar { background: #EEE; height: 8px; border-radius: 4px; margin-bottom: 20px; overflow: hidden; }
+.progress-fill { height: 100%; background: linear-gradient(90deg, var(--primary), var(--primary-light)); border-radius: 4px; transition: width 0.4s; }
+.question-counter { text-align: center; font-size: 0.85em; color: var(--text-light); margin-bottom: 12px; }
+.question-card { background: var(--card); border-radius: var(--radius); padding: 24px; box-shadow: var(--shadow); margin-bottom: 16px; }
+.question-text { font-size: 1.15em; line-height: 1.7; font-weight: 500; margin-bottom: 8px; }
+.question-hint { font-size: 0.8em; color: var(--text-light); margin-bottom: 8px; font-style: italic; }
+.math-expr { direction: ltr; display: inline-block; unicode-bidi: isolate; font-family: 'Rubik', monospace; }
+.visual-area { margin: 16px 0; display: flex; justify-content: center; }
+
+/* Answer input */
+.answer-input-area { margin-top: 16px; display: flex; gap: 10px; align-items: center; }
+.answer-input {
+  flex: 1; padding: 14px 16px; border: 2px solid #E0E0E0; border-radius: 12px;
+  font-family: 'Rubik', sans-serif; font-size: 1.3em; text-align: center;
+  outline: none; direction: ltr; transition: border-color 0.2s;
+}
+.answer-input:focus { border-color: var(--primary); }
+.answer-input.correct { border-color: var(--success); background: #E0F5EE; }
+.answer-input.wrong { border-color: var(--danger); background: #FDE8E0; }
+
+.submit-btn {
+  background: var(--primary); color: white; border: none; border-radius: 12px;
+  padding: 14px 24px; font-family: 'Rubik', sans-serif; font-size: 1em;
+  font-weight: 600; cursor: pointer; white-space: nowrap;
+}
+.submit-btn:hover { background: #5A4BD1; }
+.submit-btn:disabled { background: #CCC; cursor: default; }
+
+/* Fraction input */
+.fraction-input-area { margin-top: 16px; display: flex; align-items: center; justify-content: center; gap: 12px; flex-wrap: wrap; }
+.frac-input-group { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+.frac-input-group input {
+  width: 60px; padding: 8px; border: 2px solid #E0E0E0; border-radius: 8px;
+  font-family: 'Rubik', sans-serif; font-size: 1.2em; text-align: center; outline: none; direction: ltr;
+}
+.frac-input-group input:focus { border-color: var(--primary); }
+.frac-line-input { width: 60px; height: 3px; background: var(--text); }
+.whole-input {
+  width: 50px; padding: 10px; border: 2px solid #E0E0E0; border-radius: 8px;
+  font-family: 'Rubik', sans-serif; font-size: 1.2em; text-align: center; outline: none; direction: ltr;
+}
+.whole-input:focus { border-color: var(--primary); }
+
+.feedback { text-align: center; padding: 16px; border-radius: 12px; margin-top: 12px; font-weight: 600; display: none; }
+.feedback.correct { background: #E0F5EE; color: #00B894; }
+.feedback.wrong { background: #FDE8E0; color: #E17055; }
+.feedback .explanation { font-weight: 400; font-size: 0.85em; margin-top: 8px; line-height: 1.5; }
+
+.next-btn {
+  display: none; width: 100%; padding: 14px; background: var(--primary); color: white;
+  border: none; border-radius: 12px; font-family: 'Rubik', sans-serif;
+  font-size: 1.05em; font-weight: 600; cursor: pointer; margin-top: 12px;
+}
+.next-btn:hover { background: #5A4BD1; }
+
+/* ===== SPEED DRILL ===== */
+.speed-container { padding: 20px; max-width: 600px; margin: 0 auto; text-align: center; }
+.speed-setup h2 { margin-bottom: 16px; color: var(--primary); }
+.speed-table-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin: 16px 0; }
+.table-select-btn {
+  padding: 12px 8px; border: 2px solid #E0E0E0; border-radius: 10px; background: white;
+  font-family: 'Rubik', sans-serif; font-size: 1.1em; font-weight: 600; cursor: pointer;
+}
+.table-select-btn.selected { border-color: var(--speed-color); background: var(--speed-bg); color: #E67E22; }
+.table-select-btn:hover { border-color: var(--speed-color); }
+
+.speed-option-row { display: flex; gap: 10px; justify-content: center; margin: 16px 0; flex-wrap: wrap; }
+.speed-option-btn {
+  padding: 10px 20px; border: 2px solid #E0E0E0; border-radius: 10px; background: white;
+  font-family: 'Rubik', sans-serif; font-size: 0.95em; cursor: pointer;
+}
+.speed-option-btn.selected { border-color: var(--primary); background: var(--multiply-bg); }
+
+.start-speed-btn {
+  background: linear-gradient(135deg, #F39C12, #E67E22); color: white; border: none;
+  border-radius: 14px; padding: 16px 40px; font-family: 'Rubik', sans-serif;
+  font-size: 1.15em; font-weight: 700; cursor: pointer; margin-top: 16px;
+  box-shadow: 0 4px 15px rgba(243,156,18,0.3);
+}
+.start-speed-btn:hover { transform: scale(1.03); }
+.start-speed-btn:disabled { background: #CCC; box-shadow: none; }
+
+.speed-active { display: none; }
+.speed-timer-bar { background: #EEE; height: 10px; border-radius: 5px; margin-bottom: 8px; overflow: hidden; }
+.speed-timer-fill { height: 100%; background: linear-gradient(90deg, #F39C12, #E67E22); border-radius: 5px; transition: width 0.1s linear; }
+
+.speed-stats-row { display: flex; justify-content: space-around; margin-bottom: 20px; font-size: 0.9em; color: var(--text-light); }
+.speed-stats-row .val { font-size: 1.3em; font-weight: 700; color: var(--text); display: block; }
+
+.speed-question-display { font-size: 2.8em; font-weight: 700; color: var(--text); margin: 20px 0; direction: ltr; letter-spacing: 2px; }
+
+.speed-input {
+  width: 140px; padding: 14px; border: 3px solid #E0E0E0; border-radius: 14px;
+  font-family: 'Rubik', sans-serif; font-size: 2em; text-align: center; outline: none; direction: ltr;
+}
+.speed-input:focus { border-color: var(--speed-color); }
+.speed-input.flash-correct { border-color: var(--success); background: #E0F5EE; }
+.speed-input.flash-wrong { border-color: var(--danger); background: #FDE8E0; }
+.speed-streak { margin-top: 12px; font-size: 0.9em; color: var(--speed-color); font-weight: 600; min-height: 24px; }
+
+.speed-results { display: none; }
+.speed-results h2 { color: var(--primary); margin-bottom: 16px; }
+.speed-result-big { font-size: 3em; font-weight: 700; color: var(--speed-color); margin: 10px 0; }
+.speed-result-details {
+  display: flex; justify-content: space-around; background: white; border-radius: 12px;
+  padding: 16px; margin: 16px 0; box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+.speed-result-details .item { text-align: center; }
+.speed-result-details .item .label { font-size: 0.8em; color: var(--text-light); }
+.speed-result-details .item .value { font-size: 1.4em; font-weight: 700; }
+
+.speed-mistakes-list {
+  background: white; border-radius: 12px; padding: 16px; margin: 16px 0;
+  text-align: right; box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+.speed-mistakes-list h3 { font-size: 0.9em; color: var(--danger); margin-bottom: 10px; }
+.mistake-item { padding: 6px 0; font-size: 0.9em; border-bottom: 1px solid #F0F0F0; direction: ltr; text-align: center; }
+.mistake-item:last-child { border-bottom: none; }
+
+/* Results */
+.results-screen { padding: 30px 20px; max-width: 600px; margin: 0 auto; text-align: center; }
+.results-score { font-size: 3em; font-weight: 700; color: var(--primary); margin: 20px 0 8px; }
+.results-message { font-size: 1.1em; color: var(--text-light); margin-bottom: 24px; }
+.results-stars { font-size: 2.5em; margin-bottom: 24px; }
+.results-btn {
+  background: var(--primary); color: white; border: none; border-radius: 12px;
+  padding: 14px 32px; font-family: 'Rubik', sans-serif; font-size: 1em; font-weight: 600; cursor: pointer; margin: 8px;
+}
+.results-btn.secondary { background: var(--bg); color: var(--primary); border: 2px solid var(--primary); }
+
+.test-banner {
+  background: linear-gradient(135deg, #FDCB6E, #F39C12); color: #7F4700;
+  padding: 12px 20px; text-align: center; font-size: 0.85em; font-weight: 600;
+}
+.test-banner .days-left { font-size: 1.3em; display: block; margin-top: 2px; }
+
+.stats-row {
+  display: flex; justify-content: space-around; padding: 12px 20px;
+  background: white; margin: 0 20px 16px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+.stat-item { text-align: center; }
+.stat-value { font-size: 1.3em; font-weight: 700; color: var(--primary); }
+.stat-label { font-size: 0.7em; color: var(--text-light); }
+
+.confetti-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1000; overflow: hidden; }
+.confetti { position: absolute; width: 10px; height: 10px; top: -10px; animation: confetti-fall 3s linear forwards; }
+@keyframes confetti-fall { 0%{transform:translateY(0) rotate(0deg);opacity:1} 100%{transform:translateY(100vh) rotate(720deg);opacity:0} }
+
+.screen { display: none; }
+.screen.active { display: block; }
+
+@media (max-width: 400px) {
+  .question-text { font-size: 1em; }
+  .speed-question-display { font-size: 2.2em; }
+  .speed-input { font-size: 1.6em; width: 120px; }
+}
+</style>
+</head>
+<body>
+
+<div class="app-header">
+  <button class="back-btn" id="backBtn" onclick="goBack()">→</button>
+  <h1 id="headerTitle">🧮 תרגול מתמטיקה</h1>
+  <div class="subtitle" id="headerSubtitle">הכנה למבחן 13.3</div>
+</div>
+
+<div class="test-banner" id="testBanner">
+  📅 מבחן מתמטיקה ביום שישי 13/3
+  <span class="days-left" id="daysLeft"></span>
+</div>
+
+<!-- MAIN MENU -->
+<div class="screen active" id="menuScreen">
+  <div class="main-menu">
+    <div class="greeting">!היי רומי, בואי נתרגל ✨</div>
+    <div class="stats-row">
+      <div class="stat-item"><div class="stat-value" id="totalAnswered">0</div><div class="stat-label">תרגילים</div></div>
+      <div class="stat-item"><div class="stat-value" id="totalCorrect">0</div><div class="stat-label">נכונים</div></div>
+      <div class="stat-item"><div class="stat-value" id="totalAccuracy">-</div><div class="stat-label">אחוז הצלחה</div></div>
+    </div>
+
+    <div class="category-card speed" onclick="openCategory('speed')">
+      <div class="category-icon">⚡</div>
+      <div class="category-info">
+        <h3>אלופי הכפל!</h3>
+        <p>תרגול מהיר - לוח כפל וחילוק עם טיימר</p>
+        <div class="category-progress"><div class="category-progress-fill" id="speed-progress" style="width:0%"></div></div>
+      </div>
+    </div>
+
+    <div class="category-card fractions" onclick="openCategory('fractions')">
+      <div class="category-icon">🍕</div>
+      <div class="category-info">
+        <h3>שברים פשוטים</h3>
+        <p>השוואה, חיבור וחיסור שברים ומספרים מעורבים, כפל בשלם</p>
+        <div class="category-progress"><div class="category-progress-fill" id="fractions-progress" style="width:0%"></div></div>
+      </div>
+    </div>
+
+    <div class="category-card multiply" onclick="openCategory('multiply')">
+      <div class="category-icon">✖️</div>
+      <div class="category-info">
+        <h3>כפל וחילוק</h3>
+        <p>כפל ב-10/100/1000, סדר פעולות, כפל דו-ספרתי, קשר כפל-חילוק</p>
+        <div class="category-progress"><div class="category-progress-fill" id="multiply-progress" style="width:0%"></div></div>
+      </div>
+    </div>
+
+    <div class="category-card geometry" onclick="openCategory('geometry')">
+      <div class="category-icon">📐</div>
+      <div class="category-info">
+        <h3>גיאומטריה</h3>
+        <p>יחידות מידה, היקף ושטח של מלבנים ומצולעים</p>
+        <div class="category-progress"><div class="category-progress-fill" id="geometry-progress" style="width:0%"></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SUBTOPIC SCREEN -->
+<div class="screen" id="subtopicScreen">
+  <div class="subtopic-list" id="subtopicList"></div>
+</div>
+
+<!-- QUIZ SCREEN -->
+<div class="screen" id="quizScreen">
+  <div class="quiz-container">
+    <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+    <div class="question-counter" id="questionCounter"></div>
+    <div class="question-card">
+      <div class="question-text" id="questionText"></div>
+      <div class="question-hint" id="questionHint"></div>
+      <div class="visual-area" id="visualArea"></div>
+      <div id="answerArea"></div>
+    </div>
+    <div class="feedback" id="feedback"></div>
+    <button class="next-btn" id="nextBtn" onclick="nextQuestion()">השאלה הבאה ←</button>
+  </div>
+</div>
+
+<!-- SPEED DRILL SCREEN -->
+<div class="screen" id="speedScreen">
+  <div class="speed-container">
+    <div class="speed-setup" id="speedSetup">
+      <h2>⚡ תחרות אלופי הכפל</h2>
+      <p style="color:var(--text-light);margin-bottom:12px">בחרי לוחות כפל לתרגול:</p>
+      <div class="speed-table-grid" id="tableGrid"></div>
+      <p style="color:var(--text-light);margin:16px 0 8px">סוג תרגיל:</p>
+      <div class="speed-option-row">
+        <button class="speed-option-btn selected" onclick="setDrillType('mul')" id="drillMul">✖️ כפל</button>
+        <button class="speed-option-btn" onclick="setDrillType('div')" id="drillDiv">➗ חילוק</button>
+        <button class="speed-option-btn" onclick="setDrillType('mix')" id="drillMix">🔀 מעורב</button>
+      </div>
+      <p style="color:var(--text-light);margin:16px 0 8px">זמן:</p>
+      <div class="speed-option-row">
+        <button class="speed-option-btn" onclick="setDrillTime(30)" id="time30">30 שניות</button>
+        <button class="speed-option-btn selected" onclick="setDrillTime(60)" id="time60">דקה</button>
+        <button class="speed-option-btn" onclick="setDrillTime(120)" id="time120">2 דקות</button>
+      </div>
+      <button class="start-speed-btn" id="startSpeedBtn" onclick="startSpeedDrill()">!יאללה, מתחילים ⚡</button>
+    </div>
+
+    <div class="speed-active" id="speedActive">
+      <div class="speed-timer-bar"><div class="speed-timer-fill" id="speedTimerFill"></div></div>
+      <div class="speed-stats-row">
+        <div><span class="val" id="speedTimeLeft">60</span>שניות</div>
+        <div><span class="val" id="speedCorrectCount">0</span>נכונים</div>
+        <div><span class="val" id="speedStreakCount">0</span>רצף 🔥</div>
+      </div>
+      <div class="speed-question-display" id="speedQuestion"></div>
+      <input class="speed-input" type="tel" id="speedInput" autocomplete="off" inputmode="numeric">
+      <div class="speed-streak" id="speedStreakMsg"></div>
+    </div>
+
+    <div class="speed-results" id="speedResults">
+      <h2>⏱️ סיום!</h2>
+      <div class="speed-result-big" id="speedResultScore"></div>
+      <p style="color:var(--text-light)">תשובות נכונות</p>
+      <div class="speed-result-details">
+        <div class="item"><div class="label">סה"כ שאלות</div><div class="value" id="speedResTotal"></div></div>
+        <div class="item"><div class="label">אחוז הצלחה</div><div class="value" id="speedResAccuracy"></div></div>
+        <div class="item"><div class="label">רצף מקסימלי</div><div class="value" id="speedResStreak"></div></div>
+      </div>
+      <div class="speed-mistakes-list" id="speedMistakesList" style="display:none">
+        <h3>💡 כדאי לתרגל:</h3>
+        <div id="speedMistakesContent"></div>
+      </div>
+      <button class="results-btn" onclick="resetSpeedDrill()" style="background:var(--speed-color)">🔄 שוב!</button>
+      <button class="results-btn secondary" onclick="goToMenu()">🏠 תפריט ראשי</button>
+    </div>
+  </div>
+</div>
+
+<!-- RESULTS SCREEN -->
+<div class="screen" id="resultsScreen">
+  <div class="results-screen">
+    <div class="results-stars" id="resultsStars"></div>
+    <div class="results-score" id="resultsScore"></div>
+    <div class="results-message" id="resultsMessage"></div>
+    <button class="results-btn" onclick="retryQuiz()">🔄 תרגול נוסף</button>
+    <button class="results-btn secondary" onclick="goToMenu()">🏠 תפריט ראשי</button>
+  </div>
+</div>
+
+<div class="confetti-container" id="confettiContainer"></div>
+
+<script>
+// ===== STATE =====
+let currentScreen='menu', currentCategory='', currentSubtopic='';
+let questions=[], currentQuestionIndex=0, score=0, answered=false;
+const QUESTIONS_PER_QUIZ = 10;
+
+// Speed
+let speedSelectedTables = new Set([2,3,4,5]);
+let speedDrillType='mul', speedDrillTime=60, speedTimer=null, speedTimeRemaining=0;
+let speedCorrect=0, speedTotal=0, speedStreak=0, speedMaxStreak=0, speedMistakes=[], speedCurrentAnswer=0;
+
+// ===== PERSISTENCE =====
+function getStats(){try{return JSON.parse(localStorage.getItem('mathStats3')||'{}')}catch{return {}}}
+function saveStats(s){localStorage.setItem('mathStats3',JSON.stringify(s))}
+
+function recordAnswer(cat, sub, correct) {
+  const s=getStats(), k=cat+'.'+sub;
+  if(!s[k]) s[k]={correct:0,total:0};
+  s[k].total++; if(correct) s[k].correct++;
+  saveStats(s); updateGlobalStats();
+}
+
+function updateGlobalStats() {
+  const s=getStats(); let t=0,c=0;
+  Object.values(s).forEach(v=>{t+=v.total;c+=v.correct});
+  document.getElementById('totalAnswered').textContent=t;
+  document.getElementById('totalCorrect').textContent=c;
+  document.getElementById('totalAccuracy').textContent=t>0?Math.round(c/t*100)+'%':'-';
+  ['fractions','multiply','geometry','speed'].forEach(cat=>{
+    let ct=0,cc=0;
+    Object.keys(s).forEach(k=>{if(k.startsWith(cat+'.')){ct+=s[k].total;cc+=s[k].correct}});
+    const el=document.getElementById(cat+'-progress');
+    if(el) el.style.width=(ct>0?Math.round(cc/ct*100):0)+'%';
+  });
+}
+
+function updateTestBanner() {
+  const test=new Date(2026,2,13), today=new Date(); today.setHours(0,0,0,0);
+  const diff=Math.ceil((test-today)/(864e5));
+  const el=document.getElementById('daysLeft');
+  if(diff>0) el.textContent='נשארו '+diff+' ימים!';
+  else if(diff===0) el.textContent='היום המבחן! בהצלחה! 🌟';
+  else document.getElementById('testBanner').style.display='none';
+}
+
+// ===== NAV =====
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id+'Screen').classList.add('active');
+  currentScreen=id;
+  document.getElementById('backBtn').style.display=id==='menu'?'none':'block';
+}
+function goBack(){
+  if(speedTimer){clearInterval(speedTimer);speedTimer=null}
+  if(currentScreen==='quiz'||currentScreen==='results') showScreen('subtopic');
+  else{ showScreen('menu'); document.getElementById('headerTitle').textContent='🧮 תרגול מתמטיקה'; document.getElementById('headerSubtitle').textContent='הכנה למבחן 13.3'; }
+}
+function goToMenu(){
+  if(speedTimer){clearInterval(speedTimer);speedTimer=null}
+  showScreen('menu'); document.getElementById('headerTitle').textContent='🧮 תרגול מתמטיקה'; document.getElementById('headerSubtitle').textContent='הכנה למבחן 13.3';
+}
+
+// ===== CATEGORIES =====
+const SUBTOPICS = {
+  fractions: [
+    {id:'frac_concept',name:'שבר כחלק מקבוצה ומשלם',icon:'🍰'},
+    {id:'frac_compare',name:'השוואת שברים',icon:'⚖️'},
+    {id:'frac_add_sub',name:'חיבור וחיסור שברים',icon:'➕'},
+    {id:'frac_mixed',name:'מספרים מעורבים',icon:'🔢'},
+    {id:'frac_multiply',name:'כפל שבר בשלם',icon:'✖️'},
+    {id:'frac_mix',name:'שאלות מעורבות',icon:'🎯'},
+  ],
+  multiply: [
+    {id:'mul_10_100',name:'כפל וחילוק ב-10, 100, 1000',icon:'🔟'},
+    {id:'mul_tens',name:'כפל בעשרות ומאות שלמות',icon:'💯'},
+    {id:'mul_order',name:'סדר פעולות חשבון',icon:'📋'},
+    {id:'mul_two_digit',name:'כפל בגורם דו-ספרתי',icon:'✏️'},
+    {id:'mul_relation',name:'הקשר בין כפל לחילוק',icon:'🔄'},
+    {id:'mul_change',name:'השפעת שינוי גורם על המכפלה',icon:'📊'},
+    {id:'mul_mix',name:'שאלות מעורבות',icon:'🎯'},
+  ],
+  geometry: [
+    {id:'geo_units',name:'יחידות מידה והמרות',icon:'📏'},
+    {id:'geo_perimeter',name:'חישוב היקף',icon:'🔲'},
+    {id:'geo_area',name:'חישוב שטח מלבן',icon:'⬛'},
+    {id:'geo_combined',name:'שטח, היקף ובעיות מילוליות',icon:'🏗️'},
+    {id:'geo_mix',name:'שאלות מעורבות',icon:'🎯'},
+  ]
+};
+const CAT_NAMES={fractions:'שברים פשוטים',multiply:'כפל וחילוק',geometry:'גיאומטריה',speed:'אלופי הכפל ⚡'};
+
+function openCategory(cat){
+  if(cat==='speed'){
+    currentCategory='speed';
+    document.getElementById('headerTitle').textContent='אלופי הכפל ⚡';
+    document.getElementById('headerSubtitle').textContent='תרגול מהיר';
+    initSpeedSetup(); showScreen('speed'); return;
+  }
+  currentCategory=cat;
+  document.getElementById('headerTitle').textContent=CAT_NAMES[cat];
+  document.getElementById('headerSubtitle').textContent='בחרי נושא לתרגול';
+  const list=document.getElementById('subtopicList'), stats=getStats();
+  list.innerHTML=SUBTOPICS[cat].map(st=>{
+    const k=cat+'.'+st.id, s=stats[k]||{correct:0,total:0};
+    return `<div class="subtopic-card" onclick="startQuiz('${st.id}')">
+      <span class="name">${st.icon} ${st.name}</span>
+      <span class="score">${s.total>0?s.correct+'/'+s.total:'חדש'}</span></div>`;
+  }).join('');
+  showScreen('subtopic');
+}
+
+// ===== QUIZ =====
+function startQuiz(sub){
+  currentSubtopic=sub; currentQuestionIndex=0; score=0; answered=false;
+  questions=generateQuestions(currentCategory,sub,QUESTIONS_PER_QUIZ);
+  const st=SUBTOPICS[currentCategory].find(s=>s.id===sub);
+  document.getElementById('headerTitle').textContent=st?st.name:'';
+  document.getElementById('headerSubtitle').textContent=`שאלה 1 מתוך ${QUESTIONS_PER_QUIZ}`;
+  showScreen('quiz'); showQuestion();
+}
+
+function showQuestion(){
+  if(currentQuestionIndex>=questions.length){showResults();return}
+  answered=false;
+  const q=questions[currentQuestionIndex];
+  document.getElementById('progressFill').style.width=(currentQuestionIndex/questions.length*100)+'%';
+  document.getElementById('questionCounter').textContent=`שאלה ${currentQuestionIndex+1} מתוך ${questions.length}`;
+  document.getElementById('headerSubtitle').textContent=`שאלה ${currentQuestionIndex+1} מתוך ${questions.length}`;
+  document.getElementById('questionText').innerHTML=q.text;
+  document.getElementById('questionHint').textContent=q.hint||'';
+  document.getElementById('feedback').style.display='none';
+  document.getElementById('nextBtn').style.display='none';
+  document.getElementById('visualArea').innerHTML=q.visual||'';
+
+  const aa=document.getElementById('answerArea');
+  if(q.inputType==='fraction'){
+    aa.innerHTML=`<div class="fraction-input-area">
+      ${q.showWhole?'<input class="whole-input" type="tel" id="wholeInput" placeholder="שלם" inputmode="numeric" autocomplete="off">':''}
+      <div class="frac-input-group">
+        <input type="tel" id="numInput" placeholder="מונה" inputmode="numeric" autocomplete="off">
+        <div class="frac-line-input"></div>
+        <input type="tel" id="denInput" placeholder="מכנה" inputmode="numeric" autocomplete="off">
+      </div>
+      <button class="submit-btn" onclick="checkFracAnswer()">בדיקה</button>
+    </div>`;
+    setTimeout(()=>(q.showWhole?document.getElementById('wholeInput'):document.getElementById('numInput'))?.focus(),100);
+  } else {
+    aa.innerHTML=`<div class="answer-input-area">
+      <input class="answer-input" type="text" id="answerInput" placeholder="${q.placeholder||'?'}"
+        inputmode="${q.inputmode||'numeric'}" autocomplete="off"
+        onkeydown="if(event.key==='Enter')checkTextAnswer()">
+      <button class="submit-btn" onclick="checkTextAnswer()">בדיקה</button>
+    </div>`;
+    setTimeout(()=>document.getElementById('answerInput')?.focus(),100);
+  }
+}
+
+function norm(s){return String(s).trim().replace(/,/g,'').replace(/\s+/g,'')}
+
+function checkTextAnswer(){
+  if(answered)return;
+  const inp=document.getElementById('answerInput');
+  if(!inp||!inp.value.trim())return;
+  answered=true;
+  const q=questions[currentQuestionIndex], uv=norm(inp.value);
+  let ok=false;
+  if(q.acceptedAnswers) ok=q.acceptedAnswers.some(a=>norm(a)===uv);
+  else ok=uv===norm(q.answer);
+  inp.disabled=true; inp.classList.add(ok?'correct':'wrong');
+  document.querySelector('#answerArea .submit-btn').disabled=true;
+  showFeedback(ok,q);
+}
+
+function checkFracAnswer(){
+  if(answered)return;
+  const q=questions[currentQuestionIndex];
+  const num=parseInt(document.getElementById('numInput')?.value)||0;
+  const den=parseInt(document.getElementById('denInput')?.value)||0;
+  const whole=parseInt(document.getElementById('wholeInput')?.value)||0;
+  if(den===0&&!q.acceptWholeOnly){document.getElementById('denInput')?.focus();return}
+  answered=true;
+  let ok=false;
+  if(q.checkFraction) ok=q.checkFraction(whole,num,den);
+  else if(q.answerValue!==undefined) ok=Math.abs((whole+(den>0?num/den:0))-q.answerValue)<0.001;
+  ['numInput','denInput','wholeInput'].forEach(id=>{const e=document.getElementById(id);if(e)e.disabled=true});
+  document.querySelector('#answerArea .submit-btn').disabled=true;
+  showFeedback(ok,q);
+}
+
+function showFeedback(ok,q){
+  const fb=document.getElementById('feedback');
+  if(ok){
+    score++;
+    fb.className='feedback correct';
+    fb.innerHTML=pick(['מעולה! 🌟','כל הכבוד רומי! ⭐','נכון! 💪','מצוין! 🎯','יופי! ✨','את אלופה! 🏆']);
+  } else {
+    fb.className='feedback wrong';
+    fb.innerHTML='😊 לא נורא, בואי נלמד מזה'+(q.explanation?`<div class="explanation">${q.explanation}</div>`:'');
+  }
+  fb.style.display='block';
+  document.getElementById('nextBtn').style.display='block';
+  recordAnswer(currentCategory,currentSubtopic,ok);
+}
+
+function nextQuestion(){currentQuestionIndex++;showQuestion()}
+
+function showResults(){
+  showScreen('results');
+  const pct=Math.round(score/questions.length*100);
+  document.getElementById('resultsScore').textContent=score+' / '+questions.length;
+  let st='',msg='';
+  if(pct===100){st='🌟🌟🌟';msg='מושלם רומי! את אלופה!';launchConfetti()}
+  else if(pct>=80){st='⭐⭐⭐';msg='כל הכבוד! עבודה מעולה!';launchConfetti()}
+  else if(pct>=60){st='⭐⭐';msg='יפה מאוד! עוד קצת תרגול!'}
+  else{st='⭐';msg='בואי נתרגל עוד קצת, את בדרך הנכונה!'}
+  document.getElementById('resultsStars').textContent=st;
+  document.getElementById('resultsMessage').textContent=msg;
+}
+function retryQuiz(){startQuiz(currentSubtopic)}
+
+// ===== SPEED DRILL =====
+function initSpeedSetup(){
+  document.getElementById('speedSetup').style.display='block';
+  document.getElementById('speedActive').style.display='none';
+  document.getElementById('speedResults').style.display='none';
+  const grid=document.getElementById('tableGrid'); grid.innerHTML='';
+  for(let i=2;i<=12;i++){
+    const b=document.createElement('button');
+    b.className='table-select-btn'+(speedSelectedTables.has(i)?' selected':'');
+    b.textContent=i; b.onclick=()=>{
+      if(speedSelectedTables.has(i))speedSelectedTables.delete(i);else speedSelectedTables.add(i);
+      b.classList.toggle('selected'); updateStartBtn();
+    };
+    grid.appendChild(b);
+  }
+  const ab=document.createElement('button');
+  ab.className='table-select-btn'; ab.textContent='הכל'; ab.style.fontSize='0.85em';
+  ab.onclick=()=>{speedSelectedTables=new Set([2,3,4,5,6,7,8,9,10,11,12]);initSpeedSetup()};
+  grid.appendChild(ab);
+  updateStartBtn();
+}
+
+function setDrillType(t){
+  speedDrillType=t;
+  document.querySelectorAll('#drillMul,#drillDiv,#drillMix').forEach(b=>b.classList.remove('selected'));
+  document.getElementById(t==='mul'?'drillMul':t==='div'?'drillDiv':'drillMix').classList.add('selected');
+}
+function setDrillTime(t){
+  speedDrillTime=t;
+  document.querySelectorAll('#time30,#time60,#time120').forEach(b=>b.classList.remove('selected'));
+  document.getElementById('time'+t).classList.add('selected');
+}
+function updateStartBtn(){document.getElementById('startSpeedBtn').disabled=speedSelectedTables.size===0}
+
+function startSpeedDrill(){
+  if(speedSelectedTables.size===0)return;
+  document.getElementById('speedSetup').style.display='none';
+  document.getElementById('speedActive').style.display='block';
+  document.getElementById('speedResults').style.display='none';
+  speedCorrect=0;speedTotal=0;speedStreak=0;speedMaxStreak=0;speedMistakes=[];
+  speedTimeRemaining=speedDrillTime;
+  document.getElementById('speedCorrectCount').textContent='0';
+  document.getElementById('speedStreakCount').textContent='0';
+  document.getElementById('speedStreakMsg').textContent='';
+  document.getElementById('speedTimerFill').style.background='linear-gradient(90deg,#F39C12,#E67E22)';
+  genSpeedQ();
+  const inp=document.getElementById('speedInput');
+  inp.value='';inp.focus();
+  inp.oninput=onSpeedInput;
+  updateSpeedTimer();
+  speedTimer=setInterval(()=>{speedTimeRemaining--;updateSpeedTimer();if(speedTimeRemaining<=0)endSpeedDrill()},1000);
+}
+
+function updateSpeedTimer(){
+  document.getElementById('speedTimeLeft').textContent=speedTimeRemaining;
+  document.getElementById('speedTimerFill').style.width=(speedTimeRemaining/speedDrillTime*100)+'%';
+  if(speedTimeRemaining<=10) document.getElementById('speedTimerFill').style.background='linear-gradient(90deg,var(--danger),#E74C3C)';
+}
+
+function genSpeedQ(){
+  const tables=[...speedSelectedTables], a=pick(tables), b=randInt(1,12), p=a*b;
+  let type=speedDrillType; if(type==='mix')type=pick(['mul','div']);
+  if(type==='mul'){document.getElementById('speedQuestion').textContent=`${a} × ${b} = ?`;speedCurrentAnswer=p;}
+  else{document.getElementById('speedQuestion').textContent=`${p} ÷ ${a} = ?`;speedCurrentAnswer=b;}
+}
+
+function onSpeedInput(){
+  const inp=document.getElementById('speedInput'), val=inp.value.trim();
+  if(!val)return;
+  const num=parseInt(val);if(isNaN(num))return;
+  if(val.length>=String(speedCurrentAnswer).length){
+    speedTotal++;
+    const ok=num===speedCurrentAnswer;
+    if(ok){
+      speedCorrect++;speedStreak++;if(speedStreak>speedMaxStreak)speedMaxStreak=speedStreak;
+      inp.classList.add('flash-correct');
+      document.getElementById('speedCorrectCount').textContent=speedCorrect;
+      document.getElementById('speedStreakCount').textContent=speedStreak;
+      const sm=document.getElementById('speedStreakMsg');
+      if(speedStreak>=20)sm.textContent='🔥🔥🔥 בלתי ניתנת לעצירה!';
+      else if(speedStreak>=15)sm.textContent='🔥🔥 מדהים!';
+      else if(speedStreak>=10)sm.textContent='🔥 רצף מטורף!';
+      else if(speedStreak>=5)sm.textContent='⚡ את על גל!';
+      else sm.textContent='';
+    } else {
+      speedStreak=0; inp.classList.add('flash-wrong');
+      document.getElementById('speedStreakCount').textContent='0';
+      document.getElementById('speedStreakMsg').textContent='';
+      speedMistakes.push(document.getElementById('speedQuestion').textContent.replace('?',speedCurrentAnswer));
+    }
+    recordAnswer('speed','drill',ok);
+    setTimeout(()=>{inp.classList.remove('flash-correct','flash-wrong');inp.value='';genSpeedQ()},200);
+  }
+}
+
+function endSpeedDrill(){
+  clearInterval(speedTimer);speedTimer=null;
+  document.getElementById('speedInput').oninput=null;
+  document.getElementById('speedActive').style.display='none';
+  document.getElementById('speedResults').style.display='block';
+  document.getElementById('speedResultScore').textContent=speedCorrect;
+  document.getElementById('speedResTotal').textContent=speedTotal;
+  document.getElementById('speedResAccuracy').textContent=speedTotal>0?Math.round(speedCorrect/speedTotal*100)+'%':'-';
+  document.getElementById('speedResStreak').textContent=speedMaxStreak;
+  if(speedMistakes.length>0){
+    document.getElementById('speedMistakesList').style.display='block';
+    document.getElementById('speedMistakesContent').innerHTML=speedMistakes.slice(0,10).map(m=>`<div class="mistake-item">${m}</div>`).join('');
+  } else document.getElementById('speedMistakesList').style.display='none';
+  if(speedCorrect>=20||(speedTotal>0&&speedCorrect/speedTotal>=0.9))launchConfetti();
+}
+
+function resetSpeedDrill(){initSpeedSetup()}
+
+// ===== CONFETTI =====
+function launchConfetti(){
+  const c=document.getElementById('confettiContainer'),cols=['#E84393','#6C5CE7','#00B894','#FDCB6E','#E17055','#74B9FF'];
+  for(let i=0;i<60;i++){const e=document.createElement('div');e.className='confetti';e.style.left=Math.random()*100+'%';e.style.background=pick(cols);e.style.animationDelay=Math.random()*2+'s';e.style.borderRadius=Math.random()>0.5?'50%':'0';e.style.width=(6+Math.random()*8)+'px';e.style.height=(6+Math.random()*8)+'px';c.appendChild(e)}
+  setTimeout(()=>c.innerHTML='',4000);
+}
+
+// ===== HELPERS =====
+function randInt(a,b){return Math.floor(Math.random()*(b-a+1))+a}
+function pick(a){return a[Math.floor(Math.random()*a.length)]}
+function shuffle(a){const r=[...a];for(let i=r.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[r[i],r[j]]=[r[j],r[i]]}return r}
+function gcd(a,b){return b===0?a:gcd(b,a%b)}
+function fracStr(n,d){return `<span class="math-expr">${n}/${d}</span>`}
+function mixedStr(w,n,d){if(n===0)return `<span class="math-expr">${w}</span>`;if(w===0)return fracStr(n,d);return `<span class="math-expr">${w} ${n}/${d}</span>`}
+function simplifyFrac(n,d){if(n===0)return[0,d];const g=gcd(Math.abs(n),Math.abs(d));return[n/g,d/g]}
+function fracToMixed(n,d){return[Math.floor(n/d),n%d,d]}
+
+function drawRectSVG(w,h,lw,lh,u){
+  const s=Math.min(240/w,160/h,40),rw=w*s,rh=h*s,p=50;
+  return `<svg width="${rw+p*2}" height="${rh+p*2}" viewBox="0 0 ${rw+p*2} ${rh+p*2}" style="max-width:100%"><rect x="${p}" y="${p}" width="${rw}" height="${rh}" fill="#E8DAEF" stroke="#6C5CE7" stroke-width="2" rx="2"/><text x="${p+rw/2}" y="${p-10}" text-anchor="middle" font-family="Rubik" font-size="14" fill="#333">${lw} ${u}</text><text x="${p+rw+15}" y="${p+rh/2+5}" text-anchor="start" font-family="Rubik" font-size="14" fill="#333">${lh} ${u}</text></svg>`;
+}
+
+function drawPolygonSVG(sides){
+  const n=sides.length,R=80,cx=140,cy=110;let pts=[];
+  for(let i=0;i<n;i++){const a=-Math.PI/2+2*Math.PI*i/n;pts.push([cx+R*Math.cos(a),cy+R*Math.sin(a)])}
+  const ptStr=pts.map(p=>p.join(',')).join(' ');let labels='';
+  for(let i=0;i<n;i++){const[x1,y1]=pts[i],[x2,y2]=pts[(i+1)%n];const mx=(x1+x2)/2,my=(y1+y2)/2,dx=mx-cx,dy=my-cy,d=Math.sqrt(dx*dx+dy*dy);labels+=`<text x="${mx+dx/d*18}" y="${my+dy/d*18+4}" text-anchor="middle" font-family="Rubik" font-size="12" fill="#333">${sides[i].length} ${sides[i].unit}</text>`}
+  return `<svg width="280" height="240" viewBox="0 0 280 240" style="max-width:100%"><polygon points="${ptStr}" fill="#D5F5E3" stroke="#00B894" stroke-width="2"/>${labels}</svg>`;
+}
+
+// ===== QUESTION GENERATORS =====
+function generateQuestions(cat,sub,count){
+  const gens={
+    frac_concept:genFracConcept,frac_compare:genFracCompare,frac_add_sub:genFracAddSub,
+    frac_mixed:genFracMixed,frac_multiply:genFracMultiply,
+    frac_mix:()=>pick([genFracConcept,genFracCompare,genFracAddSub,genFracMixed,genFracMultiply])(),
+    mul_10_100:genMul10,mul_tens:genMulTens,mul_order:genMulOrder,
+    mul_two_digit:genMulTwoDigit,mul_relation:genMulRelation,mul_change:genMulChange,
+    mul_mix:()=>pick([genMul10,genMulTens,genMulOrder,genMulTwoDigit,genMulRelation,genMulChange])(),
+    geo_units:genGeoUnits,geo_perimeter:genGeoPerimeter,geo_area:genGeoArea,geo_combined:genGeoCombined,
+    geo_mix:()=>pick([genGeoUnits,genGeoPerimeter,genGeoArea,genGeoCombined])(),
+  };
+  const g=gens[sub];if(!g)return[];
+  const qs=[];for(let i=0;i<count;i++)qs.push(g());return qs;
+}
+
+// --- FRACTIONS ---
+function genFracConcept(){
+  const den=pick([2,3,4,5,6,8,10]),num=randInt(1,den-1),total=den*randInt(2,6),ans=total*num/den;
+  const items=pick(['תלמידים','ילדים','כדורים','ספרים','ממתקים','פרחים']);
+  return{text:`בקבוצה ${total} ${items}. ${fracStr(num,den)} מהם הם בנות. כמה בנות?`,
+    answer:String(ans),acceptedAnswers:[String(ans)],placeholder:'?',
+    explanation:`${total} ÷ ${den} × ${num} = ${ans}`};
+}
+
+function genFracCompare(){
+  const den=pick([3,4,5,6,8,10]),n1=randInt(1,den-1),n2=randInt(1,den-1);
+  if(n1===n2)return genFracCompare();
+  const bigger=Math.max(n1,n2), smaller=Math.min(n1,n2);
+  const sym=n1>n2?'>':'<';
+  return{text:`השלימי את הסימן: ${fracStr(n1,den)} ___ ${fracStr(n2,den)}<br>כתבי > או < או =`,
+    answer:sym, acceptedAnswers:[sym], placeholder:'> / < / =', inputmode:'text',
+    explanation:`${n1}/${den} ${sym} ${n2}/${den} כי ${bigger} חלקים > ${smaller} חלקים`};
+}
+
+function genFracAddSub(){
+  const op=pick(['+','-']),den=pick([2,3,4,5,6,8,10]);
+  let n1=randInt(1,den-1),n2=randInt(1,den-1);
+  if(op==='-'&&n1<=n2)[n1,n2]=[Math.max(n1,n2),Math.min(n1,n2)];
+  if(op==='-'&&n1===n2)return genFracAddSub();
+  const ansNum=op==='+'?n1+n2:n1-n2;
+  const[sn,sd]=simplifyFrac(ansNum,den);
+
+  if(sn<sd){
+    return{text:`${fracStr(n1,den)} ${op} ${fracStr(n2,den)} = ?`,
+      inputType:'fraction',showWhole:false,answerValue:sn/sd,
+      checkFraction:(w,un,ud)=>{if(ud===0)return false;const[cn,cd]=simplifyFrac(un,ud);return w===0&&cn===sn&&cd===sd},
+      explanation:`${n1} ${op} ${n2} = ${ansNum}. תשובה: ${sn}/${sd}`};
+  }
+  const[w,r,d]=fracToMixed(sn,sd);const[sr,srd]=simplifyFrac(r,d);
+  return{text:`${fracStr(n1,den)} ${op} ${fracStr(n2,den)} = ?`,
+    inputType:'fraction',showWhole:true,answerValue:w+(srd>0?sr/srd:0),
+    checkFraction:(uw,un,ud)=>{if(sr===0)return uw===w&&un===0;if(ud===0)return false;const[cn,cd]=simplifyFrac(un,ud);return uw===w&&cn===sr&&cd===srd},
+    explanation:`${n1} ${op} ${n2} = ${ansNum}/${den} = ${sr===0?w:w+' '+sr+'/'+srd}`};
+}
+
+function genFracMixed(){
+  const den=pick([2,3,4,5,6,8]),op=pick(['+','-']);
+  const w1=randInt(1,5),n1=randInt(1,den-1);
+  const w2=randInt(1,op==='-'?Math.max(1,w1-1):4),n2=randInt(1,den-1);
+  const t1=w1*den+n1,t2=w2*den+n2;
+  if(op==='-'&&t1<=t2)return genFracMixed();
+  const res=op==='+'?t1+t2:t1-t2;
+  const[w,r,d]=fracToMixed(res,den);const[sr,sd]=simplifyFrac(r,d);
+  return{text:`${mixedStr(w1,n1,den)} ${op} ${mixedStr(w2,n2,den)} = ?`,
+    inputType:'fraction',showWhole:true,answerValue:w+(sd>0?sr/sd:0),
+    checkFraction:(uw,un,ud)=>{if(sr===0)return uw===w&&un===0;if(ud===0)return false;const[cn,cd]=simplifyFrac(un,ud);return uw===w&&cn===sr&&cd===sd},
+    explanation:`${t1}/${den} ${op} ${t2}/${den} = ${res}/${den} = ${sr===0?w:w+' '+sr+'/'+sd}`};
+}
+
+function genFracMultiply(){
+  const den=pick([2,3,4,5,6,8]),num=randInt(1,den-1),mult=randInt(2,6),ansNum=num*mult;
+  const[sn,sd]=simplifyFrac(ansNum,den);
+  const rep=pick([true,false]);
+  const text=rep?Array(mult).fill(fracStr(num,den)).join(' + ')+' = ?':`${fracStr(num,den)} × ${mult} = ?`;
+
+  if(sn<sd){
+    return{text,inputType:'fraction',showWhole:false,answerValue:sn/sd,
+      checkFraction:(w,un,ud)=>{if(ud===0)return false;const[cn,cd]=simplifyFrac(un,ud);return w===0&&cn===sn&&cd===sd},
+      explanation:`${num}/${den} × ${mult} = ${ansNum}/${den} = ${sn}/${sd}`};
+  }
+  const[w,r,d]=fracToMixed(sn,sd);const[sr,srd]=simplifyFrac(r,d);
+  return{text,inputType:'fraction',showWhole:true,answerValue:w+(srd>0?sr/srd:0),
+    checkFraction:(uw,un,ud)=>{if(sr===0)return uw===w&&un===0;if(ud===0)return false;const[cn,cd]=simplifyFrac(un,ud);return uw===w&&cn===sr&&cd===srd},
+    explanation:`${num}/${den} × ${mult} = ${ansNum}/${den} = ${sr===0?w:w+' '+sr+'/'+srd}`};
+}
+
+// --- MULTIPLY & DIVIDE ---
+function genMul10(){
+  const f=pick([10,100,1000]),isDiv=pick([true,false]);
+  if(isDiv){const b=randInt(1,50)*f,a=b/f;return{text:`<span class="math-expr">${b.toLocaleString()} ÷ ${f.toLocaleString()} = ?</span>`,answer:String(a),acceptedAnswers:[String(a)],placeholder:'?',explanation:`${b.toLocaleString()} ÷ ${f.toLocaleString()} = ${a}`}}
+  const b=randInt(1,999),a=b*f;return{text:`<span class="math-expr">${b} × ${f.toLocaleString()} = ?</span>`,answer:String(a),acceptedAnswers:[String(a),a.toLocaleString()],placeholder:'?',explanation:`${b} × ${f.toLocaleString()} = ${a.toLocaleString()}`};
+}
+
+function genMulTens(){
+  const a=pick([20,30,40,50,60,70,80,90]),b=pick([20,30,40,50,60,70,80,90,200,300,400,500]),ans=a*b;
+  return{text:`<span class="math-expr">${a} × ${b} = ?</span>`,answer:String(ans),acceptedAnswers:[String(ans),ans.toLocaleString()],placeholder:'?',
+    explanation:`${a/10} × ${b>=100?b/100:b/10} = ${(a/10)*(b>=100?b/100:b/10)}, + אפסים → ${ans.toLocaleString()}`};
+}
+
+function genMulOrder(){
+  const tpls=[
+    ()=>{const a=randInt(2,9),b=randInt(2,9),c=randInt(1,20);return{expr:`${c} + ${a} × ${b}`,ans:c+a*b,exp:`כפל קודם: ${a}×${b}=${a*b}, ואז ${c}+${a*b}=${c+a*b}`}},
+    ()=>{const a=randInt(2,9),b=randInt(2,9),c=randInt(1,9);return{expr:`${a} × ${b} - ${c}`,ans:a*b-c,exp:`כפל קודם: ${a}×${b}=${a*b}, ואז ${a*b}-${c}=${a*b-c}`}},
+    ()=>{const a=randInt(2,10),b=randInt(2,8),c=randInt(2,5);return{expr:`(${a} + ${b}) × ${c}`,ans:(a+b)*c,exp:`סוגריים: ${a}+${b}=${a+b}, ואז ${a+b}×${c}=${(a+b)*c}`}},
+    ()=>{const a=randInt(10,30),b=randInt(2,8),c=randInt(2,5);const r=a-b*c;if(r<0)return null;return{expr:`${a} - ${b} × ${c}`,ans:r,exp:`כפל קודם: ${b}×${c}=${b*c}, ואז ${a}-${b*c}=${r}`}},
+    ()=>{const a=randInt(2,6),b=randInt(2,6),c=randInt(2,6),d=randInt(1,10);return{expr:`${a} × ${b} + ${c} × ${d}`,ans:a*b+c*d,exp:`${a}×${b}=${a*b}, ${c}×${d}=${c*d}. סה"כ ${a*b+c*d}`}},
+  ];
+  let t=null;while(!t)t=pick(tpls)();
+  return{text:`חשבי: <span class="math-expr">${t.expr} = ?</span>`,answer:String(t.ans),acceptedAnswers:[String(t.ans)],placeholder:'?',explanation:t.exp};
+}
+
+function genMulTwoDigit(){
+  const a=randInt(11,49),b=randInt(11,49);
+  return{text:`<span class="math-expr">${a} × ${b} = ?</span>`,answer:String(a*b),acceptedAnswers:[String(a*b),(a*b).toLocaleString()],placeholder:'?',explanation:`${a} × ${b} = ${a*b}`};
+}
+
+function genMulRelation(){
+  const a=randInt(3,12),b=randInt(3,12),p=a*b,type=randInt(0,2);
+  if(type===0)return{text:`אם <span class="math-expr">${a} × ${b} = ${p}</span>, מה זה <span class="math-expr">${p} ÷ ${a}</span>?`,answer:String(b),acceptedAnswers:[String(b)],placeholder:'?',explanation:`${p} ÷ ${a} = ${b}`};
+  if(type===1)return{text:`אם <span class="math-expr">${p} ÷ ${b} = ${a}</span>, מה זה <span class="math-expr">${a} × ${b}</span>?`,answer:String(p),acceptedAnswers:[String(p)],placeholder:'?',explanation:`${a} × ${b} = ${p}`};
+  return{text:`<span class="math-expr">${a} × ___ = ${p}</span>. מה המספר החסר?`,answer:String(b),acceptedAnswers:[String(b)],placeholder:'?',explanation:`${p} ÷ ${a} = ${b}`};
+}
+
+function genMulChange(){
+  const a=randInt(3,12),b=randInt(3,12),p=a*b,type=randInt(0,2);
+  if(type===0){const f=pick([2,3]),np=a*f*b;return{text:`אם <span class="math-expr">${a} × ${b} = ${p}</span>, מה זה <span class="math-expr">${a*f} × ${b}</span>?`,answer:String(np),acceptedAnswers:[String(np),np.toLocaleString()],placeholder:'?',explanation:`הגורם הוכפל ב-${f} → ${p} × ${f} = ${np}`}}
+  if(type===1){if(a%2!==0)return genMulChange();const na=a/2,np=na*b;return{text:`אם <span class="math-expr">${a} × ${b} = ${p}</span>, מה זה <span class="math-expr">${na} × ${b}</span>?`,answer:String(np),acceptedAnswers:[String(np)],placeholder:'?',explanation:`הגורם חולק ב-2 → ${p} ÷ 2 = ${np}`}}
+  const f1=pick([2,3]),f2=pick([2,3]),np=a*f1*b*f2;
+  return{text:`אם <span class="math-expr">${a} × ${b} = ${p}</span>, מה זה <span class="math-expr">${a*f1} × ${b*f2}</span>?`,answer:String(np),acceptedAnswers:[String(np),np.toLocaleString()],placeholder:'?',explanation:`×${f1} ו-×${f2} → ${p} × ${f1*f2} = ${np}`};
+}
+
+// --- GEOMETRY ---
+function genGeoUnits(){
+  const type=randInt(0,2);
+  if(type===0){const cm=randInt(100,800),m=Math.floor(cm/100),r=cm%100;return{text:`${cm} ס"מ = כמה מטרים שלמים? (רק את מספר המטרים)`,answer:String(m),acceptedAnswers:[String(m)],placeholder:'מטרים',explanation:`${cm} ÷ 100 = ${m} שארית ${r}. כלומר ${m} מ' ו-${r} ס"מ`}}
+  if(type===1){const m=randInt(1,9),cm=randInt(0,99),a=m*100+cm;return{text:`${m} מ' ו-${cm} ס"מ = ? ס"מ`,answer:String(a),acceptedAnswers:[String(a)],placeholder:'ס"מ',explanation:`${m}×100 + ${cm} = ${a} ס"מ`}}
+  const cm=randInt(1,30),mm=cm*10;return{text:`${cm} ס"מ = ? מ"מ`,answer:String(mm),acceptedAnswers:[String(mm)],placeholder:'מ"מ',explanation:`${cm} × 10 = ${mm} מ"מ`};
+}
+
+function genGeoPerimeter(){
+  if(randInt(0,1)===0){
+    const w=randInt(3,20),h=randInt(3,15),p=2*(w+h);
+    return{text:`מה ההיקף של מלבן שאורכו ${w} ס"מ ורוחבו ${h} ס"מ?`,visual:drawRectSVG(w,h,w,h,'ס"מ'),
+      answer:String(p),acceptedAnswers:[String(p)],placeholder:'ס"מ',hint:'היקף מלבן = 2 × (אורך + רוחב)',
+      explanation:`2 × (${w}+${h}) = 2 × ${w+h} = ${p} ס"מ`};
+  }
+  const n=pick([3,5,6]),names={3:'משולש',5:'מחומש',6:'משושה'};
+  const sides=[];let sum=0;for(let i=0;i<n;i++){const l=randInt(3,12);sides.push({length:l,unit:'ס"מ'});sum+=l}
+  return{text:`מה ההיקף של ה${names[n]}?`,visual:drawPolygonSVG(sides),answer:String(sum),acceptedAnswers:[String(sum)],placeholder:'ס"מ',explanation:`${sides.map(s=>s.length).join('+')} = ${sum} ס"מ`};
+}
+
+function genGeoArea(){
+  const w=randInt(3,20),h=randInt(3,15),a=w*h;
+  return{text:`מה השטח של מלבן שאורכו ${w} ס"מ ורוחבו ${h} ס"מ?`,visual:drawRectSVG(w,h,w,h,'ס"מ'),
+    answer:String(a),acceptedAnswers:[String(a)],placeholder:'ס"מ²',hint:'שטח מלבן = אורך × רוחב',explanation:`${w} × ${h} = ${a} ס"מ²`};
+}
+
+function genGeoCombined(){
+  const type=randInt(0,2);
+  if(type===0){const w=randInt(4,15),h=randInt(3,12),p=2*(w+h);return{text:`ההיקף של מלבן הוא ${p} ס"מ ואורכו ${w} ס"מ. מה רוחבו?`,answer:String(h),acceptedAnswers:[String(h)],placeholder:'ס"מ',explanation:`${p} = 2×(${w}+רוחב) → ${p/2}=${w}+רוחב → רוחב=${h}`}}
+  if(type===1){
+    const w=randInt(5,20),h=randInt(3,15);
+    const sc=pick([
+      {text:`גינה מלבנית ${w} מ' על ${h} מ'. כמה מטרים של גדר צריך?`,ans:2*(w+h),exp:`היקף = 2×(${w}+${h}) = ${2*(w+h)} מ'`},
+      {text:`חדר ${w} מ' על ${h} מ'. מה שטח הרצפה?`,ans:w*h,exp:`שטח = ${w}×${h} = ${w*h} מ"ר`},
+    ]);const s=pick(sc);return{text:s.text,answer:String(s.ans),acceptedAnswers:[String(s.ans)],placeholder:'?',explanation:s.exp};
+  }
+  const side=randInt(3,15),ask=pick(['area','peri']),ans=ask==='area'?side*side:4*side;
+  return{text:ask==='area'?`שטח ריבוע שצלעו ${side} ס"מ?`:`היקף ריבוע שצלעו ${side} ס"מ?`,
+    answer:String(ans),acceptedAnswers:[String(ans)],placeholder:'?',
+    explanation:ask==='area'?`${side}×${side}=${ans} ס"מ²`:`4×${side}=${ans} ס"מ`};
+}
+
+// ===== INIT =====
+updateTestBanner(); updateGlobalStats();
+</script>
+</body>
+</html>

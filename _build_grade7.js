@@ -9,7 +9,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const html = fs.readFileSync('/Users/udibarzelay/Downloads/math_advanced_150.html', 'utf-8');
+const html = fs.readFileSync(path.join(__dirname, '_sources', 'math_advanced_150.html'), 'utf-8');
 
 // Normalize Unicode minus (U+2212 −) to regular hyphen-minus
 function normMinus(s) {

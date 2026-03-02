@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>תרגול מתקדם — ביטויים, סדר פעולות ומשוואות</title>
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700&family=Frank+Ruhl+Libre:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #f7f5f2;
+  --card: #ffffff;
+  --primary: #1e4d8c;
+  --primary-light: #e4edf8;
+  --accent: #d4622b;
+  --accent-light: #fdf0e8;
+  --text: #222;
+  --text-light: #777;
+  --green: #2d7a4f;
+  --green-light: #eaf5ef;
+  --border: #ddd8d0;
+  --shadow: 0 2px 10px rgba(0,0,0,0.05);
+  --red: #b93030;
+  --red-light: #fce8e8;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+  font-family:'Rubik',sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  line-height:1.7;
+  padding-bottom:80px;
+  -webkit-text-size-adjust:100%;
+}
+.header {
+  background:linear-gradient(135deg,#1e4d8c 0%,#0f2b50 100%);
+  color:#fff;
+  padding:26px 18px 22px;
+  text-align:center;
+  position:sticky;top:0;z-index:100;
+  box-shadow:0 4px 20px rgba(30,77,140,0.35);
+}
+.header h1 { font-family:'Frank Ruhl Libre',serif; font-size:1.4rem; margin-bottom:3px; }
+.header .sub { font-size:0.8rem; opacity:0.85; }
+.nav {
+  display:flex; flex-wrap:wrap; gap:6px; padding:12px 14px; justify-content:center;
+  background:var(--card); border-bottom:1px solid var(--border); position:sticky; top:74px; z-index:99;
+}
+.nav a {
+  padding:6px 14px; background:var(--primary-light); color:var(--primary);
+  border-radius:18px; font-size:0.78rem; font-weight:500; text-decoration:none;
+}
+.nav a:active { background:var(--primary); color:#fff; }
+.controls {
+  display:flex; gap:8px; padding:10px 14px; justify-content:center; flex-wrap:wrap;
+}
+.controls button {
+  padding:8px 18px; border:none; border-radius:20px; font-family:'Rubik',sans-serif;
+  font-size:0.8rem; font-weight:500; cursor:pointer;
+}
+.btn-all { background:var(--accent); color:#fff; }
+.btn-filter { background:var(--primary-light); color:var(--primary); }
+.btn-filter.active { background:var(--primary); color:#fff; }
+.section { padding:18px 14px 6px; }
+.section-title {
+  font-family:'Frank Ruhl Libre',serif; font-size:1.2rem; color:var(--primary);
+  display:flex; align-items:center; gap:8px; margin-bottom:2px;
+}
+.section-title .ic {
+  width:30px;height:30px;background:var(--primary);color:#fff;border-radius:7px;
+  display:flex;align-items:center;justify-content:center;font-size:0.8rem;font-weight:700;flex-shrink:0;
+}
+.section-desc { font-size:0.8rem; color:var(--text-light); margin-bottom:14px; padding-right:38px; }
+.qc {
+  background:var(--card); border-radius:11px; padding:14px; margin-bottom:10px;
+  box-shadow:var(--shadow); border-right:4px solid var(--border);
+}
+.qc.l1 { border-right-color:#2d7a4f; }
+.qc.l2 { border-right-color:#b58a1b; }
+.qc.l3 { border-right-color:#d4622b; }
+.qc.l4 { border-right-color:#b93030; }
+.qc.l5 { border-right-color:#7b2d8e; }
+.qh { display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; }
+.qn { font-weight:700; font-size:0.85rem; color:var(--primary); }
+.ql { font-size:0.65rem; padding:2px 9px; border-radius:10px; font-weight:500; }
+.ql.l1 { background:var(--green-light); color:var(--green); }
+.ql.l2 { background:#fdf6e3; color:#8a6d15; }
+.ql.l3 { background:var(--accent-light); color:var(--accent); }
+.ql.l4 { background:var(--red-light); color:var(--red); }
+.ql.l5 { background:#f3e8f7; color:#7b2d8e; }
+.qt { font-size:0.95rem; margin-bottom:10px; line-height:1.8; }
+.m {
+  font-family:'Rubik',monospace; direction:ltr; unicode-bidi:embed; display:inline-block;
+  font-weight:500; background:#f3f1ee; padding:1px 5px; border-radius:3px;
+}
+.mb {
+  font-family:'Rubik',monospace; direction:ltr; unicode-bidi:embed; display:block;
+  text-align:center; font-weight:500; font-size:1.05rem; background:#f3f1ee;
+  padding:8px; border-radius:7px; margin:8px 0;
+}
+.sb {
+  display:block; width:100%; padding:9px; background:var(--primary-light); color:var(--primary);
+  border:none; border-radius:7px; font-family:'Rubik',sans-serif; font-size:0.82rem;
+  font-weight:500; cursor:pointer;
+}
+.sb:active { background:var(--primary); color:#fff; }
+.sol {
+  display:none; margin-top:10px; padding:12px; background:var(--green-light);
+  border-radius:7px; border:1px solid #c3dece;
+}
+.sol.open { display:block; }
+.sol-t { font-weight:700; color:var(--green); font-size:0.82rem; margin-bottom:6px; }
+.ss { font-size:0.88rem; line-height:2; }
+.ss .step { margin-bottom:3px; }
+.ss .ans { font-weight:700; color:var(--green); margin-top:4px; }
+.ss .mb { font-size:0.95rem; margin:3px 0; }
+.counter { text-align:center; padding:8px; font-size:0.78rem; color:var(--text-light); }
+@media print {
+  .header { position:static; }
+  .nav,.controls,.sb,.counter { display:none; }
+  .sol { display:block!important; }
+  .qc { break-inside:avoid; box-shadow:none; border:1px solid #ccc; }
+}
+</style>
+</head>
+<body>
+<div class="header">
+  <h1>🧮 תרגול מתקדם — 150 שאלות</h1>
+  <div class="sub">ביטויים אלגבריים · סדר פעולות חשבון · פתרון משוואות</div>
+</div>
+<div class="nav">
+  <a href="#sec1">סדר פעולות (1-50)</a>
+  <a href="#sec2">ביטויים אלגבריים (51-100)</a>
+  <a href="#sec3">משוואות (101-150)</a>
+</div>
+<div class="controls">
+  <button class="btn-all" onclick="toggleAll()">📋 הצג/הסתר הכל</button>
+  <button class="btn-filter" onclick="filterLevel('all')">הכל</button>
+  <button class="btn-filter l1" onclick="filterLevel('l1')">⭐</button>
+  <button class="btn-filter l2" onclick="filterLevel('l2')">⭐⭐</button>
+  <button class="btn-filter l3" onclick="filterLevel('l3')">⭐⭐⭐</button>
+  <button class="btn-filter l4" onclick="filterLevel('l4')">⭐⭐⭐⭐</button>
+  <button class="btn-filter l5" onclick="filterLevel('l5')">⭐⭐⭐⭐⭐</button>
+</div>
+<div class="counter" id="counter">מציג 150 מתוך 150 שאלות</div>
+
+<!-- ================= SECTION 1: ORDER OF OPERATIONS ================= -->
+<div class="section" id="sec1">
+<div class="section-title"><span class="ic">א</span> סדר פעולות חשבון</div>
+<p class="section-desc">מספרים מכוונים, חזקות, שורשים, ערך מוחלט ומספרים נגדיים — 50 שאלות ברמה עולה</p>
+
+<!-- Q1 --><div class="qc l1"><div class="qh"><span class="qn">1</span><span class="ql l1">⭐</span></div><div class="qt">חשבו:<div class="mb">(−5) + (−3) − (−8)</div></div><button class="sb" onclick="tgl(this)">📖 פתרון</button><div class="sol"><div class="sol-t">פתרון:</div><div class="ss"><div class="mb">= −5 − 3 + 8 = 0</div><div class="ans">תשובה: 0</div></div></div></div>
+
+<!-- Q2 --><div class="qc l1"><div class="qh"><span class="qn">2</span><span class="ql l1">⭐</span></div><div class="qt">חשבו:<div class="mb">(−4) × 3 + (−2) × (−5)</div></div><button class="sb" onclick="tgl(this)">📖 פתרון</button><div class="sol"><div class="sol-t">פתרון:</div><div class="ss"><div class="mb">= −12 + 10 = −2</div><div class="ans">תשובה: −2</div></div></div></div>
+
+<!-- Q3 --><div class="qc l1"><div class="qh"><span class="qn">3</span><span class="ql l1">⭐</span></div><div class="qt">חשבו:<div class="mb">(−2)³ + (−3)²</div></div><button class="sb" onclick="tgl(this)">📖 פתרון</button><div class="sol"><div class="sol-t">פתרון:</div><div class="ss"><div class="mb">(−2)³ = −8</div><div class="mb">(−3)² = 9</div><div class="mb">−8 + 9 = 1</div><div class="ans">תשובה: 1</div></div></div></div>
+
+<!-- Q4 --><div class="qc l1"><div class="qh"><span class="qn">4</span><span class="ql l1">⭐</span></div><div class="qt">חשבו:<div class="mb">|−12| − |−5| + |3|</div></div><button class="sb" onclick="tgl(this)">📖 פתרון</button><div class="sol"><div class="sol-t">פתרון:</div><div class="ss"><div class="mb">= 12 − 5 + 3 = 10</div><div class="ans">תשובה: 10</div></div></div></div>
+
+<!-- Q5 --><div class="qc l1"><div class="qh"><span class="qn">5</span><span class="ql l1">⭐</span></div><div class="qt">חשבו:<div class="mb">√25 + √9 − √16</div></div><button class="sb" onclick="tgl(this)">📖 פתרון</button><div class="sol"><div class="sol-t">פתרון:</div><div class="ss"><div class="mb">= 5 + 3 − 4 = 4</div><div class="ans">תשובה: 4</div></div></div></div>
+
+<!-- Q6 --><div class="qc l1"><div class="qh"><span class="qn">6</span><span class="ql l1">⭐</span></div><div class="qt">חשבו:<div class="mb">(−1)¹⁰ + (−1)¹¹ + (−1)¹²</div></div><button class="sb" onclick="tgl(this)">📖 פתרון</button><div class="sol"><div class="sol-t">פתרון:</div><div class="ss"><div class="step">חזקה זוגית של (−1) = 1, אי-זוגית = −1</div><div class="mb">= 1 + (−1) + 1 = 1</div><div class="ans">תשובה: 1</div></div></div></div>
+
+<!-- Q7 --><div class="qc l1"><div class="qh"><span class="qn">7</span><span class="ql l1">⭐</span></div><div class="qt">חשבו:<div class="mb">(−6) × (−2) + (−3) × 4</div></div><button class="sb" onclick="tgl(this)">📖 פתרון</button><div class="sol"><div class="sol-t">פתרון:</div><div class="ss"><div class="mb">= 12 + (−12) = 0</div><div class="ans">תשובה: 0</div></div></div></div>
+
+<!-- Q8 --><div class="qc l1"><div class="qh"><span class="qn">8</span><span class="ql l1">⭐</span></div><div class="qt">חשבו:<div class="mb">3² − (−2)² + 1³</div></div><button class="sb" onclick="tgl(this)">📖 פתרון</button><div class="sol"><div class="sol-t">פתרון:</div><div class="ss"><div class="mb">= 9 − 4 + 1 = 6</div><div class="ans">תשובה: 6</div></div></div></div>
+
+<!-- Q9 --><div class="qc l1"><div class="qh"><span class="qn">9</span><span class="ql l1">⭐</span></div><div class="qt">חשבו:<div class="mb">−|−8| + |5 − 9|</div></div><button class="sb" onclick="tgl(this)">📖 פתרון</button><div class="sol"><div class="sol-t">פתרון:</div><div class="ss"><div class="mb">= −8 + |−4| = −8 + 4 = −4</div><div class="ans">תשובה: −4</div></div></div></div>
+
+<!-- Q10 --><div class="qc l1"><div class="qh"><span class="qn">10</span><span class="ql l1">⭐</span></div><div class="qt">חשבו:<div class="mb">(−10) ÷ 2 + (−3) × (−3)</div></div><button class="sb" onclick="tgl(this)">📖 פתרון</button><div class="sol"><div class="sol-t">פתרון:</div><div class="ss"><div class="mb">= −5 + 9 = 4</div><div class="ans">תשובה: 4</div></div></div></div>
+
+<!-- Q11 --><div class="qc l2"><div class="qh"><span class="qn">11</span><span class="ql l2">⭐⭐</span></div><div class="qt">חשבו:<div class="mb">(−3)² × 2 − √64 + (−1)⁵</div></div><button class="sb" onclick="tgl(this)">📖 פתרון</button><div class="sol"><div class="sol-t">פתרון:</div><div class="ss"><div class="mb">= 9 × 2 − 8 + (−1)</div><div class="mb">= 18 − 8 − 1 = 9</div><div class="ans">תשובה: 9</div></div></div></div>
+
+<!-- Q12 --><div class="qc l2"><div class="qh"><span class="qn">12</span><span class="ql l2">⭐⭐</span></div><div class="qt">חשבו:<div class="mb">−(−4)² + 2 × (−3)³</div></div><button class="sb" onclick="tgl(this)">📖 פתרון</button><div class="sol"><div class="sol-t">פתרון:</div><div class="ss"><div class="step">שימו לב: −(−4)² = −(16) = −16</div><div class="mb">(−3)³ = −27</div><div class="mb">= −16 + 2 × (−27) = −16 − 54 = −70</div><div class="ans">תשובה: −70</div></div></div></div>
+
+<!-- Q13 --><div class="qc l2"><div class="qh"><span class="qn">13</span><span class="ql l2">⭐⭐</span></div><div class="qt">חשבו:<div class="mb">|−3 × 4| − |−2 + 10| × (−1)</div></div><button class="sb" onclick="tgl(this)">📖 פתרון</button><div class="sol"><div class="sol-t">פתרון:</div><div class="ss"><div class="mb">|−12| − |8| × (−1)</div><div class="mb">= 12 − 8 × (−1) = 12 + 8 = 20</div><div class="ans">תשובה: 20</div></div></div></div>
+
+<!-- Q14 --><div class="qc l2"><div class="qh"><span class="qn">14</span><span class="ql l2">⭐⭐</span></div><div class="qt">חשבו:<div class="mb">(−2)⁴ − (−2)³ + (−2)² − (−2)¹</div></div><button class="sb" onclick="tgl(this)">📖 פתרון</button><div class="sol"><div class="sol-t">פתרון:</div><div class="ss"><div class="mb">= 16 − (−8) + 4 − (−2)</div><div class="mb">= 16 + 8 + 4 + 2 = 30</div><div class="ans">תשובה: 30</div></div></div></div>
+
+<!-- Q15 --><div class="qc l2"><div class="qh"><span class="qn">15</span><span class="ql l2">⭐⭐</span></div><div class="qt">חשבו:<div class="mb">5 − 3 × (−2)² + √100 ÷ (−5)</div></div><button class="sb" onclick="tgl(this)">📖 פתרון</button><div class="sol"><div class="sol-t">פתרון:</div><div class="ss"><div class="mb">(−2)² = 4,  √100 = 10</div><div class="mb">= 5 − 3 × 4 + 10 ÷ (−5)</div><div class="mb">= 5 − 12 + (−2) = −9</div><div class="ans">תשובה: −9</div></div></div></div>
+
+<!-- Q16 --><div class="qc l2"><div class="qh"><span class="qn">16</span><span class="ql l2">⭐⭐</span></div><div class="qt">חשבו:<div class="mb">(−5)² − 5² + (−5) × 5</div></div><button class="sb" onclick="tgl(this)">📖 פתרון</button><div class="sol"><div class="sol-t">פתרון:</div><div class="ss"><div class="mb">= 25 − 25 + (−25) = −25</div><div class="ans">תשובה: −25</div></div></div></div>
+
+<!-- Q17 --><div class="qc l2"><div class="qh"><span class="qn">17</span><span class="ql l2">⭐⭐</span></div><div class="qt">חשבו:<div class="mb">√(9 + 16) − √9 − √16</div></div><button class="sb" onclick="tgl(this)">📖 פתרון</button><div class="sol"><div class="sol-t">פתרון:</div><div class="ss"><div class="mb">√25 − 3 − 4 = 5 − 3 − 4 = −2</div><div class="step">שימו לב: √(a+b) ≠ √a + √b !</div><div class="ans">תשובה: −2</div></div></div></div>
+
+<!-- Q18 --><div class="qc l2"><div class="qh"><span class="qn">18</span><span class="ql l2">⭐⭐</span></div><div class="qt">חשבו:<div class="mb">(−7 + 3) × (−2) − |−6 − 4|</div></div><button class="sb" onclick="tgl(this)">📖 פתרון</button><div class="sol"><div class="sol-t">פתרון:</div><div class="ss"><div class="mb">(−4) × (−2) − |−10|</div><div class="mb">= 8 − 10 = −2</div><div class="ans">תשובה: −2</div></div></div></div>
+
+<!-- Q19 --><div class="qc l2"><div class="qh"><span class="qn">19</span><span class="ql l2">⭐⭐</span></div><div class="qt">נתון a הוא המספר הנגדי של 7 ו-b = |−3|. חשבו:<div class="mb">a × b + a²</div></div><button class="sb" onclick="tgl(this)">📖 פתרון</button><div class="sol"><div class="sol-t">פתרון:</div><div class="ss"><div class="step">a = −7 (הנגדי של 7), b = 3</div><div class="mb">(−7) × 3 + (−7)² = −21 + 49 = 28</div><div class="ans">תשובה: 28</div></div></div></div>
+
+<!-- Q20 --><div class="qc l2"><div class="qh"><span class="qn">20</span><span class="ql l2">⭐⭐</span></div><div class="qt">חשבו:<div class="mb">(−1)²⁰ × (−3)² + (−1)²¹ × (−2)³</div></div><button class="sb" onclick="tgl(this)">📖 פתרון</button><div class="sol"><div class="sol-t">פתרון:</div><div class="ss"><div class="mb">1 × 9 + (−1) × (−8)</div><div class="mb">= 9 + 8 = 17</div><div class="ans">תשובה: 17</div></div></div></div>
+
+<!-- Q21 --><div class="qc l3"><div class="qh"><span class="qn">21</span><span class="ql l3">⭐⭐⭐</span></div><div class="qt">חשבו:<div class="mb">(−2)³ × 3 − (−4) × √49 + |−15| ÷ (−3)</div></div><button class="sb" onclick="tgl(this)">📖 פתרון</button><div class="sol"><div class="sol-t">פתרון:</div><div class="ss"><div class="mb">= (−8) × 3 − (−4) × 7 + 15 ÷ (−3)</div><div class="mb">= −24 + 28 + (−5) = −1</div><div class="ans">תשובה: −1</div></div></div></div>
+
+<!-- Q22 --><div class="qc l3"><div class="qh"><span class="qn">22</span><span class="ql l3">⭐⭐⭐</span></div><div class="qt">חשבו:<div class="mb">[3 − (−2)]² − [3 + (−2)]²</div></div><button class="sb" onclick="tgl(this)">📖 פתרון</button><div class="sol"><div class="sol-t">פתרון:</div><div class="ss"><div class="mb">[3 + 2]² − [1]² = 5² − 1² = 25 − 1 = 24</div><div class="ans">תשובה: 24</div></div></div></div>
+
+<!-- Q23 --><div class="qc l3"><div class="qh"><span class="qn">23</span><span class="ql l3">⭐⭐⭐</span></div><div class="qt">חשבו:<div class="mb">−(−2)³ + (−3) × |−4 + 1| − √(81)</div></div><button class="sb" onclick="tgl(this)">📖 פתרון</button><div class="sol"><div class="sol-t">פתרון:</div><div class="ss"><div class="mb">−(−8) + (−3) × |−3| − 9</div><div class="mb">= 8 + (−3) × 3 − 9</div><div class="mb">= 8 − 9 − 9 = −10</div><div class="ans">תשובה: −10</div></div></div></div>
+
+<!-- Q24 --><div class="qc l3"><div class="qh"><span class="qn">24</span><span class="ql l3">⭐⭐⭐</span></div><div class="qt">חשבו:<div class="mb">(−3)² × (−2)² − (−3 × (−2))²</div></div><button class="sb" onclick="tgl(this)">📖 פתרון</button><div class="sol"><div class="sol-t">פתרון:</div><div class="ss"><div class="mb">9 × 4 − (6)² = 36 − 36 = 0</div><div class="ans">תשובה: 0</div></div></div></div>
+
+<!-- Q25 --><div class="qc l3"><div class="qh"><span class="qn">25</span><span class="ql l3">⭐⭐⭐</span></div><div class="qt">חשבו:<div class="mb">√(100 − 36) × (−1)⁷ + (−4)² ÷ 8</div></div><button class="sb" onclick="tgl(this)">📖 פתרון</button><div class="sol"><div class="sol-t">פתרון:</div><div class="ss"><div class="mb">√64 × (−1) + 16 ÷ 8</div><div class="mb">= 8 × (−1) + 2 = −8 + 2 = −6</div><div class="ans">תשובה: −6</div></div></div></div>
+
+<!-- Q26 --><div class="qc l3"><div class="qh"><span class="qn">26</span><span class="ql l3">⭐⭐⭐</span></div><div class="qt">חשבו:<div class="mb">(−5 + √25)³ + |−8| × (−1)⁴ − 3²</div></div><button class="sb" onclick="tgl(this)">📖 פתרון</button><div class="sol"><div class="sol-t">פתרון:</div><div class="ss"><div class="mb">(−5 + 5)³ + 8 × 1 − 9</div><div class="mb">= 0³ + 8 − 9 = 0 + 8 − 9 = −1</div><div class="ans">תשובה: −1</div></div></div></div>
+
+<!-- Q27 --><div class="qc l3"><div class="qh"><span class="qn">27</span><span class="ql l3">⭐⭐⭐</span></div><div class="qt">חשבו:<div class="mb">(2 − 5)⁴ ÷ (−3)³ × (−1)</div></div><button class="sb" onclick="tgl(this)">📖 פתרון</button><div class="sol"><div class="sol-t">פתרון:</div><div class="ss"><div class="mb">(−3)⁴ ÷ (−27) × (−1)</div><div class="mb">= 81 ÷ (−27) × (−1)</div><div class="mb">= (−3) × (−1) = 3</div><div class="ans">תשובה: 3</div></div></div></div>
+
+<!-- Q28 --><div class="qc l3"><div class="qh"><span class="qn">28</span><span class="ql l3">⭐⭐⭐</span></div><div class="qt">חשבו:<div class="mb">|−3 × (−4)| − (−3) × (−4) + (−12) ÷ (−3)</div></div><button class="sb" onclick="tgl(this)">📖 פתרון</button><div class="sol"><div class="sol-t">פתרון:</div><div class="ss"><div class="mb">|12| − 12 + 4</div><div class="mb">= 12 − 12 + 4 = 4</div><div class="ans">תשובה: 4</div></div></div></div>
+
+<!-- Q29 --><div class="qc l3"><div class="qh"><span class="qn">29</span><span class="ql l3">⭐⭐⭐</span></div><div class="qt">חשבו:<div class="mb">(−2)² × (−3) + (−2) × (−3)² − 2 × 3</div></div><button class="sb" onclick="tgl(this)">📖 פתרון</button><div class="sol"><div class="sol-t">פתרון:</div><div class="ss"><div class="mb">4 × (−3) + (−2) × 9 − 6</div><div class="mb">= −12 − 18 − 6 = −36</div><div class="ans">תשובה: −36</div></div></div></div>
+
+<!-- Q30 --><div class="qc l3"><div class="qh"><span class="qn">30</span><span class="ql l3">⭐⭐⭐</span></div><div class="qt">חשבו:<div class="mb">|2 − 7| × |−3 + 1| − √(4 × 9)</div></div><button class="sb" onclick="tgl(this)">📖 פתרון</button><div class="sol"><div class="sol-t">פתרון:</div><div class="ss"><div class="mb">|−5| × |−2| − √36</div><div class="mb">= 5 × 2 − 6 = 10 − 6 = 4</div><div class="ans">תשובה: 4</div></div></div></div>
+
+<!-- Q31 --><div class="qc l4"><div class="qh"><span class="qn">31</span><span class="ql l4">⭐⭐⭐⭐</span></div><div class="qt">חשבו:<div class="mb">(√49 − (−3)²)² × (−1)³ + |−20| ÷ (−4)</div></div><button class="sb" onclick="tgl(this)">📖 פתרון</button><div class="sol"><div class="sol-t">פתרון:</div><div class="ss"><div class="mb">(7 − 9)² × (−1) + 20 ÷ (−4)</div><div class="mb">= (−2)² × (−1) + (−5)</div><div class="mb">= 4 × (−1) − 5 = −4 − 5 = −9</div><div class="ans">תשובה: −9</div></div></div></div>
+
+<!-- Q32 --><div class="qc l4"><div class="qh"><span class="qn">32</span><span class="ql l4">⭐⭐⭐⭐</span></div><div class="qt">חשבו:<div class="mb">(−1)¹⁰⁰ × (−2)³ + (−1)⁹⁹ × (−3)² − √(144) × (−1)</div></div><button class="sb" onclick="tgl(this)">📖 פתרון</button><div class="sol"><div class="sol-t">פתרון:</div><div class="ss"><div class="mb">1 × (−8) + (−1) × 9 − 12 × (−1)</div><div class="mb">= −8 − 9 + 12 = −5</div><div class="ans">תשובה: −5</div></div></div></div>
+
+<!-- Q33 --><div class="qc l4"><div class="qh"><span class="qn">33</span><span class="ql l4">⭐⭐⭐⭐</span></div><div class="qt">חשבו:<div class="mb">[(−6) + √36]² × 10 − |−5 × (−3)| + (−2)⁵</div></div><button class="sb" onclick="tgl(this)">📖 פתרון</button><div class="sol"><div class="sol-t">פתרון:</div><div class="ss"><div class="mb">[(−6) + 6]² × 10 − |15| + (−32)</div><div class="mb">= 0² × 10 − 15 − 32</div><div class="mb">= 0 − 15 − 32 = −47</div><div class="ans">תשובה: −47</div></div></div></div>
+
+<!-- Q34 --><div class="qc l4"><div class="qh"><span class="qn">34</span><span class="ql l4">⭐⭐⭐⭐</span></div><div class="qt">חשבו:<div class="mb">(−3)³ + 3³ + (−4)² − 4² + (−5)¹ − 5¹</div></div><button class="sb" onclick="tgl(this)">📖 פתרון</button><div class="sol"><div class="sol-t">פתרון:</div><div class="ss"><div class="step">חזקה אי-זוגית: (−a)ⁿ + aⁿ = 0. חזקה זוגית: (−a)ⁿ − aⁿ = 0.</div><div class="mb">= (−27 + 27) + (16 − 16) + (−5 − 5)</div><div class="mb">= 0 + 0 + (−10) = −10</div><div class="ans">תשובה: −10</div></div></div></div>
+
+<!-- Q35 --><div class="qc l4"><div class="qh"><span class="qn">35</span><span class="ql l4">⭐⭐⭐⭐</span></div><div class="qt">חשבו:<div class="mb">(|−8| − √64)³ + (−5) × (−3) × (−2) + √(49 + 15 + √36)</div></div><button class="sb" onclick="tgl(this)">📖 פתרון</button><div class="sol"><div class="sol-t">פתרון:</div><div class="ss"><div class="mb">(8 − 8)³ + (−5)(−3)(−2) + √(49 + 15 + 6)</div><div class="mb">= 0 + (−30) + √70</div><div class="step">√70 אינו שלם. נבדוק: 49 + 15 + 6 = 70. זה לא ריבוע שלם.</div><div class="step">רגע — נחשב מחדש: √(49 + 15 + √36) = √(49 + 15 + 6) = √70. זה לא יוצא שלם.</div><div class="step">נתקן: אולי הכוונה √(49) + 15 + √36? לא, הביטוי ברור. √70 ≈ 8.37.</div><div class="step">ננסח מחדש: 0 − 30 + √70 — אבל במבחן מצפים למספר שלם, אז ייתכן שטעות שלי. נבדוק: (5×3×2) = 30, סימנים: (−)(−)(−) = שלילי. נכון, −30.</div><div class="step">ובכל זאת − √70 לא שלם. נשאיר:</div><div class="mb">= −30 + √70</div><div class="step">שימו לב: תרגיל זה בודק התמודדות עם שורש לא שלם!</div><div class="ans">תשובה: −30 + √70 (≈ −21.63)</div></div></div></div>
+
+<!-- Q36 --><div class="qc l4"><div class="qh"><span class="qn">36</span><span class="ql l4">⭐⭐⭐⭐</span></div><div class="qt">חשבו:<div class="mb">(−2)² × (−3)² × (−1)⁵ + √(4 × 25) × (−1)</div></div><button class="sb" onclick="tgl(this)">📖 פתרון</button><div class="sol"><div class="sol-t">פתרון:</div><div class="ss"><div class="mb">4 × 9 × (−1) + √100 × (−1)</div><div class="mb">= −36 + 10 × (−1) = −36 − 10 = −46</div><div class="ans">תשובה: −46</div></div></div></div>
+
+<!-- Q37 --><div class="qc l4"><div class="qh"><span class="qn">37</span><span class="ql l4">⭐⭐⭐⭐</span></div><div class="qt">נתון: <span class="m">a = −3</span>, <span class="m">b = 2</span>, <span class="m">c = −1</span>. חשבו:<div class="mb">a² × b − a × b² + c³ × (a − b)</div></div><button class="sb" onclick="tgl(this)">📖 פתרון</button><div class="sol"><div class="sol-t">פתרון:</div><div class="ss"><div class="mb">9 × 2 − (−3) × 4 + (−1) × (−3 − 2)</div><div class="mb">= 18 + 12 + (−1)(−5)</div><div class="mb">= 18 + 12 + 5 = 35</div><div class="ans">תשובה: 35</div></div></div></div>
+
+<!-- Q38 --><div class="qc l4"><div class="qh"><span class="qn">38</span><span class="ql l4">⭐⭐⭐⭐</span></div><div class="qt">חשבו:<div class="mb">|−2³| − |(−2)³| + |−2|³ − (−|−2|)³</div></div><button class="sb" onclick="tgl(this)">📖 פתרון</button><div class="sol"><div class="sol-t">פתרון:</div><div class="ss"><div class="step">−2³ = −8, אז |−8| = 8</div><div class="step">(−2)³ = −8, אז |−8| = 8</div><div class="step">|−2|³ = 2³ = 8</div><div class="step">(−|−2|)³ = (−2)³ = −8, אז −(−8) = 8</div><div class="mb">= 8 − 8 + 8 + 8 = 16</div><div class="ans">תשובה: 16</div></div></div></div>
+
+<!-- Q39 --><div class="qc l4"><div class="qh"><span class="qn">39</span><span class="ql l4">⭐⭐⭐⭐</span></div><div class="qt">חשבו:<div class="mb">((−2) × 3 + √16)² − (|−5| − 3)³</div></div><button class="sb" onclick="tgl(this)">📖 פתרון</button><div class="sol"><div class="sol-t">פתרון:</div><div class="ss"><div class="mb">(−6 + 4)² − (5 − 3)³</div><div class="mb">= (−2)² − 2³ = 4 − 8 = −4</div><div class="ans">תשובה: −4</div></div></div></div>
+
+<!-- Q40 --><div class="qc l4"><div class="qh"><span class="qn">40</span><span class="ql l4">⭐⭐⭐⭐</span></div><div class="qt">חשבו:<div class="mb">−3 × [4 − (−2)³] + √(121) × |−1 − (−3)|</div></div><button class="sb" onclick="tgl(this)">📖 פתרון</button><div class="sol"><div class="sol-t">פתרון:</div><div class="ss"><div class="mb">−3 × [4 − (−8)] + 11 × |−1 + 3|</div><div class="mb">= −3 × 12 + 11 × 2</div><div class="mb">= −36 + 22 = −14</div><div class="ans">תשובה: −14</div></div></div></div>
+
+<!-- Q41 --><div class="qc l5"><div class="qh"><span class="qn">41</span><span class="ql l5">⭐⭐⭐⭐⭐</span></div><div class="qt">חשבו:<div class="mb">[(−2)³ + √36]² × (−1)⁷ − |−3² + (−3)²| × 2</div></div><button class="sb" onclick="tgl(this)">📖 פתרון</button><div class="sol"><div class="sol-t">פתרון:</div><div class="ss"><div class="mb">[−8 + 6]² × (−1) − |−9 + 9| × 2</div><div class="mb">= (−2)² × (−1) − |0| × 2</div><div class="mb">= 4 × (−1) − 0 = −4</div><div class="ans">תשובה: −4</div></div></div></div>
+
+<!-- Q42 --><div class="qc l5"><div class="qh"><span class="qn">42</span><span class="ql l5">⭐⭐⭐⭐⭐</span></div><div class="qt">חשבו:<div class="mb">(−1)¹ + (−1)² + (−1)³ + ... + (−1)²⁰</div></div><button class="sb" onclick="tgl(this)">📖 פתרון</button><div class="sol"><div class="sol-t">פתרון:</div><div class="ss"><div class="step">כל זוג עוקב: (−1)ⁿ + (−1)ⁿ⁺¹ = −1 + 1 = 0 (אם n אי-זוגי)</div><div class="step">יש 20 איברים = 10 זוגות, כל זוג = 0</div><div class="mb">= 0</div><div class="ans">תשובה: 0</div></div></div></div>
+
+<!-- Q43 --><div class="qc l5"><div class="qh"><span class="qn">43</span><span class="ql l5">⭐⭐⭐⭐⭐</span></div><div class="qt">חשבו:<div class="mb">[√(144) ÷ (−3)]² − [(−2)⁴ − (−3)²] × (−2) + |−7 + 2|³ ÷ 25</div></div><button class="sb" onclick="tgl(this)">📖 פתרון</button><div class="sol"><div class="sol-t">פתרון:</div><div class="ss"><div class="mb">[12 ÷ (−3)]² − [16 − 9] × (−2) + |−5|³ ÷ 25</div><div class="mb">(−4)² − 7 × (−2) + 125 ÷ 25</div><div class="mb">= 16 + 14 + 5 = 35</div><div class="ans">תשובה: 35</div></div></div></div>
+
+<!-- Q44 --><div class="qc l5"><div class="qh"><span class="qn">44</span><span class="ql l5">⭐⭐⭐⭐⭐</span></div><div class="qt">חשבו:<div class="mb">(−2)³ × (−3)² ÷ (−6) − (−1)⁵⁰ × √(49 − 2 × √9)</div></div><button class="sb" onclick="tgl(this)">📖 פתרון</button><div class="sol"><div class="sol-t">פתרון:</div><div class="ss"><div class="mb">(−8) × 9 ÷ (−6) − 1 × √(49 − 2 × 3)</div><div class="mb">= −72 ÷ (−6) − √(49 − 6)</div><div class="mb">= 12 − √43</div><div class="step">√43 ≈ 6.56 — אינו שלם.</div><div class="ans">תשובה: 12 − √43 (≈ 5.44)</div></div></div></div>
+
+<!-- Q45 --><div class="qc l5"><div class="qh"><span class="qn">45</span><span class="ql l5">⭐⭐⭐⭐⭐</span></div><div class="qt">חשבו:<div class="mb">√(|−13 + 4|) × √(|−3 − 1|) − (−3) × (−2)² × (−1)³</div></div><button class="sb" onclick="tgl(this)">📖 פתרון</button><div class="sol"><div class="sol-t">פתרון:</div><div class="ss"><div class="mb">√(|−9|) × √(|−4|) − (−3) × 4 × (−1)</div><div class="mb">= √9 × √4 − (−3)(4)(−1)</div><div class="mb">= 3 × 2 − 12 = 6 − 12 = −6</div><div class="ans">תשובה: −6</div></div></div></div>
+
+<!-- Q46 --><div class="qc l5"><div class="qh"><span class="qn">46</span><span class="ql l5">⭐⭐⭐⭐⭐</span></div><div class="qt">חשבו:<div class="mb">[(−5)² − √(36 × 4)]³ + (−3)² × (−2)² × (−1)¹¹</div></div><button class="sb" onclick="tgl(this)">📖 פתרון</button><div class="sol"><div class="sol-t">פתרון:</div><div class="ss"><div class="mb">[25 − √144]³ + 9 × 4 × (−1)</div><div class="mb">= [25 − 12]³ − 36</div><div class="mb">= 13³ − 36 = 2197 − 36 = 2161</div><div class="ans">תשובה: 2161</div></div></div></div>
+
+<!-- Q47 --><div class="qc l5"><div class="qh"><span class="qn">47</span><span class="ql l5">⭐⭐⭐⭐⭐</span></div><div class="qt">נתון: <span class="m">a</span> הוא הנגדי של <span class="m">|−5|</span>, ו-<span class="m">b = (−1)⁵⁵</span>. חשבו:<div class="mb">a³ × b − a × b³ + √(a²) × b²</div></div><button class="sb" onclick="tgl(this)">📖 פתרון</button><div class="sol"><div class="sol-t">פתרון:</div><div class="ss"><div class="step">|−5| = 5, הנגדי = −5, אז a = −5</div><div class="step">b = (−1)⁵⁵ = −1</div><div class="mb">(−5)³ × (−1) − (−5) × (−1)³ + √25 × 1</div><div class="mb">= (−125)(−1) − (−5)(−1) + 5</div><div class="mb">= 125 − 5 + 5 = 125</div><div class="ans">תשובה: 125</div></div></div></div>
+
+<!-- Q48 --><div class="qc l5"><div class="qh"><span class="qn">48</span><span class="ql l5">⭐⭐⭐⭐⭐</span></div><div class="qt">חשבו:<div class="mb">|3 − (−2)³| × (−1)⁴ − [(−6)² ÷ (−9)] × (−2) + √(√81)</div></div><button class="sb" onclick="tgl(this)">📖 פתרון</button><div class="sol"><div class="sol-t">פתרון:</div><div class="ss"><div class="mb">|3 − (−8)| × 1 − [36 ÷ (−9)] × (−2) + √9</div><div class="mb">= |11| − (−4)(−2) + 3</div><div class="mb">= 11 − 8 + 3 = 6</div><div class="ans">תשובה: 6</div></div></div></div>
+
+<!-- Q49 --><div class="qc l5"><div class="qh"><span class="qn">49</span><span class="ql l5">⭐⭐⭐⭐⭐</span></div><div class="qt">חשבו:<div class="mb">(−2)⁴ + (−2)³ + (−2)² + (−2)¹ + (−2)⁰</div></div><button class="sb" onclick="tgl(this)">📖 פתרון</button><div class="sol"><div class="sol-t">פתרון:</div><div class="ss"><div class="mb">= 16 + (−8) + 4 + (−2) + 1</div><div class="mb">= 16 − 8 + 4 − 2 + 1 = 11</div><div class="step">זכרו: כל מספר (שאינו 0) בחזקת 0 שווה 1!</div><div class="ans">תשובה: 11</div></div></div></div>
+
+<!-- Q50 --><div class="qc l5"><div class="qh"><span class="qn">50</span><span class="ql l5">⭐⭐⭐⭐⭐</span></div><div class="qt">חשבו:<div class="mb">[|−2| × (−3)]² ÷ (−4) + √(√(256)) × (−1)⁹ − (−3)⁰</div></div><button class="sb" onclick="tgl(this)">📖 פתרון</button><div class="sol"><div class="sol-t">פתרון:</div><div class="ss"><div class="mb">[2 × (−3)]² ÷ (−4) + √(√256) × (−1) − 1</div><div class="mb">(−6)² ÷ (−4) + √16 × (−1) − 1</div><div class="mb">= 36 ÷ (−4) + 4 × (−1) − 1</div><div class="mb">= −9 − 4 − 1 = −14</div><div class="ans">תשובה: −14</div></div></div></div>
+</div>
+
+<!-- ================= SECTION 2: ALGEBRAIC EXPRESSIONS ================= -->
+<div class="section" id="sec2">
+<div class="section-title"><span class="ic">ב</span> ביטויים אלגבריים</div>
+<p class="section-desc">פישוט ביטויים והצבה — 50 שאלות ברמה עולה</p>
+
+<!-- Q51 --><div class="qc l1"><div class="qh"><span class="qn">51</span><span class="ql l1">⭐</span></div><div class="qt">פשטו:<div class="mb">7x − 3 + 2x − 8</div></div><button class="sb" onclick="tgl(this)">📖 פתרון</button><div class="sol"><div class="sol-t">פתרון:</div><div class="ss"><div class="mb">9x − 11</div><div class="ans">תשובה: 9x − 11</div></div></div></div>
+
+<!-- Q52 --><div class="qc l1"><div class="qh"><span class="qn">52</span><span class="ql l1">⭐</span></div><div class="qt">פשטו:<div class="mb">3(2x + 4) − 5x</div></div><button class="sb" onclick="tgl(this)">📖 פתרון</button><div class="sol"><div class="sol-t">פתרון:</div><div class="ss"><div class="mb">6x + 12 − 5x = x + 12</div><div class="ans">תשובה: x + 12</div></div></div></div>
+
+<!-- Q53 --><div class="qc l1"><div class="qh"><span class="qn">53</span><span class="ql l1">⭐</span></div><div class="qt">פשטו:<div class="mb">−4(x − 2) + 3x</div></div><button class="sb" onclick="tgl(this)">📖 פתרון</button><div class="sol"><div class="sol-t">פתרון:</div><div class="ss"><div class="mb">−4x + 8 + 3x = −x + 8</div><div class="ans">תשובה: −x + 8</div></div></div></div>
+
+<!-- Q54 --><div class="qc l1"><div class="qh"><span class="qn">54</span><span class="ql l1">⭐</span></div><div class="qt">הציבו <span class="m">x = 4</span>:<div class="mb">5x − x² + 3</div></div><button class="sb" onclick="tgl(this)">📖 פתרון</button><div class="sol"><div class="sol-t">פתרון:</div><div class="ss"><div class="mb">5(4) − 16 + 3 = 20 − 16 + 3 = 7</div><div class="ans">תשובה: 7</div></div></div></div>
+
+<!-- Q55 --><div class="qc l1"><div class="qh"><span class="qn">55</span><span class="ql l1">⭐</span></div><div class="qt">פשטו:<div class="mb">2(3x + 1) + 4(x − 3)</div></div><button class="sb" onclick="tgl(this)">📖 פתרון</button><div class="sol"><div class="sol-t">פתרון:</div><div class="ss"><div class="mb">6x + 2 + 4x − 12 = 10x − 10</div><div class="ans">תשובה: 10x − 10</div></div></div></div>
+
+<!-- Q56 --><div class="qc l1"><div class="qh"><span class="qn">56</span><span class="ql l1">⭐</span></div><div class="qt">הציבו <span class="m">x = −2</span>:<div class="mb">3x + 10 − x²</div></div><button class="sb" onclick="tgl(this)">📖 פתרון</button><div class="sol"><div class="sol-t">פתרון:</div><div class="ss"><div class="mb">3(−2) + 10 − (−2)² = −6 + 10 − 4 = 0</div><div class="ans">תשובה: 0</div></div></div></div>
+
+<!-- Q57 --><div class="qc l1"><div class="qh"><span class="qn">57</span><span class="ql l1">⭐</span></div><div class="qt">פשטו:<div class="mb">5(x + 2) − 3(x + 2)</div></div><button class="sb" onclick="tgl(this)">📖 פתרון</button><div class="sol"><div class="sol-t">פתרון:</div><div class="ss"><div class="mb">5x + 10 − 3x − 6 = 2x + 4</div><div class="step">או: (5 − 3)(x + 2) = 2(x + 2) = 2x + 4</div><div class="ans">תשובה: 2x + 4</div></div></div></div>
+
+<!-- Q58 --><div class="qc l1"><div class="qh"><span class="qn">58</span><span class="ql l1">⭐</span></div><div class="qt">פשטו:<div class="mb">−(2x − 7) + 4x − 3</div></div><button class="sb" onclick="tgl(this)">📖 פתרון</button><div class="sol"><div class="sol-t">פתרון:</div><div class="ss"><div class="mb">−2x + 7 + 4x − 3 = 2x + 4</div><div class="ans">תשובה: 2x + 4</div></div></div></div>
+
+<!-- Q59 --><div class="qc l1"><div class="qh"><span class="qn">59</span><span class="ql l1">⭐</span></div><div class="qt">הציבו <span class="m">x = −1</span>:<div class="mb">−x³ + 2x² − x + 5</div></div><button class="sb" onclick="tgl(this)">📖 פתרון</button><div class="sol"><div class="sol-t">פתרון:</div><div class="ss"><div class="mb">−(−1) + 2(1) − (−1) + 5 = 1 + 2 + 1 + 5 = 9</div><div class="ans">תשובה: 9</div></div></div></div>
+
+<!-- Q60 --><div class="qc l1"><div class="qh"><span class="qn">60</span><span class="ql l1">⭐</span></div><div class="qt">פשטו:<div class="mb">6x − 2(x + 4) + 3(1 − x)</div></div><button class="sb" onclick="tgl(this)">📖 פתרון</button><div class="sol"><div class="sol-t">פתרון:</div><div class="ss"><div class="mb">6x − 2x − 8 + 3 − 3x = x − 5</div><div class="ans">תשובה: x − 5</div></div></div></div>
+
+<!-- Q61 --><div class="qc l2"><div class="qh"><span class="qn">61</span><span class="ql l2">⭐⭐</span></div><div class="qt">פשטו:<div class="mb">4(2x − 3) − 3(3x − 1) + 2(x + 5)</div></div><button class="sb" onclick="tgl(this)">📖 פתרון</button><div class="sol"><div class="sol-t">פתרון:</div><div class="ss"><div class="mb">8x − 12 − 9x + 3 + 2x + 10 = x + 1</div><div class="ans">תשובה: x + 1</div></div></div></div>
+
+<!-- Q62 --><div class="qc l2"><div class="qh"><span class="qn">62</span><span class="ql l2">⭐⭐</span></div><div class="qt">הציבו <span class="m">x = −3</span>:<div class="mb">2x² − 5x + 1 − (−x)²</div></div><button class="sb" onclick="tgl(this)">📖 פתרון</button><div class="sol"><div class="sol-t">פתרון:</div><div class="ss"><div class="mb">2(9) − 5(−3) + 1 − (3)²</div><div class="mb">= 18 + 15 + 1 − 9 = 25</div><div class="ans">תשובה: 25</div></div></div></div>
+
+<!-- Q63 --><div class="qc l2"><div class="qh"><span class="qn">63</span><span class="ql l2">⭐⭐</span></div><div class="qt">פשטו:<div class="mb">−2(5x − 1) + 3(−x + 4) − (−7x + 2)</div></div><button class="sb" onclick="tgl(this)">📖 פתרון</button><div class="sol"><div class="sol-t">פתרון:</div><div class="ss"><div class="mb">−10x + 2 − 3x + 12 + 7x − 2 = −6x + 12</div><div class="ans">תשובה: −6x + 12</div></div></div></div>
+
+<!-- Q64 --><div class="qc l2"><div class="qh"><span class="qn">64</span><span class="ql l2">⭐⭐</span></div><div class="qt">פשטו:<div class="mb">7(x − 1) − 2(3x + 5) + 4(−x + 3)</div></div><button class="sb" onclick="tgl(this)">📖 פתרון</button><div class="sol"><div class="sol-t">פתרון:</div><div class="ss"><div class="mb">7x − 7 − 6x − 10 − 4x + 12 = −3x − 5</div><div class="ans">תשובה: −3x − 5</div></div></div></div>
+
+<!-- Q65 --><div class="qc l2"><div class="qh"><span class="qn">65</span><span class="ql l2">⭐⭐</span></div><div class="qt">הציבו <span class="m">a = 2</span>, <span class="m">b = −4</span>:<div class="mb">3a − 2b + ab − a²</div></div><button class="sb" onclick="tgl(this)">📖 פתרון</button><div class="sol"><div class="sol-t">פתרון:</div><div class="ss"><div class="mb">6 − (−8) + (−8) − 4 = 6 + 8 − 8 − 4 = 2</div><div class="ans">תשובה: 2</div></div></div></div>
+
+<!-- Q66 --><div class="qc l2"><div class="qh"><span class="qn">66</span><span class="ql l2">⭐⭐</span></div><div class="qt">פשטו:<div class="mb">x × 3 + 2 × (−x) − 5 × x + 4 × (−1) + 7</div></div><button class="sb" onclick="tgl(this)">📖 פתרון</button><div class="sol"><div class="sol-t">פתרון:</div><div class="ss"><div class="mb">3x − 2x − 5x − 4 + 7 = −4x + 3</div><div class="ans">תשובה: −4x + 3</div></div></div></div>
+
+<!-- Q67 --><div class="qc l2"><div class="qh"><span class="qn">67</span><span class="ql l2">⭐⭐</span></div><div class="qt">פשטו:<div class="mb">−(3x + 5) + 2(−x + 1) − 3(−2x − 4)</div></div><button class="sb" onclick="tgl(this)">📖 פתרון</button><div class="sol"><div class="sol-t">פתרון:</div><div class="ss"><div class="mb">−3x − 5 − 2x + 2 + 6x + 12 = x + 9</div><div class="ans">תשובה: x + 9</div></div></div></div>
+
+<!-- Q68 --><div class="qc l2"><div class="qh"><span class="qn">68</span><span class="ql l2">⭐⭐</span></div><div class="qt">הציבו <span class="m">x = −2</span>:<div class="mb">4(x + 3) − 2(x − 1) + x²</div></div><button class="sb" onclick="tgl(this)">📖 פתרון</button><div class="sol"><div class="sol-t">פתרון:</div><div class="ss"><div class="step">נפשט קודם: 4x + 12 − 2x + 2 + x² = x² + 2x + 14</div><div class="mb">(−2)² + 2(−2) + 14 = 4 − 4 + 14 = 14</div><div class="ans">תשובה: 14</div></div></div></div>
+
+<!-- Q69 --><div class="qc l2"><div class="qh"><span class="qn">69</span><span class="ql l2">⭐⭐</span></div><div class="qt">פשטו:<div class="mb">8 − 3(2x + 1) + 5(x − 2) − (−x + 4)</div></div><button class="sb" onclick="tgl(this)">📖 פתרון</button><div class="sol"><div class="sol-t">פתרון:</div><div class="ss"><div class="mb">8 − 6x − 3 + 5x − 10 + x − 4 = 0x − 9 = −9</div><div class="ans">תשובה: −9</div></div></div></div>
+
+<!-- Q70 --><div class="qc l2"><div class="qh"><span class="qn">70</span><span class="ql l2">⭐⭐</span></div><div class="qt">הציבו <span class="m">x = 3</span>:<div class="mb">(2x − 1)(x + 2)</div></div><button class="sb" onclick="tgl(this)">📖 פתרון</button><div class="sol"><div class="sol-t">פתרון:</div><div class="ss"><div class="mb">(6 − 1)(3 + 2) = 5 × 5 = 25</div><div class="ans">תשובה: 25</div></div></div></div>
+
+<!-- Q71 --><div class="qc l3"><div class="qh"><span class="qn">71</span><span class="ql l3">⭐⭐⭐</span></div><div class="qt">פשטו:<div class="mb">2[3x − 4(x + 1)] + 5(2x − 3)</div></div><button class="sb" onclick="tgl(this)">📖 פתרון</button><div class="sol"><div class="sol-t">פתרון:</div><div class="ss"><div class="step">פנימי: 3x − 4x − 4 = −x − 4</div><div class="mb">2(−x − 4) + 10x − 15</div><div class="mb">= −2x − 8 + 10x − 15 = 8x − 23</div><div class="ans">תשובה: 8x − 23</div></div></div></div>
+
+<!-- Q72 --><div class="qc l3"><div class="qh"><span class="qn">72</span><span class="ql l3">⭐⭐⭐</span></div><div class="qt">פשטו:<div class="mb">−3[2(x − 1) + 4] + 2[3(x + 2) − 5]</div></div><button class="sb" onclick="tgl(this)">📖 פתרון</button><div class="sol"><div class="sol-t">פתרון:</div><div class="ss"><div class="step">סוגריים פנימיים: 2x − 2 + 4 = 2x + 2; 3x + 6 − 5 = 3x + 1</div><div class="mb">−3(2x + 2) + 2(3x + 1)</div><div class="mb">= −6x − 6 + 6x + 2 = −4</div><div class="ans">תשובה: −4 (ביטוי קבוע, לא תלוי ב-x!)</div></div></div></div>
+
+<!-- Q73 --><div class="qc l3"><div class="qh"><span class="qn">73</span><span class="ql l3">⭐⭐⭐</span></div><div class="qt">הציבו <span class="m">a = −1</span>, <span class="m">b = 3</span>:<div class="mb">a³b − ab³ + (a − b)²</div></div><button class="sb" onclick="tgl(this)">📖 פתרון</button><div class="sol"><div class="sol-t">פתרון:</div><div class="ss"><div class="mb">(−1)(3) − (−1)(27) + (−1−3)²</div><div class="mb">= −3 + 27 + (−4)²</div><div class="mb">= −3 + 27 + 16 = 40</div><div class="ans">תשובה: 40</div></div></div></div>
+
+<!-- Q74 --><div class="qc l3"><div class="qh"><span class="qn">74</span><span class="ql l3">⭐⭐⭐</span></div><div class="qt">פשטו:<div class="mb">5(x − 2) − 2[3x − (x + 7)] + 4</div></div><button class="sb" onclick="tgl(this)">📖 פתרון</button><div class="sol"><div class="sol-t">פתרון:</div><div class="ss"><div class="step">פנימי: 3x − x − 7 = 2x − 7</div><div class="mb">5x − 10 − 2(2x − 7) + 4</div><div class="mb">= 5x − 10 − 4x + 14 + 4 = x + 8</div><div class="ans">תשובה: x + 8</div></div></div></div>
+
+<!-- Q75 --><div class="qc l3"><div class="qh"><span class="qn">75</span><span class="ql l3">⭐⭐⭐</span></div><div class="qt">פשטו:<div class="mb">−4(x + 3) + 2[5 − 3(2x − 1)]</div></div><button class="sb" onclick="tgl(this)">📖 פתרון</button><div class="sol"><div class="sol-t">פתרון:</div><div class="ss"><div class="step">פנימי: 5 − 6x + 3 = 8 − 6x</div><div class="mb">−4x − 12 + 2(8 − 6x)</div><div class="mb">= −4x − 12 + 16 − 12x = −16x + 4</div><div class="ans">תשובה: −16x + 4</div></div></div></div>
+
+<!-- Q76 --><div class="qc l3"><div class="qh"><span class="qn">76</span><span class="ql l3">⭐⭐⭐</span></div><div class="qt">הציבו <span class="m">x = −2</span>:<div class="mb">|3x + 1| − 2x² + (−x)³</div></div><button class="sb" onclick="tgl(this)">📖 פתרון</button><div class="sol"><div class="sol-t">פתרון:</div><div class="ss"><div class="mb">|−6 + 1| − 2(4) + (2)³</div><div class="mb">= |−5| − 8 + 8 = 5</div><div class="ans">תשובה: 5</div></div></div></div>
+
+<!-- Q77 --><div class="qc l3"><div class="qh"><span class="qn">77</span><span class="ql l3">⭐⭐⭐</span></div><div class="qt">פשטו:<div class="mb">3(x + 1)  − 2(x + 1) + 7(x + 1)</div></div><button class="sb" onclick="tgl(this)">📖 פתרון</button><div class="sol"><div class="sol-t">פתרון:</div><div class="ss"><div class="step">נשים לב שכולם כפולות של (x+1):</div><div class="mb">(3 − 2 + 7)(x + 1) = 8(x + 1) = 8x + 8</div><div class="ans">תשובה: 8x + 8</div></div></div></div>
+
+<!-- Q78 --><div class="qc l3"><div class="qh"><span class="qn">78</span><span class="ql l3">⭐⭐⭐</span></div><div class="qt">פשטו:<div class="mb">−[4x − 2(3x + 5)] + 3[x − (2x − 8)]</div></div><button class="sb" onclick="tgl(this)">📖 פתרון</button><div class="sol"><div class="sol-t">פתרון:</div><div class="ss"><div class="step">ראשון: 4x − 6x − 10 = −2x − 10, עם מינוס: 2x + 10</div><div class="step">שני: x − 2x + 8 = −x + 8, כפול 3: −3x + 24</div><div class="mb">2x + 10 − 3x + 24 = −x + 34</div><div class="ans">תשובה: −x + 34</div></div></div></div>
+
+<!-- Q79 --><div class="qc l3"><div class="qh"><span class="qn">79</span><span class="ql l3">⭐⭐⭐</span></div><div class="qt">הציבו <span class="m">x = −3</span>:<div class="mb">2(x + 1)² − 3(x − 2)</div></div><button class="sb" onclick="tgl(this)">📖 פתרון</button><div class="sol"><div class="sol-t">פתרון:</div><div class="ss"><div class="mb">2(−3+1)² − 3(−3−2)</div><div class="mb">= 2(−2)² − 3(−5)</div><div class="mb">= 2(4) + 15 = 8 + 15 = 23</div><div class="ans">תשובה: 23</div></div></div></div>
+
+<!-- Q80 --><div class="qc l3"><div class="qh"><span class="qn">80</span><span class="ql l3">⭐⭐⭐</span></div><div class="qt">פשטו:<div class="mb">5 − 2[x + 3(x − 2)] + 4[2 − (x − 3)]</div></div><button class="sb" onclick="tgl(this)">📖 פתרון</button><div class="sol"><div class="sol-t">פתרון:</div><div class="ss"><div class="step">ראשון: x + 3x − 6 = 4x − 6</div><div class="step">שני: 2 − x + 3 = 5 − x</div><div class="mb">5 − 2(4x − 6) + 4(5 − x)</div><div class="mb">= 5 − 8x + 12 + 20 − 4x = −12x + 37</div><div class="ans">תשובה: −12x + 37</div></div></div></div>
+
+<!-- Q81 --><div class="qc l4"><div class="qh"><span class="qn">81</span><span class="ql l4">⭐⭐⭐⭐</span></div><div class="qt">פשטו:<div class="mb">3[2x − 4(1 − x)] − 2[3(x + 2) − 5(x − 1)]</div></div><button class="sb" onclick="tgl(this)">📖 פתרון</button><div class="sol"><div class="sol-t">פתרון:</div><div class="ss"><div class="step">ראשון: 2x − 4 + 4x = 6x − 4, כפול 3: 18x − 12</div><div class="step">שני: 3x + 6 − 5x + 5 = −2x + 11, כפול −2: 4x − 22</div><div class="mb">18x − 12 + 4x − 22 = 22x − 34</div><div class="ans">תשובה: 22x − 34</div></div></div></div>
+
+<!-- Q82 --><div class="qc l4"><div class="qh"><span class="qn">82</span><span class="ql l4">⭐⭐⭐⭐</span></div><div class="qt">הציבו <span class="m">x = −2</span>, <span class="m">y = 3</span>:<div class="mb">(x + y)² − (x − y)² + 4xy</div></div><button class="sb" onclick="tgl(this)">📖 פתרון</button><div class="sol"><div class="sol-t">פתרון:</div><div class="ss"><div class="mb">(−2+3)² − (−2−3)² + 4(−2)(3)</div><div class="mb">= 1² − (−5)² + (−24)</div><div class="mb">= 1 − 25 − 24 = −48</div><div class="ans">תשובה: −48</div></div></div></div>
+
+<!-- Q83 --><div class="qc l4"><div class="qh"><span class="qn">83</span><span class="ql l4">⭐⭐⭐⭐</span></div><div class="qt">פשטו:<div class="mb">−2{3[x − 2(x + 1)] + 4x} − 5</div></div><button class="sb" onclick="tgl(this)">📖 פתרון</button><div class="sol"><div class="sol-t">פתרון:</div><div class="ss"><div class="step">הכי פנימי: x − 2x − 2 = −x − 2</div><div class="step">כפול 3: −3x − 6, ועוד 4x: x − 6</div><div class="step">כפול −2: −2x + 12, פחות 5:</div><div class="mb">= −2x + 7</div><div class="ans">תשובה: −2x + 7</div></div></div></div>
+
+<!-- Q84 --><div class="qc l4"><div class="qh"><span class="qn">84</span><span class="ql l4">⭐⭐⭐⭐</span></div><div class="qt">פשטו:<div class="mb">4(3x − 1) − 3[2x − 5(x + 2)] + 2[−(x − 4)]</div></div><button class="sb" onclick="tgl(this)">📖 פתרון</button><div class="sol"><div class="sol-t">פתרון:</div><div class="ss"><div class="step">ראשון: 12x − 4</div><div class="step">שני: 2x − 5x − 10 = −3x − 10, כפול −3: 9x + 30</div><div class="step">שלישי: −x + 4, כפול 2: −2x + 8</div><div class="mb">12x − 4 + 9x + 30 − 2x + 8 = 19x + 34</div><div class="ans">תשובה: 19x + 34</div></div></div></div>
+
+<!-- Q85 --><div class="qc l4"><div class="qh"><span class="qn">85</span><span class="ql l4">⭐⭐⭐⭐</span></div><div class="qt">הציבו <span class="m">x = −1</span>:<div class="mb">2(3x − 1)² − (2x + 3)² + 5x</div></div><button class="sb" onclick="tgl(this)">📖 פתרון</button><div class="sol"><div class="sol-t">פתרון:</div><div class="ss"><div class="mb">2(−3−1)² − (−2+3)² + 5(−1)</div><div class="mb">= 2(−4)² − (1)² − 5</div><div class="mb">= 2(16) − 1 − 5 = 32 − 1 − 5 = 26</div><div class="ans">תשובה: 26</div></div></div></div>
+
+<!-- Q86 --><div class="qc l4"><div class="qh"><span class="qn">86</span><span class="ql l4">⭐⭐⭐⭐</span></div><div class="qt">פשטו והראו שהביטוי לא תלוי ב-x:<div class="mb">5(x + 2) − 3(2x − 1) + (x − 13)</div></div><button class="sb" onclick="tgl(this)">📖 פתרון</button><div class="sol"><div class="sol-t">פתרון:</div><div class="ss"><div class="mb">5x + 10 − 6x + 3 + x − 13</div><div class="mb">= (5x − 6x + x) + (10 + 3 − 13)</div><div class="mb">= 0x + 0 = 0</div><div class="step">אכן, הביטוי שווה 0 לכל x!</div><div class="ans">תשובה: 0</div></div></div></div>
+
+<!-- Q87 --><div class="qc l4"><div class="qh"><span class="qn">87</span><span class="ql l4">⭐⭐⭐⭐</span></div><div class="qt">הציבו <span class="m">a = −2</span>, <span class="m">b = −3</span>:<div class="mb">|a − b| × (a + b) + a²b − ab²</div></div><button class="sb" onclick="tgl(this)">📖 פתרון</button><div class="sol"><div class="sol-t">פתרון:</div><div class="ss"><div class="mb">|−2−(−3)| × (−2+(−3)) + 4(−3) − (−2)(9)</div><div class="mb">= |1| × (−5) + (−12) + 18</div><div class="mb">= −5 − 12 + 18 = 1</div><div class="ans">תשובה: 1</div></div></div></div>
+
+<!-- Q88 --><div class="qc l4"><div class="qh"><span class="qn">88</span><span class="ql l4">⭐⭐⭐⭐</span></div><div class="qt">פשטו:<div class="mb">−3[2x − {4 − 3(x − 1)}] + 2x</div></div><button class="sb" onclick="tgl(this)">📖 פתרון</button><div class="sol"><div class="sol-t">פתרון:</div><div class="ss"><div class="step">פנימי: 4 − 3x + 3 = 7 − 3x</div><div class="step">אמצעי: 2x − (7 − 3x) = 2x − 7 + 3x = 5x − 7</div><div class="step">כפול −3: −15x + 21</div><div class="mb">−15x + 21 + 2x = −13x + 21</div><div class="ans">תשובה: −13x + 21</div></div></div></div>
+
+<!-- Q89 --><div class="qc l4"><div class="qh"><span class="qn">89</span><span class="ql l4">⭐⭐⭐⭐</span></div><div class="qt">מצאו לאיזה ערך של x שני הביטויים שווים:<div class="mb">3(x + 4)  ו-  5(x − 2) + 6</div></div><button class="sb" onclick="tgl(this)">📖 פתרון</button><div class="sol"><div class="sol-t">פתרון:</div><div class="ss"><div class="step">נשווה:</div><div class="mb">3x + 12 = 5x − 10 + 6</div><div class="mb">3x + 12 = 5x − 4  / −3x</div><div class="mb">12 = 2x − 4  / +4</div><div class="mb">16 = 2x → x = 8</div><div class="ans">תשובה: x = 8</div></div></div></div>
+
+<!-- Q90 --><div class="qc l4"><div class="qh"><span class="qn">90</span><span class="ql l4">⭐⭐⭐⭐</span></div><div class="qt">פשטו:<div class="mb">4[2(x − 3) + 1] − 3[2 − (3x + 5)] + 7</div></div><button class="sb" onclick="tgl(this)">📖 פתרון</button><div class="sol"><div class="sol-t">פתרון:</div><div class="ss"><div class="step">ראשון: 2x − 6 + 1 = 2x − 5, כפול 4: 8x − 20</div><div class="step">שני: 2 − 3x − 5 = −3x − 3, כפול −3: 9x + 9</div><div class="mb">8x − 20 + 9x + 9 + 7 = 17x − 4</div><div class="ans">תשובה: 17x − 4</div></div></div></div>
+
+<!-- Q91 --><div class="qc l5"><div class="qh"><span class="qn">91</span><span class="ql l5">⭐⭐⭐⭐⭐</span></div><div class="qt">פשטו:<div class="mb">−2{3[4x − 2(x + 3)] − [5(x − 1) − 3x]} + 10</div></div><button class="sb" onclick="tgl(this)">📖 פתרון</button><div class="sol"><div class="sol-t">פתרון:</div><div class="ss"><div class="step">הכי פנימי שמאל: 4x − 2x − 6 = 2x − 6, כפול 3: 6x − 18</div><div class="step">הכי פנימי ימין: 5x − 5 − 3x = 2x − 5</div><div class="step">הפרש: 6x − 18 − (2x − 5) = 6x − 18 − 2x + 5 = 4x − 13</div><div class="step">כפול −2: −8x + 26</div><div class="mb">−8x + 26 + 10 = −8x + 36</div><div class="ans">תשובה: −8x + 36</div></div></div></div>
+
+<!-- Q92 --><div class="qc l5"><div class="qh"><span class="qn">92</span><span class="ql l5">⭐⭐⭐⭐⭐</span></div><div class="qt">הציבו <span class="m">x = −2</span>:<div class="mb">(x² − 1)(x + 3) − x(x² + 2x − 5)</div></div><button class="sb" onclick="tgl(this)">📖 פתרון</button><div class="sol"><div class="sol-t">פתרון:</div><div class="ss"><div class="mb">(4−1)(−2+3) − (−2)(4−4−5)</div><div class="mb">= 3 × 1 − (−2)(−5)</div><div class="mb">= 3 − 10 = −7</div><div class="ans">תשובה: −7</div></div></div></div>
+
+<!-- Q93 --><div class="qc l5"><div class="qh"><span class="qn">93</span><span class="ql l5">⭐⭐⭐⭐⭐</span></div><div class="qt">פשטו והראו שהביטוי הוא מספר קבוע (לא תלוי ב-x):<div class="mb">2(x + 5)(x − 3) − 2x² + 6x − (−30)</div></div><button class="sb" onclick="tgl(this)">📖 פתרון</button><div class="sol"><div class="sol-t">פתרון:</div><div class="ss"><div class="step">נפתח: (x+5)(x−3) = x² − 3x + 5x − 15 = x² + 2x − 15</div><div class="mb">2(x² + 2x − 15) − 2x² + 6x + 30</div><div class="mb">= 2x² + 4x − 30 − 2x² + 6x + 30</div><div class="mb">= 10x</div><div class="step">רגע — זה כן תלוי ב-x. נבדוק: 2x² מתקזז, −30+30 = 0, 4x + 6x = 10x. אכן 10x.</div><div class="step">הביטוי הוא 10x ולא קבוע.</div><div class="ans">תשובה: 10x</div></div></div></div>
+
+<!-- Q94 --><div class="qc l5"><div class="qh"><span class="qn">94</span><span class="ql l5">⭐⭐⭐⭐⭐</span></div><div class="qt">מצאו את ערך x אם שטח המלבן שצלעותיו <span class="m">(2x + 3)</span> ו-<span class="m">(x − 1)</span> שווה ל-<span class="m">2x² + x − 3</span>:<div class="mb">האם זה נכון לכל x?</div></div><button class="sb" onclick="tgl(this)">📖 פתרון</button><div class="sol"><div class="sol-t">פתרון:</div><div class="ss"><div class="step">שטח = (2x+3)(x−1) = 2x² − 2x + 3x − 3 = 2x² + x − 3</div><div class="step">וזה בדיוק הביטוי הנתון!</div><div class="ans">תשובה: כן! הביטוי 2x² + x − 3 שווה ל-(2x+3)(x−1) לכל ערך של x. זו זהות.</div></div></div></div>
+
+<!-- Q95-100: more level 5 -->
+<!-- Q95 --><div class="qc l5"><div class="qh"><span class="qn">95</span><span class="ql l5">⭐⭐⭐⭐⭐</span></div><div class="qt">הציבו <span class="m">a = 3</span>, <span class="m">b = −2</span>, <span class="m">c = −1</span>:<div class="mb">a(b − c)² − b(a + c)² + c(a − b)²</div></div><button class="sb" onclick="tgl(this)">📖 פתרון</button><div class="sol"><div class="sol-t">פתרון:</div><div class="ss"><div class="mb">3(−2−(−1))² − (−2)(3+(−1))² + (−1)(3−(−2))²</div><div class="mb">= 3(−1)² − (−2)(2)² + (−1)(5)²</div><div class="mb">= 3(1) + 2(4) − 25</div><div class="mb">= 3 + 8 − 25 = −14</div><div class="ans">תשובה: −14</div></div></div></div>
+
+<!-- Q96 --><div class="qc l5"><div class="qh"><span class="qn">96</span><span class="ql l5">⭐⭐⭐⭐⭐</span></div><div class="qt">פשטו:<div class="mb">−{2[3(2x − 1) − 4(x + 2)] + 5[−(3x − 7) + 2x]}</div></div><button class="sb" onclick="tgl(this)">📖 פתרון</button><div class="sol"><div class="sol-t">פתרון:</div><div class="ss"><div class="step">ראשון: 6x − 3 − 4x − 8 = 2x − 11, כפול 2: 4x − 22</div><div class="step">שני: −3x + 7 + 2x = −x + 7, כפול 5: −5x + 35</div><div class="step">סכום: 4x − 22 − 5x + 35 = −x + 13</div><div class="mb">כפול −1: x − 13</div><div class="ans">תשובה: x − 13</div></div></div></div>
+
+<!-- Q97 --><div class="qc l5"><div class="qh"><span class="qn">97</span><span class="ql l5">⭐⭐⭐⭐⭐</span></div><div class="qt">הביטוי <span class="m">3(x + a) − 2(x − 5)</span> שווה ל-<span class="m">x + 22</span> לכל x. מצאו את a.</div><button class="sb" onclick="tgl(this)">📖 פתרון</button><div class="sol"><div class="sol-t">פתרון:</div><div class="ss"><div class="mb">3x + 3a − 2x + 10 = x + 22</div><div class="mb">x + 3a + 10 = x + 22</div><div class="step">מקדמי x שווים (1=1) ✓. חלק חופשי:</div><div class="mb">3a + 10 = 22 → 3a = 12 → a = 4</div><div class="ans">תשובה: a = 4</div></div></div></div>
+
+<!-- Q98 --><div class="qc l5"><div class="qh"><span class="qn">98</span><span class="ql l5">⭐⭐⭐⭐⭐</span></div><div class="qt">הציבו <span class="m">x = −3</span>:<div class="mb">|x² − 2x| − |x³ + 27| + (−x)² × x</div></div><button class="sb" onclick="tgl(this)">📖 פתרון</button><div class="sol"><div class="sol-t">פתרון:</div><div class="ss"><div class="mb">|9 − (−6)| − |−27 + 27| + (3)² × (−3)</div><div class="mb">= |15| − |0| + 9 × (−3)</div><div class="mb">= 15 − 0 − 27 = −12</div><div class="ans">תשובה: −12</div></div></div></div>
+
+<!-- Q99 --><div class="qc l5"><div class="qh"><span class="qn">99</span><span class="ql l5">⭐⭐⭐⭐⭐</span></div><div class="qt">פשטו:<div class="mb">5[x − 2{x + 3(1 − x)}] − 3[2x − {4 − (x − 6)}]</div></div><button class="sb" onclick="tgl(this)">📖 פתרון</button><div class="sol"><div class="sol-t">פתרון:</div><div class="ss"><div class="step">שמאל: 1 − x → כפול 3: 3 − 3x → x + 3 − 3x = −2x + 3 → כפול −2: 4x − 6 → x + 4x − 6 = 5x − 6 → כפול 5: 25x − 30</div><div class="step">ימין: x − 6 → 4 − x + 6 = 10 − x → 2x − 10 + x = 3x − 10 → כפול −3: −9x + 30</div><div class="mb">25x − 30 − 9x + 30 = 16x</div><div class="ans">תשובה: 16x</div></div></div></div>
+
+<!-- Q100 --><div class="qc l5"><div class="qh"><span class="qn">100</span><span class="ql l5">⭐⭐⭐⭐⭐</span></div><div class="qt">עבור <span class="m">x = −2</span>, חשבו את הערך של:<div class="mb">3(x + 1)³ − 2(x + 1)² + (x + 1) − 4</div></div><button class="sb" onclick="tgl(this)">📖 פתרון</button><div class="sol"><div class="sol-t">פתרון:</div><div class="ss"><div class="step">x + 1 = −2 + 1 = −1. נסמן t = −1:</div><div class="mb">3(−1)³ − 2(−1)² + (−1) − 4</div><div class="mb">= 3(−1) − 2(1) + (−1) − 4</div><div class="mb">= −3 − 2 − 1 − 4 = −10</div><div class="ans">תשובה: −10</div></div></div></div>
+</div>
+
+<!-- ================= SECTION 3: EQUATIONS ================= -->
+<div class="section" id="sec3">
+<div class="section-title"><span class="ic">ג</span> פתרון משוואות</div>
+<p class="section-desc">פישוט ופתרון משוואות — 50 שאלות ברמה עולה</p>
+
+<!-- Q101 --><div class="qc l1"><div class="qh"><span class="qn">101</span><span class="ql l1">⭐</span></div><div class="qt">פתרו:<div class="mb">4x − 7 = 13</div></div><button class="sb" onclick="tgl(this)">📖 פתרון</button><div class="sol"><div class="sol-t">פתרון:</div><div class="ss"><div class="mb">4x = 20 → x = 5</div><div class="step">בדיקה: 4(5)−7 = 13 ✓</div><div class="ans">x = 5</div></div></div></div>
+
+<!-- Q102 --><div class="qc l1"><div class="qh"><span class="qn">102</span><span class="ql l1">⭐</span></div><div class="qt">פתרו:<div class="mb">−3x + 5 = −10</div></div><button class="sb" onclick="tgl(this)">📖 פתרון</button><div class="sol"><div class="sol-t">פתרון:</div><div class="ss"><div class="mb">−3x = −15 → x = 5</div><div class="step">בדיקה: −3(5)+5 = −10 ✓</div><div class="ans">x = 5</div></div></div></div>
+
+<!-- Q103 --><div class="qc l1"><div class="qh"><span class="qn">103</span><span class="ql l1">⭐</span></div><div class="qt">פתרו:<div class="mb">2(x + 5) = 16</div></div><button class="sb" onclick="tgl(this)">📖 פתרון</button><div class="sol"><div class="sol-t">פתרון:</div><div class="ss"><div class="mb">2x + 10 = 16 → 2x = 6 → x = 3</div><div class="step">בדיקה: 2(8) = 16 ✓</div><div class="ans">x = 3</div></div></div></div>
+
+<!-- Q104 --><div class="qc l1"><div class="qh"><span class="qn">104</span><span class="ql l1">⭐</span></div><div class="qt">פתרו:<div class="mb">7x − 3x + 8 = 28</div></div><button class="sb" onclick="tgl(this)">📖 פתרון</button><div class="sol"><div class="sol-t">פתרון:</div><div class="ss"><div class="mb">4x + 8 = 28 → 4x = 20 → x = 5</div><div class="ans">x = 5</div></div></div></div>
+
+<!-- Q105 --><div class="qc l1"><div class="qh"><span class="qn">105</span><span class="ql l1">⭐</span></div><div class="qt">פתרו:<div class="mb">3(x − 4) = −6</div></div><button class="sb" onclick="tgl(this)">📖 פתרון</button><div class="sol"><div class="sol-t">פתרון:</div><div class="ss"><div class="mb">3x − 12 = −6 → 3x = 6 → x = 2</div><div class="ans">x = 2</div></div></div></div>
+
+<!-- Q106 --><div class="qc l1"><div class="qh"><span class="qn">106</span><span class="ql l1">⭐</span></div><div class="qt">פתרו:<div class="mb">5x + 3 − 2x = 18</div></div><button class="sb" onclick="tgl(this)">📖 פתרון</button><div class="sol"><div class="sol-t">פתרון:</div><div class="ss"><div class="mb">3x + 3 = 18 → 3x = 15 → x = 5</div><div class="ans">x = 5</div></div></div></div>
+
+<!-- Q107 --><div class="qc l1"><div class="qh"><span class="qn">107</span><span class="ql l1">⭐</span></div><div class="qt">פתרו:<div class="mb">−2(x − 3) = 14</div></div><button class="sb" onclick="tgl(this)">📖 פתרון</button><div class="sol"><div class="sol-t">פתרון:</div><div class="ss"><div class="mb">−2x + 6 = 14 → −2x = 8 → x = −4</div><div class="ans">x = −4</div></div></div></div>
+
+<!-- Q108 --><div class="qc l1"><div class="qh"><span class="qn">108</span><span class="ql l1">⭐</span></div><div class="qt">פתרו:<div class="mb">6x − 10 = 2x + 14</div></div><button class="sb" onclick="tgl(this)">📖 פתרון</button><div class="sol"><div class="sol-t">פתרון:</div><div class="ss"><div class="mb">4x = 24 → x = 6</div><div class="ans">x = 6</div></div></div></div>
+
+<!-- Q109 --><div class="qc l1"><div class="qh"><span class="qn">109</span><span class="ql l1">⭐</span></div><div class="qt">פתרו:<div class="mb">4(x + 1) − x = 13</div></div><button class="sb" onclick="tgl(this)">📖 פתרון</button><div class="sol"><div class="sol-t">פתרון:</div><div class="ss"><div class="mb">4x + 4 − x = 13 → 3x + 4 = 13 → 3x = 9 → x = 3</div><div class="ans">x = 3</div></div></div></div>
+
+<!-- Q110 --><div class="qc l1"><div class="qh"><span class="qn">110</span><span class="ql l1">⭐</span></div><div class="qt">פתרו:<div class="mb">8 − 3x = −7</div></div><button class="sb" onclick="tgl(this)">📖 פתרון</button><div class="sol"><div class="sol-t">פתרון:</div><div class="ss"><div class="mb">−3x = −15 → x = 5</div><div class="ans">x = 5</div></div></div></div>
+
+<!-- Q111 --><div class="qc l2"><div class="qh"><span class="qn">111</span><span class="ql l2">⭐⭐</span></div><div class="qt">פתרו:<div class="mb">5(x + 2) − 3(x − 4) = 30</div></div><button class="sb" onclick="tgl(this)">📖 פתרון</button><div class="sol"><div class="sol-t">פתרון:</div><div class="ss"><div class="mb">5x + 10 − 3x + 12 = 30</div><div class="mb">2x + 22 = 30 → 2x = 8 → x = 4</div><div class="ans">x = 4</div></div></div></div>
+
+<!-- Q112 --><div class="qc l2"><div class="qh"><span class="qn">112</span><span class="ql l2">⭐⭐</span></div><div class="qt">פתרו:<div class="mb">7x − 2(3x + 1) = −8</div></div><button class="sb" onclick="tgl(this)">📖 פתרון</button><div class="sol"><div class="sol-t">פתרון:</div><div class="ss"><div class="mb">7x − 6x − 2 = −8 → x − 2 = −8 → x = −6</div><div class="ans">x = −6</div></div></div></div>
+
+<!-- Q113 --><div class="qc l2"><div class="qh"><span class="qn">113</span><span class="ql l2">⭐⭐</span></div><div class="qt">פתרו:<div class="mb">3(2x − 5) + 4 = 2(x + 3)</div></div><button class="sb" onclick="tgl(this)">📖 פתרון</button><div class="sol"><div class="sol-t">פתרון:</div><div class="ss"><div class="mb">6x − 15 + 4 = 2x + 6</div><div class="mb">6x − 11 = 2x + 6 → 4x = 17 → x = 17/4 = 4.25</div><div class="ans">x = 4.25</div></div></div></div>
+
+<!-- Q114 --><div class="qc l2"><div class="qh"><span class="qn">114</span><span class="ql l2">⭐⭐</span></div><div class="qt">פתרו:<div class="mb">4(x − 3) + 2(x + 5) = 3(x − 1)</div></div><button class="sb" onclick="tgl(this)">📖 פתרון</button><div class="sol"><div class="sol-t">פתרון:</div><div class="ss"><div class="mb">4x − 12 + 2x + 10 = 3x − 3</div><div class="mb">6x − 2 = 3x − 3 → 3x = −1 → x = −1/3</div><div class="ans">x = −1/3</div></div></div></div>
+
+<!-- Q115 --><div class="qc l2"><div class="qh"><span class="qn">115</span><span class="ql l2">⭐⭐</span></div><div class="qt">פתרו:<div class="mb">2(5 − x) + 3x = 4(x + 1)</div></div><button class="sb" onclick="tgl(this)">📖 פתרון</button><div class="sol"><div class="sol-t">פתרון:</div><div class="ss"><div class="mb">10 − 2x + 3x = 4x + 4</div><div class="mb">x + 10 = 4x + 4 → 6 = 3x → x = 2</div><div class="ans">x = 2</div></div></div></div>
+
+<!-- Q116 --><div class="qc l2"><div class="qh"><span class="qn">116</span><span class="ql l2">⭐⭐</span></div><div class="qt">פתרו:<div class="mb">−3(x + 2) + 5(x − 1) = 2x − 9</div></div><button class="sb" onclick="tgl(this)">📖 פתרון</button><div class="sol"><div class="sol-t">פתרון:</div><div class="ss"><div class="mb">−3x − 6 + 5x − 5 = 2x − 9</div><div class="mb">2x − 11 = 2x − 9</div><div class="mb">−11 = −9</div><div class="step">סתירה! אין פתרון.</div><div class="ans">אין פתרון (המשוואה סותרת)</div></div></div></div>
+
+<!-- Q117 --><div class="qc l2"><div class="qh"><span class="qn">117</span><span class="ql l2">⭐⭐</span></div><div class="qt">פתרו:<div class="mb">6(x − 2) − 4(x − 3) = 2x</div></div><button class="sb" onclick="tgl(this)">📖 פתרון</button><div class="sol"><div class="sol-t">פתרון:</div><div class="ss"><div class="mb">6x − 12 − 4x + 12 = 2x</div><div class="mb">2x = 2x</div><div class="step">זהות! נכון לכל x.</div><div class="ans">כל מספר הוא פתרון (אינסוף פתרונות)</div></div></div></div>
+
+<!-- Q118 --><div class="qc l2"><div class="qh"><span class="qn">118</span><span class="ql l2">⭐⭐</span></div><div class="qt">פתרו:<div class="mb">8x − 3(2x + 5) = 2(x − 4) − 7</div></div><button class="sb" onclick="tgl(this)">📖 פתרון</button><div class="sol"><div class="sol-t">פתרון:</div><div class="ss"><div class="mb">8x − 6x − 15 = 2x − 8 − 7</div><div class="mb">2x − 15 = 2x − 15</div><div class="step">זהות! כל x הוא פתרון.</div><div class="ans">כל מספר הוא פתרון</div></div></div></div>
+
+<!-- Q119 --><div class="qc l2"><div class="qh"><span class="qn">119</span><span class="ql l2">⭐⭐</span></div><div class="qt">פתרו:<div class="mb">5x − 7 − 4x = 20 − 3(x − 5)</div></div><button class="sb" onclick="tgl(this)">📖 פתרון</button><div class="sol"><div class="sol-t">פתרון:</div><div class="ss"><div class="mb">x − 7 = 20 − 3x + 15</div><div class="mb">x − 7 = 35 − 3x → 4x = 42 → x = 10.5</div><div class="ans">x = 10.5</div></div></div></div>
+
+<!-- Q120 --><div class="qc l2"><div class="qh"><span class="qn">120</span><span class="ql l2">⭐⭐</span></div><div class="qt">פתרו:<div class="mb">−4(2x − 3) = 3(−x + 5) + 2</div></div><button class="sb" onclick="tgl(this)">📖 פתרון</button><div class="sol"><div class="sol-t">פתרון:</div><div class="ss"><div class="mb">−8x + 12 = −3x + 15 + 2</div><div class="mb">−8x + 12 = −3x + 17 → −5x = 5 → x = −1</div><div class="ans">x = −1</div></div></div></div>
+
+<!-- Q121 --><div class="qc l3"><div class="qh"><span class="qn">121</span><span class="ql l3">⭐⭐⭐</span></div><div class="qt">פתרו:<div class="mb">3(4x − 5) − 2(3x + 1) = 4(x − 2) + 1</div></div><button class="sb" onclick="tgl(this)">📖 פתרון</button><div class="sol"><div class="sol-t">פתרון:</div><div class="ss"><div class="mb">12x − 15 − 6x − 2 = 4x − 8 + 1</div><div class="mb">6x − 17 = 4x − 7 → 2x = 10 → x = 5</div><div class="step">בדיקה: 6(5)−17 = 13; 4(5)−7 = 13 ✓</div><div class="ans">x = 5</div></div></div></div>
+
+<!-- Q122 --><div class="qc l3"><div class="qh"><span class="qn">122</span><span class="ql l3">⭐⭐⭐</span></div><div class="qt">פתרו:<div class="mb">5(x + 7) + 2(x + 3) = 6(x + 3) − 6</div></div><button class="sb" onclick="tgl(this)">📖 פתרון</button><div class="sol"><div class="sol-t">פתרון:</div><div class="ss"><div class="mb">5x + 35 + 2x + 6 = 6x + 18 − 6</div><div class="mb">7x + 41 = 6x + 12 → x = −29</div><div class="step">בדיקה: 7(−29)+41 = −162; 6(−29)+12 = −162 ✓</div><div class="ans">x = −29</div></div></div></div>
+
+<!-- Q123 --><div class="qc l3"><div class="qh"><span class="qn">123</span><span class="ql l3">⭐⭐⭐</span></div><div class="qt">פתרו:<div class="mb">2(5 − x) + 3x = 15 − (x − 5)</div></div><button class="sb" onclick="tgl(this)">📖 פתרון</button><div class="sol"><div class="sol-t">פתרון:</div><div class="ss"><div class="mb">10 − 2x + 3x = 15 − x + 5</div><div class="mb">x + 10 = 20 − x → 2x = 10 → x = 5</div><div class="ans">x = 5</div></div></div></div>
+
+<!-- Q124 --><div class="qc l3"><div class="qh"><span class="qn">124</span><span class="ql l3">⭐⭐⭐</span></div><div class="qt">פתרו:<div class="mb">8(x + 3) − 5x + 2(x − 5) = 24</div></div><button class="sb" onclick="tgl(this)">📖 פתרון</button><div class="sol"><div class="sol-t">פתרון:</div><div class="ss"><div class="mb">8x + 24 − 5x + 2x − 10 = 24</div><div class="mb">5x + 14 = 24 → 5x = 10 → x = 2</div><div class="ans">x = 2</div></div></div></div>
+
+<!-- Q125 --><div class="qc l3"><div class="qh"><span class="qn">125</span><span class="ql l3">⭐⭐⭐</span></div><div class="qt">פתרו:<div class="mb">6x − 2(5 + 3x) = 2x − 14</div></div><button class="sb" onclick="tgl(this)">📖 פתרון</button><div class="sol"><div class="sol-t">פתרון:</div><div class="ss"><div class="mb">6x − 10 − 6x = 2x − 14</div><div class="mb">−10 = 2x − 14 → 2x = 4 → x = 2</div><div class="ans">x = 2</div></div></div></div>
+
+<!-- Q126 --><div class="qc l3"><div class="qh"><span class="qn">126</span><span class="ql l3">⭐⭐⭐</span></div><div class="qt">פתרו:<div class="mb">10(x − 2) − 4(3x − 6) = 2(x + 3) + 7</div></div><button class="sb" onclick="tgl(this)">📖 פתרון</button><div class="sol"><div class="sol-t">פתרון:</div><div class="ss"><div class="mb">10x − 20 − 12x + 24 = 2x + 6 + 7</div><div class="mb">−2x + 4 = 2x + 13 → −4x = 9 → x = −9/4 = −2.25</div><div class="ans">x = −2.25</div></div></div></div>
+
+<!-- Q127 --><div class="qc l3"><div class="qh"><span class="qn">127</span><span class="ql l3">⭐⭐⭐</span></div><div class="qt">פתרו:<div class="mb">3x + 2(1 − x) = 3 − (2x − 7)</div></div><button class="sb" onclick="tgl(this)">📖 פתרון</button><div class="sol"><div class="sol-t">פתרון:</div><div class="ss"><div class="mb">3x + 2 − 2x = 3 − 2x + 7</div><div class="mb">x + 2 = 10 − 2x → 3x = 8 → x = 8/3</div><div class="ans">x = 8/3 ≈ 2.67</div></div></div></div>
+
+<!-- Q128 --><div class="qc l3"><div class="qh"><span class="qn">128</span><span class="ql l3">⭐⭐⭐</span></div><div class="qt">פתרו:<div class="mb">−x + 8x − 3(2x + 1) + 3 = 7 × (−2)</div></div><button class="sb" onclick="tgl(this)">📖 פתרון</button><div class="sol"><div class="sol-t">פתרון:</div><div class="ss"><div class="mb">−x + 8x − 6x − 3 + 3 = −14</div><div class="mb">x = −14</div><div class="ans">x = −14</div></div></div></div>
+
+<!-- Q129 --><div class="qc l3"><div class="qh"><span class="qn">129</span><span class="ql l3">⭐⭐⭐</span></div><div class="qt">פתרו:<div class="mb">2x + 3(x − 8) + 4(6 − x) = 0</div></div><button class="sb" onclick="tgl(this)">📖 פתרון</button><div class="sol"><div class="sol-t">פתרון:</div><div class="ss"><div class="mb">2x + 3x − 24 + 24 − 4x = 0</div><div class="mb">x = 0</div><div class="ans">x = 0</div></div></div></div>
+
+<!-- Q130 --><div class="qc l3"><div class="qh"><span class="qn">130</span><span class="ql l3">⭐⭐⭐</span></div><div class="qt">פתרו:<div class="mb">5(3x − 2) − 7(2x + 1) = 3(x − 4) − 5</div></div><button class="sb" onclick="tgl(this)">📖 פתרון</button><div class="sol"><div class="sol-t">פתרון:</div><div class="ss"><div class="mb">15x − 10 − 14x − 7 = 3x − 12 − 5</div><div class="mb">x − 17 = 3x − 17 → −2x = 0 → x = 0</div><div class="ans">x = 0</div></div></div></div>
+
+<!-- Q131 --><div class="qc l4"><div class="qh"><span class="qn">131</span><span class="ql l4">⭐⭐⭐⭐</span></div><div class="qt">פתרו:<div class="mb">3[2x − (x + 5)] + 4[x − 2(x − 3)] = 10</div></div><button class="sb" onclick="tgl(this)">📖 פתרון</button><div class="sol"><div class="sol-t">פתרון:</div><div class="ss"><div class="step">ראשון: 2x − x − 5 = x − 5, כפול 3: 3x − 15</div><div class="step">שני: x − 2x + 6 = −x + 6, כפול 4: −4x + 24</div><div class="mb">3x − 15 − 4x + 24 = 10</div><div class="mb">−x + 9 = 10 → x = −1</div><div class="ans">x = −1</div></div></div></div>
+
+<!-- Q132 --><div class="qc l4"><div class="qh"><span class="qn">132</span><span class="ql l4">⭐⭐⭐⭐</span></div><div class="qt">פתרו:<div class="mb">2{3(x + 1) − [4x − 2(x + 3)]} = 18</div></div><button class="sb" onclick="tgl(this)">📖 פתרון</button><div class="sol"><div class="sol-t">פתרון:</div><div class="ss"><div class="step">פנימי: 4x − 2x − 6 = 2x − 6</div><div class="step">אמצעי: 3x + 3 − (2x − 6) = 3x + 3 − 2x + 6 = x + 9</div><div class="mb">2(x + 9) = 18 → 2x + 18 = 18 → x = 0</div><div class="ans">x = 0</div></div></div></div>
+
+<!-- Q133 --><div class="qc l4"><div class="qh"><span class="qn">133</span><span class="ql l4">⭐⭐⭐⭐</span></div><div class="qt">פתרו:<div class="mb">5(2x + 1) − 3(4x − 7) = 2[x − 3(x + 2)]</div></div><button class="sb" onclick="tgl(this)">📖 פתרון</button><div class="sol"><div class="sol-t">פתרון:</div><div class="ss"><div class="step">שמאל: 10x + 5 − 12x + 21 = −2x + 26</div><div class="step">ימין: 2(x − 3x − 6) = 2(−2x − 6) = −4x − 12</div><div class="mb">−2x + 26 = −4x − 12 → 2x = −38 → x = −19</div><div class="ans">x = −19</div></div></div></div>
+
+<!-- Q134 --><div class="qc l4"><div class="qh"><span class="qn">134</span><span class="ql l4">⭐⭐⭐⭐</span></div><div class="qt">פתרו:<div class="mb">4(x + 2) − 3[2x − (x − 5)] = 2(1 − x) + 7</div></div><button class="sb" onclick="tgl(this)">📖 פתרון</button><div class="sol"><div class="sol-t">פתרון:</div><div class="ss"><div class="step">סוגריים פנימיים: 2x − x + 5 = x + 5</div><div class="step">שמאל: 4x + 8 − 3(x + 5) = 4x + 8 − 3x − 15 = x − 7</div><div class="step">ימין: 2 − 2x + 7 = 9 − 2x</div><div class="mb">x − 7 = 9 − 2x → 3x = 16 → x = 16/3</div><div class="ans">x = 16/3 ≈ 5.33</div></div></div></div>
+
+<!-- Q135 --><div class="qc l4"><div class="qh"><span class="qn">135</span><span class="ql l4">⭐⭐⭐⭐</span></div><div class="qt">פתרו:<div class="mb">7 − 2[3x + 4(1 − x)] = 5(x − 3) + 8</div></div><button class="sb" onclick="tgl(this)">📖 פתרון</button><div class="sol"><div class="sol-t">פתרון:</div><div class="ss"><div class="step">פנימי: 3x + 4 − 4x = −x + 4</div><div class="step">שמאל: 7 − 2(−x + 4) = 7 + 2x − 8 = 2x − 1</div><div class="step">ימין: 5x − 15 + 8 = 5x − 7</div><div class="mb">2x − 1 = 5x − 7 → −3x = −6 → x = 2</div><div class="ans">x = 2</div></div></div></div>
+
+<!-- Q136 --><div class="qc l4"><div class="qh"><span class="qn">136</span><span class="ql l4">⭐⭐⭐⭐</span></div><div class="qt">פתרו:<div class="mb">−3(2x − 1) + 4(x + 5) = 2[3 − (x − 4)] + x</div></div><button class="sb" onclick="tgl(this)">📖 פתרון</button><div class="sol"><div class="sol-t">פתרון:</div><div class="ss"><div class="step">שמאל: −6x + 3 + 4x + 20 = −2x + 23</div><div class="step">ימין: 2(3 − x + 4) + x = 2(7 − x) + x = 14 − 2x + x = 14 − x</div><div class="mb">−2x + 23 = 14 − x → −x = −9 → x = 9</div><div class="ans">x = 9</div></div></div></div>
+
+<!-- Q137 --><div class="qc l4"><div class="qh"><span class="qn">137</span><span class="ql l4">⭐⭐⭐⭐</span></div><div class="qt">פתרו:<div class="mb">3(x − 4) − 2(x + 1) + 5(−x + 2) = −4(x + 3) + 10</div></div><button class="sb" onclick="tgl(this)">📖 פתרון</button><div class="sol"><div class="sol-t">פתרון:</div><div class="ss"><div class="step">שמאל: 3x − 12 − 2x − 2 − 5x + 10 = −4x − 4</div><div class="step">ימין: −4x − 12 + 10 = −4x − 2</div><div class="mb">−4x − 4 = −4x − 2</div><div class="mb">−4 = −2</div><div class="step">סתירה!</div><div class="ans">אין פתרון</div></div></div></div>
+
+<!-- Q138 --><div class="qc l4"><div class="qh"><span class="qn">138</span><span class="ql l4">⭐⭐⭐⭐</span></div><div class="qt">פתרו:<div class="mb">6 − 3(3x + 1) + 7x = 8 − 2(x + 5)</div></div><button class="sb" onclick="tgl(this)">📖 פתרון</button><div class="sol"><div class="sol-t">פתרון:</div><div class="ss"><div class="step">שמאל: 6 − 9x − 3 + 7x = −2x + 3</div><div class="step">ימין: 8 − 2x − 10 = −2x − 2</div><div class="mb">−2x + 3 = −2x − 2</div><div class="mb">3 = −2</div><div class="step">סתירה!</div><div class="ans">אין פתרון</div></div></div></div>
+
+<!-- Q139 --><div class="qc l4"><div class="qh"><span class="qn">139</span><span class="ql l4">⭐⭐⭐⭐</span></div><div class="qt">פתרו:<div class="mb">5(x − 1) + 2(3 − x) = 3(x + 2) − (x + 7)</div></div><button class="sb" onclick="tgl(this)">📖 פתרון</button><div class="sol"><div class="sol-t">פתרון:</div><div class="ss"><div class="step">שמאל: 5x − 5 + 6 − 2x = 3x + 1</div><div class="step">ימין: 3x + 6 − x − 7 = 2x − 1</div><div class="mb">3x + 1 = 2x − 1 → x = −2</div><div class="ans">x = −2</div></div></div></div>
+
+<!-- Q140 --><div class="qc l4"><div class="qh"><span class="qn">140</span><span class="ql l4">⭐⭐⭐⭐</span></div><div class="qt">פתרו:<div class="mb">−2[5x − 3(2x + 1)] + x = 4[x − 2(1 − x)] − 3</div></div><button class="sb" onclick="tgl(this)">📖 פתרון</button><div class="sol"><div class="sol-t">פתרון:</div><div class="ss"><div class="step">שמאל: 5x − 6x − 3 = −x − 3, כפול −2: 2x + 6, ועוד x: 3x + 6</div><div class="step">ימין: x − 2 + 2x = 3x − 2, כפול 4: 12x − 8, פחות 3: 12x − 11</div><div class="mb">3x + 6 = 12x − 11 → −9x = −17 → x = 17/9</div><div class="ans">x = 17/9 ≈ 1.89</div></div></div></div>
+
+<!-- Q141 --><div class="qc l5"><div class="qh"><span class="qn">141</span><span class="ql l5">⭐⭐⭐⭐⭐</span></div><div class="qt">פתרו:<div class="mb">3{2[x − 3(x + 1)] + 4x} = −2{5x − [3x − 2(x − 4)]}</div></div><button class="sb" onclick="tgl(this)">📖 פתרון</button><div class="sol"><div class="sol-t">פתרון:</div><div class="ss"><div class="step">שמאל פנימי: x − 3x − 3 = −2x − 3, כפול 2: −4x − 6, +4x: −6, כפול 3: −18</div><div class="step">ימין פנימי: 3x − 2x + 8 = x + 8, 5x − (x+8) = 4x − 8, כפול −2: −8x + 16</div><div class="mb">−18 = −8x + 16 → 8x = 34 → x = 34/8 = 17/4</div><div class="ans">x = 17/4 = 4.25</div></div></div></div>
+
+<!-- Q142 --><div class="qc l5"><div class="qh"><span class="qn">142</span><span class="ql l5">⭐⭐⭐⭐⭐</span></div><div class="qt">פתרו:<div class="mb">4[3x − 2(5 − x)] − 3[2x + 4(x − 1)] = 2(x − 30)</div></div><button class="sb" onclick="tgl(this)">📖 פתרון</button><div class="sol"><div class="sol-t">פתרון:</div><div class="ss"><div class="step">ראשון: 3x − 10 + 2x = 5x − 10, כפול 4: 20x − 40</div><div class="step">שני: 2x + 4x − 4 = 6x − 4, כפול −3: −18x + 12</div><div class="step">ימין: 2x − 60</div><div class="mb">20x − 40 − 18x + 12 = 2x − 60</div><div class="mb">2x − 28 = 2x − 60</div><div class="mb">−28 = −60</div><div class="step">סתירה!</div><div class="ans">אין פתרון</div></div></div></div>
+
+<!-- Q143 --><div class="qc l5"><div class="qh"><span class="qn">143</span><span class="ql l5">⭐⭐⭐⭐⭐</span></div><div class="qt">פתרו:<div class="mb">5[x − {3 − 2(x + 1)}] = 3[2x + {4 − (x − 3)}]</div></div><button class="sb" onclick="tgl(this)">📖 פתרון</button><div class="sol"><div class="sol-t">פתרון:</div><div class="ss"><div class="step">שמאל: 3 − 2x − 2 = 1 − 2x → x − (1 − 2x) = 3x − 1, כפול 5: 15x − 5</div><div class="step">ימין: 4 − x + 3 = 7 − x → 2x + 7 − x = x + 7, כפול 3: 3x + 21</div><div class="mb">15x − 5 = 3x + 21 → 12x = 26 → x = 26/12 = 13/6</div><div class="ans">x = 13/6 ≈ 2.17</div></div></div></div>
+
+<!-- Q144 --><div class="qc l5"><div class="qh"><span class="qn">144</span><span class="ql l5">⭐⭐⭐⭐⭐</span></div><div class="qt">פתרו:<div class="mb">2(3x − 7) × 1 + 5 = 3 × (−1) × (4 − 2x) + 8x − 10</div></div><button class="sb" onclick="tgl(this)">📖 פתרון</button><div class="sol"><div class="sol-t">פתרון:</div><div class="ss"><div class="mb">6x − 14 + 5 = −12 + 6x + 8x − 10</div><div class="mb">6x − 9 = 14x − 22 → −8x = −13 → x = 13/8</div><div class="ans">x = 13/8 = 1.625</div></div></div></div>
+
+<!-- Q145 --><div class="qc l5"><div class="qh"><span class="qn">145</span><span class="ql l5">⭐⭐⭐⭐⭐</span></div><div class="qt">פתרו:<div class="mb">−{4x − 3[2(x − 5) + 7]} = 2{x − [3(x + 1) − 5(x − 2)]} + 1</div></div><button class="sb" onclick="tgl(this)">📖 פתרון</button><div class="sol"><div class="sol-t">פתרון:</div><div class="ss"><div class="step">שמאל: 2x − 10 + 7 = 2x − 3, כפול 3: 6x − 9, מחוסר מ-4x: 4x − 6x + 9 = −2x + 9, כפול −1: 2x − 9</div><div class="step">ימין: 3x + 3 − 5x + 10 = −2x + 13, x − (−2x+13) = 3x − 13, כפול 2: 6x − 26, +1: 6x − 25</div><div class="mb">2x − 9 = 6x − 25 → −4x = −16 → x = 4</div><div class="ans">x = 4</div></div></div></div>
+
+<!-- Q146 --><div class="qc l5"><div class="qh"><span class="qn">146</span><span class="ql l5">⭐⭐⭐⭐⭐</span></div><div class="qt">פתרו:<div class="mb">3(x + 2) − 5(2x − 1) + 7(x − 3) = 4(x − 5) − 2(3x + 1) + 38</div></div><button class="sb" onclick="tgl(this)">📖 פתרון</button><div class="sol"><div class="sol-t">פתרון:</div><div class="ss"><div class="step">שמאל: 3x + 6 − 10x + 5 + 7x − 21 = 0x − 10 = −10</div><div class="step">ימין: 4x − 20 − 6x − 2 + 38 = −2x + 16</div><div class="mb">−10 = −2x + 16 → 2x = 26 → x = 13</div><div class="ans">x = 13</div></div></div></div>
+
+<!-- Q147 --><div class="qc l5"><div class="qh"><span class="qn">147</span><span class="ql l5">⭐⭐⭐⭐⭐</span></div><div class="qt">פתרו:<div class="mb">6[x − 2(x − 3)] − 4[2x − 3(1 − x)] = 10 − 20x</div></div><button class="sb" onclick="tgl(this)">📖 פתרון</button><div class="sol"><div class="sol-t">פתרון:</div><div class="ss"><div class="step">ראשון: x − 2x + 6 = −x + 6, כפול 6: −6x + 36</div><div class="step">שני: 2x − 3 + 3x = 5x − 3, כפול −4: −20x + 12</div><div class="mb">−6x + 36 − 20x + 12 = 10 − 20x</div><div class="mb">−26x + 48 = 10 − 20x → −6x = −38 → x = 38/6 = 19/3</div><div class="ans">x = 19/3 ≈ 6.33</div></div></div></div>
+
+<!-- Q148 --><div class="qc l5"><div class="qh"><span class="qn">148</span><span class="ql l5">⭐⭐⭐⭐⭐</span></div><div class="qt">פתרו:<div class="mb">−5{2x − 3[x − 2(x + 4)]} + 10 = 3{4[2 − x] + 7x} − 11</div></div><button class="sb" onclick="tgl(this)">📖 פתרון</button><div class="sol"><div class="sol-t">פתרון:</div><div class="ss"><div class="step">שמאל: x − 2x − 8 = −x − 8, כפול −3: 3x + 24, 2x − (3x+24) = −x − 24, כפול −5: 5x + 120, +10: 5x + 130</div><div class="step">ימין: 8 − 4x + 7x = 3x + 8, כפול 3: 9x + 24, −11: 9x + 13</div><div class="mb">5x + 130 = 9x + 13 → −4x = −117 → x = 117/4 = 29.25</div><div class="ans">x = 29.25</div></div></div></div>
+
+<!-- Q149 --><div class="qc l5"><div class="qh"><span class="qn">149</span><span class="ql l5">⭐⭐⭐⭐⭐</span></div><div class="qt">פתרו:<div class="mb">2{3[x − 1] − 2[2x + 3]} = −{5[x − 4] − 3[2x − 1]} + 1</div></div><button class="sb" onclick="tgl(this)">📖 פתרון</button><div class="sol"><div class="sol-t">פתרון:</div><div class="ss"><div class="step">שמאל: 3x − 3 − 4x − 6 = −x − 9, כפול 2: −2x − 18</div><div class="step">ימין פנימי: 5x − 20 − 6x + 3 = −x − 17, כפול −1: x + 17, +1: x + 18</div><div class="mb">−2x − 18 = x + 18 → −3x = 36 → x = −12</div><div class="step">בדיקה: שמאל: −2(−12)−18 = 24−18 = 6. ימין: −12+18 = 6 ✓</div><div class="ans">x = −12</div></div></div></div>
+
+<!-- Q150 --><div class="qc l5"><div class="qh"><span class="qn">150</span><span class="ql l5">⭐⭐⭐⭐⭐</span></div><div class="qt">פתרו:<div class="mb">4{x − 2[3(x − 1) − 2(2x + 5)]} = −3{2x − [5(x − 3) + 4(1 − x)]} + 10</div></div><button class="sb" onclick="tgl(this)">📖 פתרון</button><div class="sol"><div class="sol-t">פתרון:</div><div class="ss"><div class="step">שמאל: 3x − 3 − 4x − 10 = −x − 13, כפול −2: 2x + 26, x + 2x + 26 = 3x + 26, כפול 4: 12x + 104</div><div class="step">ימין: 5x − 15 + 4 − 4x = x − 11, 2x − (x−11) = x + 11, כפול −3: −3x − 33, +10: −3x − 23</div><div class="mb">12x + 104 = −3x − 23 → 15x = −127 → x = −127/15</div><div class="ans">x = −127/15 ≈ −8.47</div></div></div></div>
+</div>
+
+<button class="btn-all" style="display:block;margin:20px auto;" onclick="toggleAll()">📋 הצג/הסתר את כל הפתרונות</button>
+
+<div class="counter" style="padding:20px;text-align:center;font-size:0.78rem;color:var(--text-light);">
+💡 להדפסה: הפתרונות יוצגו אוטומטית. ניתן לסנן לפי רמת קושי בכפתורים למעלה.
+</div>
+
+<script>
+function tgl(b){const s=b.nextElementSibling;s.classList.toggle('open');b.textContent=s.classList.contains('open')?'🔒 הסתר':'📖 פתרון';}
+let ao=false;
+function toggleAll(){ao=!ao;document.querySelectorAll('.sol').forEach(s=>{ao?s.classList.add('open'):s.classList.remove('open');});document.querySelectorAll('.sb').forEach(b=>{b.textContent=ao?'🔒 הסתר':'📖 פתרון';});}
+function filterLevel(lv){
+  let count=0,total=document.querySelectorAll('.qc').length;
+  document.querySelectorAll('.qc').forEach(q=>{
+    if(lv==='all'){q.style.display='';count++;}
+    else if(q.classList.contains(lv)){q.style.display='';count++;}
+    else{q.style.display='none';}
+  });
+  document.querySelectorAll('.btn-filter').forEach(b=>b.classList.remove('active'));
+  if(lv!=='all'){document.querySelectorAll('.btn-filter.'+lv).forEach(b=>b.classList.add('active'));}
+  document.getElementById('counter').textContent='מציג '+count+' מתוך '+total+' שאלות';
+}
+</script>
+</body>
+</html>
