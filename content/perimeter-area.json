@@ -1,0 +1,550 @@
+{
+  "id": "perimeter-area",
+  "name": "היקף ושטח",
+  "icon": "📏",
+  "version": "1.0.0",
+  "shuffle": true,
+  "questionsPerSession": 15,
+  "questions": [
+    {
+      "text": "מלבן אורכו 10 ס\"מ ורוחבו 4 ס\"מ. מהו שטחו?",
+      "type": "multiple-choice",
+      "options": [
+        "28 cm²",
+        "36 cm²",
+        "40 cm²",
+        "44 cm²"
+      ],
+      "correct": 2,
+      "explanation": "שטח = 10 × 4 = 40."
+    },
+    {
+      "text": "מלבן 7×4. מהו שטחו?",
+      "type": "multiple-choice",
+      "options": [
+        "22 cm²",
+        "24 cm²",
+        "28 cm²",
+        "32 cm²"
+      ],
+      "correct": 2,
+      "explanation": "7 × 4 = 28."
+    },
+    {
+      "text": "מלבן 9×5 ס\"מ. מהו היקפו?",
+      "type": "multiple-choice",
+      "options": [
+        "24 cm",
+        "26 cm",
+        "28 cm",
+        "30 cm"
+      ],
+      "correct": 2,
+      "explanation": "היקף = 2×(9+5) = 28."
+    },
+    {
+      "text": "ריבוע עם צלע 6 ס\"מ. מהו שטחו?",
+      "type": "multiple-choice",
+      "options": [
+        "24 cm²",
+        "30 cm²",
+        "36 cm²",
+        "42 cm²"
+      ],
+      "correct": 2,
+      "explanation": "6 × 6 = 36."
+    },
+    {
+      "text": "שדה מלבני 20 מ' × 10 מ'. מהו שטחו?",
+      "type": "multiple-choice",
+      "options": [
+        "150 m²",
+        "180 m²",
+        "200 m²",
+        "240 m²"
+      ],
+      "correct": 2,
+      "explanation": "20 × 10 = 200."
+    },
+    {
+      "text": "מלבן אורכו 11 ס\"מ ורוחבו 14 ס\"מ. מהו היקפו?",
+      "type": "multiple-choice",
+      "options": [
+        "52 cm",
+        "50 cm",
+        "154 cm",
+        "48 cm"
+      ],
+      "correct": 1,
+      "explanation": "היקף = 2×(11+14) = 50."
+    },
+    {
+      "text": "מלבן אורכו 3 ס\"מ ורוחבו 13 ס\"מ. מהו שטחו?",
+      "type": "multiple-choice",
+      "options": [
+        "42 cm²",
+        "39 cm²",
+        "32 cm²",
+        "26 cm²"
+      ],
+      "correct": 1,
+      "explanation": "שטח = 3 × 13 = 39."
+    },
+    {
+      "text": "מלבן אורכו 4 ס\"מ ורוחבו 14 ס\"מ. מהו היקפו?",
+      "type": "multiple-choice",
+      "options": [
+        "36 cm",
+        "38 cm",
+        "56 cm",
+        "34 cm"
+      ],
+      "correct": 0,
+      "explanation": "היקף = 2×(4+14) = 36."
+    },
+    {
+      "text": "מלבן אורכו 10 ס\"מ ורוחבו 5 ס\"מ. מהו היקפו?",
+      "type": "multiple-choice",
+      "options": [
+        "30 cm",
+        "32 cm",
+        "50 cm",
+        "28 cm"
+      ],
+      "correct": 0,
+      "explanation": "היקף = 2×(10+5) = 30."
+    },
+    {
+      "text": "מלבן אורכו 3 ס\"מ ורוחבו 12 ס\"מ. מהו היקפו?",
+      "type": "multiple-choice",
+      "options": [
+        "28 cm",
+        "30 cm",
+        "36 cm",
+        "32 cm"
+      ],
+      "correct": 1,
+      "explanation": "היקף = 2×(3+12) = 30."
+    },
+    {
+      "text": "מלבן אורכו 16 ס\"מ ורוחבו 9 ס\"מ. מהו שטחו?",
+      "type": "multiple-choice",
+      "options": [
+        "144 cm²",
+        "160 cm²",
+        "135 cm²",
+        "50 cm²"
+      ],
+      "correct": 0,
+      "explanation": "שטח = 16 × 9 = 144."
+    },
+    {
+      "text": "מלבן אורכו 8 ס\"מ ורוחבו 12 ס\"מ. מהו שטחו?",
+      "type": "multiple-choice",
+      "options": [
+        "104 cm²",
+        "96 cm²",
+        "40 cm²",
+        "84 cm²"
+      ],
+      "correct": 1,
+      "explanation": "שטח = 8 × 12 = 96."
+    },
+    {
+      "text": "מלבן אורכו 5 ס\"מ ורוחבו 6 ס\"מ. מהו היקפו?",
+      "type": "multiple-choice",
+      "options": [
+        "20 cm",
+        "24 cm",
+        "22 cm",
+        "30 cm"
+      ],
+      "correct": 2,
+      "explanation": "היקף = 2×(5+6) = 22."
+    },
+    {
+      "text": "מלבן אורכו 12 ס\"מ ורוחבו 5 ס\"מ. מהו שטחו?",
+      "type": "multiple-choice",
+      "options": [
+        "72 cm²",
+        "60 cm²",
+        "34 cm²",
+        "55 cm²"
+      ],
+      "correct": 1,
+      "explanation": "שטח = 12 × 5 = 60."
+    },
+    {
+      "text": "מלבן אורכו 16 ס\"מ ורוחבו 10 ס\"מ. מהו שטחו?",
+      "type": "multiple-choice",
+      "options": [
+        "52 cm²",
+        "160 cm²",
+        "176 cm²",
+        "150 cm²"
+      ],
+      "correct": 1,
+      "explanation": "שטח = 16 × 10 = 160."
+    },
+    {
+      "text": "ריבוע עם צלע 15 ס\"מ. מהו שטחו?",
+      "type": "multiple-choice",
+      "options": [
+        "60 cm²",
+        "240 cm²",
+        "224 cm²",
+        "225 cm²"
+      ],
+      "correct": 3,
+      "explanation": "שטח = 15 × 15 = 225."
+    },
+    {
+      "text": "ריבוע עם צלע 7 ס\"מ. מהו שטחו?",
+      "type": "multiple-choice",
+      "options": [
+        "28 cm²",
+        "49 cm²",
+        "48 cm²",
+        "56 cm²"
+      ],
+      "correct": 1,
+      "explanation": "שטח = 7 × 7 = 49."
+    },
+    {
+      "text": "ריבוע עם צלע 3 ס\"מ. מהו שטחו?",
+      "type": "multiple-choice",
+      "options": [
+        "9 cm²",
+        "8 cm²",
+        "12 cm²",
+        "12 cm²"
+      ],
+      "correct": 0,
+      "explanation": "שטח = 3 × 3 = 9."
+    },
+    {
+      "text": "מלבן אורכו 18 ס\"מ ורוחבו 14 ס\"מ. מהו שטחו?",
+      "type": "multiple-choice",
+      "options": [
+        "238 cm²",
+        "252 cm²",
+        "270 cm²",
+        "64 cm²"
+      ],
+      "correct": 1,
+      "explanation": "שטח = 18 × 14 = 252."
+    },
+    {
+      "text": "ריבוע עם צלע 4 ס\"מ. מהו שטחו?",
+      "type": "multiple-choice",
+      "options": [
+        "16 cm²",
+        "16 cm²",
+        "15 cm²",
+        "20 cm²"
+      ],
+      "correct": 0,
+      "explanation": "שטח = 4 × 4 = 16."
+    },
+    {
+      "text": "מלבן אורכו 9 ס\"מ ורוחבו 8 ס\"מ. מהו שטחו?",
+      "type": "multiple-choice",
+      "options": [
+        "72 cm²",
+        "64 cm²",
+        "34 cm²",
+        "81 cm²"
+      ],
+      "correct": 0,
+      "explanation": "שטח = 9 × 8 = 72."
+    },
+    {
+      "text": "מלבן אורכו 16 ס\"מ ורוחבו 15 ס\"מ. מהו שטחו?",
+      "type": "multiple-choice",
+      "options": [
+        "225 cm²",
+        "256 cm²",
+        "240 cm²",
+        "62 cm²"
+      ],
+      "correct": 2,
+      "explanation": "שטח = 16 × 15 = 240."
+    },
+    {
+      "text": "ריבוע עם צלע 12 ס\"מ. מהו שטחו?",
+      "type": "multiple-choice",
+      "options": [
+        "144 cm²",
+        "156 cm²",
+        "48 cm²",
+        "143 cm²"
+      ],
+      "correct": 0,
+      "explanation": "שטח = 12 × 12 = 144."
+    },
+    {
+      "text": "מלבן אורכו 13 ס\"מ ורוחבו 7 ס\"מ. מהו שטחו?",
+      "type": "multiple-choice",
+      "options": [
+        "91 cm²",
+        "40 cm²",
+        "104 cm²",
+        "84 cm²"
+      ],
+      "correct": 0,
+      "explanation": "שטח = 13 × 7 = 91."
+    },
+    {
+      "text": "ריבוע עם צלע 11 ס\"מ. מהו שטחו?",
+      "type": "multiple-choice",
+      "options": [
+        "120 cm²",
+        "121 cm²",
+        "132 cm²",
+        "44 cm²"
+      ],
+      "correct": 1,
+      "explanation": "שטח = 11 × 11 = 121."
+    },
+    {
+      "text": "מלבן אורכו 5 ס\"מ ורוחבו 4 ס\"מ. מהו היקפו?",
+      "type": "multiple-choice",
+      "options": [
+        "18 cm",
+        "16 cm",
+        "20 cm",
+        "20 cm"
+      ],
+      "correct": 0,
+      "explanation": "היקף = 2×(5+4) = 18."
+    },
+    {
+      "text": "מלבן אורכו 20 ס\"מ ורוחבו 2 ס\"מ. מהו שטחו?",
+      "type": "multiple-choice",
+      "options": [
+        "60 cm²",
+        "44 cm²",
+        "40 cm²",
+        "38 cm²"
+      ],
+      "correct": 2,
+      "explanation": "שטח = 20 × 2 = 40."
+    },
+    {
+      "text": "ריבוע עם צלע 5 ס\"מ. מהו שטחו?",
+      "type": "multiple-choice",
+      "options": [
+        "20 cm²",
+        "30 cm²",
+        "25 cm²",
+        "24 cm²"
+      ],
+      "correct": 2,
+      "explanation": "שטח = 5 × 5 = 25."
+    },
+    {
+      "text": "מלבן אורכו 6 ס\"מ ורוחבו 9 ס\"מ. מהו שטחו?",
+      "type": "multiple-choice",
+      "options": [
+        "54 cm²",
+        "45 cm²",
+        "60 cm²",
+        "30 cm²"
+      ],
+      "correct": 0,
+      "explanation": "שטח = 6 × 9 = 54."
+    },
+    {
+      "text": "ריבוע עם צלע 14 ס\"מ. מהו שטחו?",
+      "type": "multiple-choice",
+      "options": [
+        "56 cm²",
+        "196 cm²",
+        "195 cm²",
+        "210 cm²"
+      ],
+      "correct": 1,
+      "explanation": "שטח = 14 × 14 = 196."
+    },
+    {
+      "text": "מלבן אורכו 14 ס\"מ ורוחבו 10 ס\"מ. מהו היקפו?",
+      "type": "multiple-choice",
+      "options": [
+        "48 cm",
+        "50 cm",
+        "140 cm",
+        "46 cm"
+      ],
+      "correct": 0,
+      "explanation": "היקף = 2×(14+10) = 48."
+    },
+    {
+      "text": "ריבוע עם צלע 10 ס\"מ. מהו שטחו?",
+      "type": "multiple-choice",
+      "options": [
+        "110 cm²",
+        "99 cm²",
+        "40 cm²",
+        "100 cm²"
+      ],
+      "correct": 3,
+      "explanation": "שטח = 10 × 10 = 100."
+    },
+    {
+      "text": "מלבן אורכו 13 ס\"מ ורוחבו 2 ס\"מ. מהו היקפו?",
+      "type": "multiple-choice",
+      "options": [
+        "26 cm",
+        "32 cm",
+        "28 cm",
+        "30 cm"
+      ],
+      "correct": 3,
+      "explanation": "היקף = 2×(13+2) = 30."
+    },
+    {
+      "text": "מלבן אורכו 17 ס\"מ ורוחבו 14 ס\"מ. מהו היקפו?",
+      "type": "multiple-choice",
+      "options": [
+        "64 cm",
+        "238 cm",
+        "60 cm",
+        "62 cm"
+      ],
+      "correct": 3,
+      "explanation": "היקף = 2×(17+14) = 62."
+    },
+    {
+      "text": "מלבן אורכו 8 ס\"מ ורוחבו 6 ס\"מ. מהו שטחו?",
+      "type": "multiple-choice",
+      "options": [
+        "48 cm²",
+        "42 cm²",
+        "56 cm²",
+        "28 cm²"
+      ],
+      "correct": 0,
+      "explanation": "שטח = 8 × 6 = 48."
+    },
+    {
+      "text": "מלבן אורכו 8 ס\"מ ורוחבו 14 ס\"מ. מהו שטחו?",
+      "type": "multiple-choice",
+      "options": [
+        "112 cm²",
+        "120 cm²",
+        "98 cm²",
+        "44 cm²"
+      ],
+      "correct": 0,
+      "explanation": "שטח = 8 × 14 = 112."
+    },
+    {
+      "text": "מלבן אורכו 3 ס\"מ ורוחבו 9 ס\"מ. מהו שטחו?",
+      "type": "multiple-choice",
+      "options": [
+        "18 cm²",
+        "24 cm²",
+        "30 cm²",
+        "27 cm²"
+      ],
+      "correct": 3,
+      "explanation": "שטח = 3 × 9 = 27."
+    },
+    {
+      "text": "ריבוע עם צלע 13 ס\"מ. מהו שטחו?",
+      "type": "multiple-choice",
+      "options": [
+        "52 cm²",
+        "168 cm²",
+        "182 cm²",
+        "169 cm²"
+      ],
+      "correct": 3,
+      "explanation": "שטח = 13 × 13 = 169."
+    },
+    {
+      "text": "מלבן אורכו 12 ס\"מ ורוחבו 4 ס\"מ. מהו שטחו?",
+      "type": "multiple-choice",
+      "options": [
+        "32 cm²",
+        "60 cm²",
+        "48 cm²",
+        "44 cm²"
+      ],
+      "correct": 2,
+      "explanation": "שטח = 12 × 4 = 48."
+    },
+    {
+      "text": "מלבן אורכו 10 ס\"מ ורוחבו 14 ס\"מ. מהו שטחו?",
+      "type": "multiple-choice",
+      "options": [
+        "48 cm²",
+        "150 cm²",
+        "126 cm²",
+        "140 cm²"
+      ],
+      "correct": 3,
+      "explanation": "שטח = 10 × 14 = 140."
+    },
+    {
+      "text": "ריבוע עם צלע 2 ס\"מ. מהו שטחו?",
+      "type": "multiple-choice",
+      "options": [
+        "8 cm²",
+        "6 cm²",
+        "3 cm²",
+        "4 cm²"
+      ],
+      "correct": 3,
+      "explanation": "שטח = 2 × 2 = 4."
+    },
+    {
+      "text": "מלבן אורכו 4 ס\"מ ורוחבו 12 ס\"מ. מהו היקפו?",
+      "type": "multiple-choice",
+      "options": [
+        "48 cm",
+        "30 cm",
+        "32 cm",
+        "34 cm"
+      ],
+      "correct": 2,
+      "explanation": "היקף = 2×(4+12) = 32."
+    },
+    {
+      "text": "מלבן אורכו 11 ס\"מ ורוחבו 5 ס\"מ. מהו היקפו?",
+      "type": "multiple-choice",
+      "options": [
+        "30 cm",
+        "34 cm",
+        "32 cm",
+        "55 cm"
+      ],
+      "correct": 2,
+      "explanation": "היקף = 2×(11+5) = 32."
+    },
+    {
+      "text": "מלבן אורכו 13 ס\"מ ורוחבו 6 ס\"מ. מהו שטחו?",
+      "type": "multiple-choice",
+      "options": [
+        "78 cm²",
+        "38 cm²",
+        "72 cm²",
+        "91 cm²"
+      ],
+      "correct": 0,
+      "explanation": "שטח = 13 × 6 = 78."
+    },
+    {
+      "text": "מלבן אורכו 17 ס\"מ ורוחבו 9 ס\"מ. מהו היקפו?",
+      "type": "multiple-choice",
+      "options": [
+        "52 cm",
+        "50 cm",
+        "54 cm",
+        "153 cm"
+      ],
+      "correct": 0,
+      "explanation": "היקף = 2×(17+9) = 52."
+    }
+  ]
+}

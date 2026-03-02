@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>תרגול מתמטיקה</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  
+  <div class="quiz-container" id="quizContainer">
+    <!-- Top bar -->
+    <div class="quiz-top-bar">
+      <a href="../index.html" class="back-btn" title="חזרה לתפריט">→</a>
+      <div class="quiz-topic-title" id="topicTitle"></div>
+      <div class="streak-badge" id="streakBadge">🔥 <span id="streakCount">0</span></div>
+    </div>
+    
+    <!-- Question navigation dots -->
+    <div class="question-dots" id="questionDots"></div>
+    
+    <!-- Question card -->
+    <div class="question-card" id="questionCard">
+      <div class="question-number" id="questionNumber"></div>
+      <div class="question-text" id="questionText"></div>
+      <div class="visual-container" id="visualContainer"></div>
+      
+      <!-- Multiple choice options -->
+      <div class="options-grid" id="optionsGrid"></div>
+      
+      <!-- Free input -->
+      <div class="free-input-group hidden" id="freeInputGroup">
+        <input type="text" class="answer-input" id="answerInput" 
+               placeholder="הקלידו תשובה" autocomplete="off" dir="ltr">
+        <button class="submit-btn" id="submitBtn">בדיקה</button>
+      </div>
+      
+      <!-- Feedback -->
+      <div class="feedback" id="feedback">
+        <div class="congrats" id="feedbackTitle"></div>
+        <div class="explanation" id="feedbackExplanation"></div>
+      </div>
+    </div>
+    
+    <!-- Bottom navigation -->
+    <div class="quiz-nav">
+      <button class="nav-btn" id="prevBtn" onclick="goToQuestion(state.currentQ - 1)">→ הקודמת</button>
+      <button class="flag-btn" id="flagBtn" onclick="toggleFlag()">🚩</button>
+      <button class="nav-btn primary" id="nextBtn" onclick="nextQuestion()">הבאה ←</button>
+    </div>
+  </div>
+  
+  <!-- Loading state -->
+  <div id="loadingScreen" class="landing-container">
+    <div style="text-align:center;">
+      <div style="font-size:2em;margin-bottom:16px;">⏳</div>
+      <div>טוען שאלות...</div>
+    </div>
+  </div>
+  
+  <!-- Error state -->
+  <div id="errorScreen" class="landing-container hidden">
+    <div style="text-align:center;">
+      <div style="font-size:2em;margin-bottom:16px;">😕</div>
+      <div id="errorMessage">שגיאה בטעינת השאלות</div>
+      <a href="../index.html" class="start-btn" style="display:inline-block;margin-top:16px;text-decoration:none;">חזרה לתפריט</a>
+    </div>
+  </div>
+  
+  <script src="core.js"></script>
+  <script>
+    // ============================================
+    // STATE
+    // ============================================
+    
+    const params = new URLSearchParams(window.location.search);
+    const topicId = params.get('topic');
+    const userName = decodeURIComponent(params.get('name') || '');
+    
+    const progress = new ProgressManager('math_app');
+    
+    const state = {
+      questions: [],
+      currentQ: 0,
+      answers: {},     // { questionIndex: { answered: true, correct: bool, selected: value } }
+      streak: 0,
+      topicMeta: null,
+    };
+    
+    
+    // ============================================
+    // INITIALIZATION
+    // ============================================
+    
+    async function init() {
+      if (!topicId) {
+        showError('לא צוין נושא');
+        return;
+      }
+      
+      try {
+        // Load topic content
+        const content = await loadContent(`../content/${topicId}.json`);
+        if (!content || !content.questions || content.questions.length === 0) {
+          // Try generated questions if the JSON has a generator config
+          showError('לא נמצאו שאלות לנושא זה');
+          return;
+        }
+        
+        state.topicMeta = content;
+        state.questions = prepareQuestions(content);
+        
+        document.getElementById('topicTitle').textContent = content.name || topicId;
+        document.title = `תרגול: ${content.name || topicId}`;
+        
+        // Load saved progress for streak
+        const savedProgress = progress.getTopicProgress(topicId);
+        state.streak = savedProgress.streak || 0;
+        
+        document.getElementById('loadingScreen').classList.add('hidden');
+        document.getElementById('quizContainer').classList.remove('hidden');
+        
+        renderDots();
+        showQuestion(0);
+        
+      } catch (e) {
+        console.error('Failed to load topic:', e);
+        showError('שגיאה בטעינת הנושא: ' + topicId);
+      }
+    }
+    
+    function showError(msg) {
+      document.getElementById('loadingScreen').classList.add('hidden');
+      document.getElementById('quizContainer').classList.add('hidden');
+      document.getElementById('errorScreen').classList.remove('hidden');
+      document.getElementById('errorMessage').textContent = msg;
+    }
+    
+    /**
+     * Prepare questions from content JSON.
+     * Shuffles if content.shuffle is true.
+     * Limits to content.questionsPerSession if set.
+     */
+    function prepareQuestions(content) {
+      let questions = [...content.questions];
+      
+      if (content.shuffle !== false) {
+        shuffle(questions);
+      }
+      
+      if (content.questionsPerSession && content.questionsPerSession < questions.length) {
+        questions = questions.slice(0, content.questionsPerSession);
+      }
+      
+      return questions;
+    }
+    
+    
+    // ============================================
+    // QUESTION RENDERING
+    // ============================================
+    
+    function showQuestion(index) {
+      if (index < 0 || index >= state.questions.length) return;
+      
+      state.currentQ = index;
+      const q = state.questions[index];
+      const answered = state.answers[index];
+      
+      // Update question number
+      document.getElementById('questionNumber').textContent = 
+        `שאלה ${index + 1} מתוך ${state.questions.length}`;
+      
+      // Render question text with bidi fix
+      setMixedText(document.getElementById('questionText'), q.text);
+      
+      // Render visual if present
+      const visualContainer = document.getElementById('visualContainer');
+      visualContainer.style.display = 'none';
+      visualContainer.innerHTML = '';
+      if (q.visual) {
+        renderVisual(visualContainer, q.visual);
+      }
+      
+      // Render answer input based on question type
+      const optionsGrid = document.getElementById('optionsGrid');
+      const freeInputGroup = document.getElementById('freeInputGroup');
+      
+      if (q.type === 'free-input') {
+        optionsGrid.innerHTML = '';
+        optionsGrid.classList.add('hidden');
+        freeInputGroup.classList.remove('hidden');
+        
+        const input = document.getElementById('answerInput');
+        const submitBtn = document.getElementById('submitBtn');
+        
+        if (answered) {
+          input.value = answered.selected;
+          input.disabled = true;
+          submitBtn.disabled = true;
+          submitBtn.style.opacity = '0.5';
+        } else {
+          input.value = '';
+          input.disabled = false;
+          submitBtn.disabled = false;
+          submitBtn.style.opacity = '1';
+          
+          // Remove old listeners by replacing elements
+          const newInput = input.cloneNode(true);
+          input.parentNode.replaceChild(newInput, input);
+          const newSubmit = submitBtn.cloneNode(true);
+          submitBtn.parentNode.replaceChild(newSubmit, submitBtn);
+          
+          newInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') checkFreeInput();
+          });
+          newSubmit.addEventListener('click', checkFreeInput);
+          
+          setTimeout(() => newInput.focus(), 100);
+        }
+        
+      } else {
+        // Multiple choice (default)
+        freeInputGroup.classList.add('hidden');
+        optionsGrid.classList.remove('hidden');
+        optionsGrid.innerHTML = '';
+        
+        q.options.forEach((opt, oi) => {
+          const btn = document.createElement('button');
+          btn.className = 'option-btn';
+          btn.innerHTML = fixBidi(String(opt));
+          
+          if (answered) {
+            btn.classList.add('disabled');
+            if (oi === q.correct) btn.classList.add('correct');
+            if (oi === answered.selected && !answered.correct) btn.classList.add('wrong');
+          } else {
+            btn.addEventListener('click', () => checkOption(oi));
+          }
+          
+          optionsGrid.appendChild(btn);
+        });
+      }
+      
+      // Show/hide feedback
+      const feedback = document.getElementById('feedback');
+      if (answered) {
+        showFeedback(answered.correct, q);
+      } else {
+        feedback.classList.remove('show');
+      }
+      
+      // Update dots
+      updateDots();
+      
+      // Update nav buttons
+      document.getElementById('prevBtn').disabled = index === 0;
+      
+      // Update flag button
+      const savedProgress = progress.getTopicProgress(topicId);
+      const flagBtn = document.getElementById('flagBtn');
+      flagBtn.classList.toggle('flagged', (savedProgress.flagged || []).includes(index));
+      
+      // Update streak badge
+      updateStreakBadge();
+    }
+    
+    
+    // ============================================
+    // ANSWER CHECKING
+    // ============================================
+    
+    function checkOption(selectedIndex) {
+      const q = state.questions[state.currentQ];
+      const isCorrect = selectedIndex === q.correct;
+      
+      state.answers[state.currentQ] = {
+        answered: true,
+        correct: isCorrect,
+        selected: selectedIndex,
+      };
+      
+      recordResult(isCorrect);
+      
+      // Update option buttons
+      const buttons = document.querySelectorAll('.option-btn');
+      buttons.forEach((btn, i) => {
+        btn.classList.add('disabled');
+        if (i === q.correct) btn.classList.add('correct');
+        if (i === selectedIndex && !isCorrect) btn.classList.add('wrong');
+      });
+      
+      showFeedback(isCorrect, q);
+    }
+    
+    function checkFreeInput() {
+      const input = document.getElementById('answerInput');
+      const value = input.value.trim();
+      if (!value) return;
+      
+      const q = state.questions[state.currentQ];
+      
+      // Normalize answer comparison
+      const userAnswer = normalizeAnswer(value);
+      const correctAnswers = Array.isArray(q.correct) ? q.correct : [q.correct];
+      const isCorrect = correctAnswers.some(ca => normalizeAnswer(String(ca)) === userAnswer);
+      
+      state.answers[state.currentQ] = {
+        answered: true,
+        correct: isCorrect,
+        selected: value,
+      };
+      
+      recordResult(isCorrect);
+      
+      input.disabled = true;
+      document.getElementById('submitBtn').disabled = true;
+      document.getElementById('submitBtn').style.opacity = '0.5';
+      
+      showFeedback(isCorrect, q);
+    }
+    
+    /**
+     * Normalize an answer string for comparison.
+     * Handles: spaces, Hebrew, fractions, decimals.
+     */
+    function normalizeAnswer(str) {
+      return str
+        .replace(/\s+/g, '')
+        .replace(/،/g, ',')
+        .replace(/٫/g, '.')
+        .toLowerCase()
+        .trim();
+    }
+    
+    function recordResult(isCorrect) {
+      if (isCorrect) {
+        state.streak++;
+        launchConfetti(state.streak >= 5 ? 50 : 30);
+      } else {
+        state.streak = 0;
+      }
+      
+      progress.recordAnswer(topicId, isCorrect);
+      updateStreakBadge();
+      updateDots();
+    }
+    
+    
+    // ============================================
+    // FEEDBACK DISPLAY
+    // ============================================
+    
+    function showFeedback(isCorrect, question) {
+      const feedback = document.getElementById('feedback');
+      const title = document.getElementById('feedbackTitle');
+      const explanation = document.getElementById('feedbackExplanation');
+      
+      feedback.className = 'feedback show ' + (isCorrect ? 'correct' : 'wrong');
+      
+      if (isCorrect) {
+        title.textContent = getCongratsMessage(userName, state.streak);
+        explanation.innerHTML = '';
+      } else {
+        title.textContent = 'לא נכון, אבל אפשר ללמוד מזה!';
+        
+        let explanationHtml = '';
+        
+        // Show correct answer
+        if (question.type === 'free-input') {
+          const correctVal = Array.isArray(question.correct) ? question.correct[0] : question.correct;
+          explanationHtml += `<div style="margin-bottom:8px;">התשובה הנכונה: <strong dir="ltr" style="unicode-bidi:isolate">${correctVal}</strong></div>`;
+        }
+        
+        // Show explanation if available
+        if (question.explanation) {
+          explanationHtml += `<div>${fixBidi(question.explanation)}</div>`;
+        }
+        
+        explanation.innerHTML = explanationHtml;
+      }
+    }
+    
+    
+    // ============================================
+    // NAVIGATION
+    // ============================================
+    
+    function nextQuestion() {
+      // Find next unanswered question, or go to next
+      let next = state.currentQ + 1;
+      
+      // If at the end, try to find unanswered questions
+      if (next >= state.questions.length) {
+        const unanswered = [];
+        for (let i = 0; i < state.questions.length; i++) {
+          if (!state.answers[i]) unanswered.push(i);
+        }
+        if (unanswered.length > 0) {
+          next = unanswered[0];
+        } else {
+          // All done — show summary
+          showSummary();
+          return;
+        }
+      }
+      
+      showQuestion(next);
+    }
+    
+    function goToQuestion(index) {
+      if (index >= 0 && index < state.questions.length) {
+        showQuestion(index);
+      }
+    }
+    
+    function toggleFlag() {
+      const savedProgress = progress.getTopicProgress(topicId);
+      const flagged = savedProgress.flagged || [];
+      
+      if (flagged.includes(state.currentQ)) {
+        progress.unflagQuestion(topicId, state.currentQ);
+      } else {
+        progress.flagQuestion(topicId, state.currentQ);
+      }
+      
+      document.getElementById('flagBtn').classList.toggle('flagged');
+      updateDots();
+    }
+    
+    
+    // ============================================
+    // UI UPDATES
+    // ============================================
+    
+    function renderDots() {
+      const container = document.getElementById('questionDots');
+      container.innerHTML = '';
+      
+      state.questions.forEach((_, i) => {
+        const dot = document.createElement('button');
+        dot.className = 'q-dot';
+        dot.textContent = i + 1;
+        dot.addEventListener('click', () => goToQuestion(i));
+        container.appendChild(dot);
+      });
+    }
+    
+    function updateDots() {
+      const dots = document.querySelectorAll('.q-dot');
+      const savedProgress = progress.getTopicProgress(topicId);
+      const flagged = savedProgress.flagged || [];
+      
+      dots.forEach((dot, i) => {
+        dot.className = 'q-dot';
+        
+        if (i === state.currentQ) dot.classList.add('current');
+        
+        if (state.answers[i]) {
+          dot.classList.add(state.answers[i].correct ? 'correct' : 'wrong');
+        }
+        
+        if (flagged.includes(i)) dot.classList.add('flagged');
+      });
+    }
+    
+    function updateStreakBadge() {
+      const badge = document.getElementById('streakBadge');
+      const count = document.getElementById('streakCount');
+      
+      if (state.streak >= 3) {
+        badge.classList.add('active');
+        count.textContent = state.streak;
+      } else {
+        badge.classList.remove('active');
+      }
+    }
+    
+    function showSummary() {
+      const total = state.questions.length;
+      const correct = Object.values(state.answers).filter(a => a.correct).length;
+      const pct = Math.round((correct / total) * 100);
+      
+      const card = document.getElementById('questionCard');
+      card.innerHTML = `
+        <div style="text-align:center;padding:20px;">
+          <div style="font-size:3em;margin-bottom:16px;">${pct >= 80 ? '🏆' : pct >= 60 ? '⭐' : '💪'}</div>
+          <h2>סיימת את התרגול!</h2>
+          <div style="font-size:1.3em;margin:16px 0;">
+            ${correct} מתוך ${total} נכונות (${pct}%)
+          </div>
+          <div style="margin-top:24px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+            <button class="nav-btn primary" onclick="location.reload()">תרגול נוסף</button>
+            <a href="../index.html" class="nav-btn" style="text-decoration:none;display:inline-block;">חזרה לתפריט</a>
+          </div>
+        </div>
+      `;
+      
+      document.getElementById('questionDots').innerHTML = '';
+      document.querySelector('.quiz-nav').classList.add('hidden');
+      
+      if (pct >= 80) launchConfetti(80);
+    }
+    
+    
+    // ============================================
+    // BOOT
+    // ============================================
+    
+    // Hide quiz container until loaded
+    document.getElementById('quizContainer').classList.add('hidden');
+    init();
+  </script>
+</body>
+</html>

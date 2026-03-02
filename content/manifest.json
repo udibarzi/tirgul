@@ -1,0 +1,182 @@
+{
+  "version": "1.0.0",
+  "language": "he",
+  "topics": [
+    {
+      "id": "arithmetic-natural-numbers",
+      "name": "פעולות חשבון במספרים טבעיים",
+      "icon": "🔢",
+      "description": "כפל, חילוק, סדר פעולות חשבון",
+      "difficulty": 1,
+      "order": 1
+    },
+    {
+      "id": "fraction-operations",
+      "name": "פעולות בשברים",
+      "icon": "🥧",
+      "description": "חיבור וחיסור שברים, מכנה משותף, שברים מעורבים",
+      "difficulty": 2,
+      "order": 2
+    },
+    {
+      "id": "word-problems-fractions",
+      "name": "שאלות מילוליות — שברים",
+      "icon": "📖",
+      "description": "בעיות מילוליות עם שברים",
+      "difficulty": 3,
+      "order": 3
+    },
+    {
+      "id": "large-numbers",
+      "name": "שאלות במספרים גדולים",
+      "icon": "🔟",
+      "description": "חיבור וחיסור מספרים גדולים",
+      "difficulty": 2,
+      "order": 4
+    },
+    {
+      "id": "word-problems-natural",
+      "name": "בעיות מילוליות — מספרים טבעיים",
+      "icon": "📝",
+      "description": "בעיות מילוליות עם מספרים טבעיים",
+      "difficulty": 2,
+      "order": 5
+    },
+    {
+      "id": "expression-matching",
+      "name": "התאמת תרגיל לשאלה מילולית",
+      "icon": "🔗",
+      "description": "התאמת ביטוי מתמטי לבעיה מילולית",
+      "difficulty": 2,
+      "order": 6
+    },
+    {
+      "id": "tables",
+      "name": "טבלאות",
+      "icon": "📊",
+      "description": "קריאת טבלאות ופיקטוגרפים",
+      "difficulty": 2,
+      "order": 7
+    },
+    {
+      "id": "graphs",
+      "name": "גרפים — עמודות ועוגה",
+      "icon": "📈",
+      "description": "קריאת גרפי עמודות ותרשימי עוגה",
+      "difficulty": 2,
+      "order": 8
+    },
+    {
+      "id": "perimeter-area",
+      "name": "היקף ושטח",
+      "icon": "📏",
+      "description": "חישוב היקף ושטח של מלבנים וריבועים",
+      "difficulty": 2,
+      "order": 9
+    },
+    {
+      "id": "symmetry",
+      "name": "סימטריה",
+      "icon": "🦋",
+      "description": "צירי סימטריה בצורות ואותיות",
+      "difficulty": 2,
+      "order": 10
+    },
+    {
+      "id": "ratios-rates",
+      "name": "יחסים וקצבים",
+      "icon": "⚡",
+      "description": "בעיות קצב, יחס ופרופורציה",
+      "difficulty": 2,
+      "order": 11
+    },
+    {
+      "id": "movement-problems",
+      "name": "בעיות תנועה",
+      "icon": "🚗",
+      "description": "מהירות, זמן ומרחק",
+      "difficulty": 2,
+      "order": 12
+    },
+    {
+      "id": "algebraic-understanding",
+      "name": "הבנה אלגברית",
+      "icon": "🔤",
+      "description": "הצבת ערכים, מציאת משתנה חסר",
+      "difficulty": 2,
+      "order": 13
+    },
+    {
+      "id": "systematic-work",
+      "name": "עבודה שיטתית",
+      "icon": "🧮",
+      "description": "ספירה שיטתית, לוחות וריבועים",
+      "difficulty": 3,
+      "order": 14
+    },
+    {
+      "id": "patterns-rules",
+      "name": "חוקיות",
+      "icon": "🔍",
+      "description": "מציאת חוקיות ומספרים חריגים",
+      "difficulty": 2,
+      "order": 15
+    },
+    {
+      "id": "sequences-patterns",
+      "name": "סדרות ודפוסים",
+      "icon": "🔢",
+      "description": "השלמת סדרות מספריות",
+      "difficulty": 2,
+      "order": 16
+    },
+    {
+      "id": "even-odd",
+      "name": "זוגי ואי-זוגי",
+      "icon": "🎲",
+      "description": "תכונות מספרים זוגיים ואי-זוגיים",
+      "difficulty": 2,
+      "order": 17
+    },
+    {
+      "id": "analysis-conclusions",
+      "name": "ניתוח והסקת מסקנות",
+      "icon": "🧪",
+      "description": "חלוקה, ראשוניים, שאריות",
+      "difficulty": 2,
+      "order": 18
+    },
+    {
+      "id": "true-false-logic",
+      "name": "אמת ושקר",
+      "icon": "🤥",
+      "description": "חידות אמת ושקר, חלוקה",
+      "difficulty": 3,
+      "order": 19
+    },
+    {
+      "id": "set-theory",
+      "name": "תורת הקבוצות",
+      "icon": "⭕",
+      "description": "הכלה, היגיון ומסקנות מקבוצות",
+      "difficulty": 3,
+      "order": 20
+    },
+    {
+      "id": "logic-puzzles",
+      "name": "חידות היגיון",
+      "icon": "🧩",
+      "description": "חידות מטבעות, ראשים ורגליים, מערכות משוואות",
+      "difficulty": 3,
+      "order": 21
+    },
+    {
+      "id": "intuitive-probability",
+      "name": "הסתברות אינטואיטיבית",
+      "icon": "🎯",
+      "description": "השוואת סיכויים, קוביות וקלפים",
+      "difficulty": 2,
+      "order": 22
+    }
+  ]
+}
