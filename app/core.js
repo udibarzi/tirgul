@@ -89,12 +89,14 @@ function fixBidi(text) {
   const wrapEnd = '</span>';
   
   return text.replace(re, function(match) {
-    // Split on ", " — comma-space is a Hebrew list separator, NOT math
-    // Prevents "38, 9" from merging into one LTR block
-    if (match.includes(', ')) {
-      return match.split(', ').map(function(part) {
-        return part.trim() ? wrap + part + wrapEnd : '';
-      }).join(', ');
+    // Split on sentence separators that create over-long LTR spans:
+    //   ", " = comma-space (Hebrew list separator)
+    //   ". " = period-space (sentence break — NOT a decimal like 3.14)
+    // This prevents e.g. "BC = 6. E" from merging into one garbled LTR block
+    if (/[,\.] /.test(match)) {
+      return match.split(/(?<=[,\.]) /).map(function(part) {
+        return part.trim() ? wrap + part.trim() + wrapEnd : '';
+      }).join(' ');
     }
     return wrap + match + wrapEnd;
   });
