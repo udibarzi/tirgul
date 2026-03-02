@@ -291,11 +291,18 @@
       const savedGrade = getGrade();
       const savedGender = getGender();
 
-      if (savedName && savedGrade && savedGender) {
-        showTopics(savedName, savedGrade);
-      } else if (savedName && savedGrade && !savedGender) {
+      // If saved grade no longer exists in manifest, reset to grade picker
+      const validGrades = (manifest.grades || []).map(g => g.id);
+      if (savedGrade && !validGrades.includes(savedGrade)) {
+        setGrade(0);
+      }
+
+      const grade = getGrade();
+      if (savedName && grade && savedGender) {
+        showTopics(savedName, grade);
+      } else if (savedName && grade && !savedGender) {
         showGenderPicker(savedName);
-      } else if (savedName && !savedGrade) {
+      } else if (savedName && !grade) {
         showGradePicker(savedName);
       } else {
         showNameScreen();
@@ -444,18 +451,20 @@
 
       let cardIndex = 0;
 
-      // Speed drill card — always shown at the top
-      const speedCard = document.createElement('a');
-      speedCard.className = 'topic-card speed-card animate-in';
-      speedCard.style.animationDelay = `${cardIndex * 60}ms`;
-      speedCard.href = `app/speed.html?name=${nameParam}&gender=${gender}`;
-      speedCard.innerHTML = `
-        <div class="icon">⚡</div>
-        <div class="name">אלופי הכפל</div>
-        <div class="stats" style="color:var(--color-warning);">תרגול מהיר עם טיימר</div>
-      `;
-      grid.appendChild(speedCard);
-      cardIndex++;
+      // Speed drill card — only for grade 4
+      if (grade === 4) {
+        const speedCard = document.createElement('a');
+        speedCard.className = 'topic-card speed-card animate-in';
+        speedCard.style.animationDelay = `${cardIndex * 60}ms`;
+        speedCard.href = `app/speed.html?name=${nameParam}&gender=${gender}`;
+        speedCard.innerHTML = `
+          <div class="icon">⚡</div>
+          <div class="name">אלופי הכפל</div>
+          <div class="stats" style="color:var(--color-warning);">תרגול מהיר עם טיימר</div>
+        `;
+        grid.appendChild(speedCard);
+        cardIndex++;
+      }
 
       // Regular topic cards
       manifest.topics
