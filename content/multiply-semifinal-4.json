@@ -1,0 +1,274 @@
+{
+  "id": "multiply-semifinal-4",
+  "name": "אלופי הכפל — חצי גמר וגמר",
+  "icon": "🏅",
+  "description": "כפל וחילוק ב-10, 100, 1000, עשרות ומאות שלמות, סדר פעולות",
+  "questionsPerSession": 15,
+  "shuffle": true,
+  "questions": [
+    {
+      "text": "419 × 10 = ?",
+      "type": "free-input",
+      "correct": ["4190", "4,190"],
+      "explanation": "419 × 10 = 4,190"
+    },
+    {
+      "text": "37 × 10 = ?",
+      "type": "free-input",
+      "correct": ["370"],
+      "explanation": "37 × 10 = 370"
+    },
+    {
+      "text": "856 × 10 = ?",
+      "type": "free-input",
+      "correct": ["8560", "8,560"],
+      "explanation": "856 × 10 = 8,560"
+    },
+    {
+      "text": "1,234 × 10 = ?",
+      "type": "free-input",
+      "correct": ["12340", "12,340"],
+      "explanation": "1,234 × 10 = 12,340"
+    },
+    {
+      "text": "281 × 100 = ?",
+      "type": "free-input",
+      "correct": ["28100", "28,100"],
+      "explanation": "281 × 100 = 28,100"
+    },
+    {
+      "text": "45 × 100 = ?",
+      "type": "free-input",
+      "correct": ["4500", "4,500"],
+      "explanation": "45 × 100 = 4,500"
+    },
+    {
+      "text": "637 × 100 = ?",
+      "type": "free-input",
+      "correct": ["63700", "63,700"],
+      "explanation": "637 × 100 = 63,700"
+    },
+    {
+      "text": "1,250 × 100 = ?",
+      "type": "free-input",
+      "correct": ["125000", "125,000"],
+      "explanation": "1,250 × 100 = 125,000"
+    },
+    {
+      "text": "568 × 1,000 = ?",
+      "type": "free-input",
+      "correct": ["568000", "568,000"],
+      "explanation": "568 × 1,000 = 568,000"
+    },
+    {
+      "text": "695 × 1,000 = ?",
+      "type": "free-input",
+      "correct": ["695000", "695,000"],
+      "explanation": "695 × 1,000 = 695,000"
+    },
+    {
+      "text": "42 × 1,000 = ?",
+      "type": "free-input",
+      "correct": ["42000", "42,000"],
+      "explanation": "42 × 1,000 = 42,000"
+    },
+    {
+      "text": "385 × 1,000 = ?",
+      "type": "free-input",
+      "correct": ["385000", "385,000"],
+      "explanation": "385 × 1,000 = 385,000"
+    },
+    {
+      "text": "370 ÷ 10 = ?",
+      "type": "free-input",
+      "correct": ["37"],
+      "explanation": "370 ÷ 10 = 37"
+    },
+    {
+      "text": "8,560 ÷ 10 = ?",
+      "type": "free-input",
+      "correct": ["856"],
+      "explanation": "8,560 ÷ 10 = 856"
+    },
+    {
+      "text": "4,500 ÷ 10 = ?",
+      "type": "free-input",
+      "correct": ["450"],
+      "explanation": "4,500 ÷ 10 = 450"
+    },
+    {
+      "text": "60 ÷ 10 = ?",
+      "type": "free-input",
+      "correct": ["6"],
+      "explanation": "60 ÷ 10 = 6"
+    },
+    {
+      "text": "28,100 ÷ 100 = ?",
+      "type": "free-input",
+      "correct": ["281"],
+      "explanation": "28,100 ÷ 100 = 281"
+    },
+    {
+      "text": "63,700 ÷ 100 = ?",
+      "type": "free-input",
+      "correct": ["637"],
+      "explanation": "63,700 ÷ 100 = 637"
+    },
+    {
+      "text": "4,500 ÷ 100 = ?",
+      "type": "free-input",
+      "correct": ["45"],
+      "explanation": "4,500 ÷ 100 = 45"
+    },
+    {
+      "text": "23,000 ÷ 1,000 = ?",
+      "type": "free-input",
+      "correct": ["23"],
+      "explanation": "23,000 ÷ 1,000 = 23"
+    },
+    {
+      "text": "568,000 ÷ 1,000 = ?",
+      "type": "free-input",
+      "correct": ["568"],
+      "explanation": "568,000 ÷ 1,000 = 568"
+    },
+    {
+      "text": "42,000 ÷ 1,000 = ?",
+      "type": "free-input",
+      "correct": ["42"],
+      "explanation": "42,000 ÷ 1,000 = 42"
+    },
+    {
+      "text": "20 × 400 = ?",
+      "type": "free-input",
+      "correct": ["8000", "8,000"],
+      "explanation": "20 × 400 = 8,000"
+    },
+    {
+      "text": "90 × 200 = ?",
+      "type": "free-input",
+      "correct": ["18000", "18,000"],
+      "explanation": "90 × 200 = 18,000"
+    },
+    {
+      "text": "60 × 50 = ?",
+      "type": "free-input",
+      "correct": ["3000", "3,000"],
+      "explanation": "60 × 50 = 3,000"
+    },
+    {
+      "text": "50 × 80 = ?",
+      "type": "free-input",
+      "correct": ["4000", "4,000"],
+      "explanation": "50 × 80 = 4,000"
+    },
+    {
+      "text": "60 × 70 = ?",
+      "type": "free-input",
+      "correct": ["4200", "4,200"],
+      "explanation": "60 × 70 = 4,200"
+    },
+    {
+      "text": "40 × 400 = ?",
+      "type": "free-input",
+      "correct": ["16000", "16,000"],
+      "explanation": "40 × 400 = 16,000"
+    },
+    {
+      "text": "90 × 400 = ?",
+      "type": "free-input",
+      "correct": ["36000", "36,000"],
+      "explanation": "90 × 400 = 36,000"
+    },
+    {
+      "text": "30 × 70 = ?",
+      "type": "free-input",
+      "correct": ["2100", "2,100"],
+      "explanation": "30 × 70 = 2,100"
+    },
+    {
+      "text": "80 × 300 = ?",
+      "type": "free-input",
+      "correct": ["24000", "24,000"],
+      "explanation": "80 × 300 = 24,000"
+    },
+    {
+      "text": "200 × 50 = ?",
+      "type": "free-input",
+      "correct": ["10000", "10,000"],
+      "explanation": "200 × 50 = 10,000"
+    },
+    {
+      "text": "300 × 300 = ?",
+      "type": "free-input",
+      "correct": ["90000", "90,000"],
+      "explanation": "300 × 300 = 90,000"
+    },
+    {
+      "text": "700 × 80 = ?",
+      "type": "free-input",
+      "correct": ["56000", "56,000"],
+      "explanation": "700 × 80 = 56,000"
+    },
+    {
+      "text": "500 × 200 = ?",
+      "type": "free-input",
+      "correct": ["100000", "100,000"],
+      "explanation": "500 × 200 = 100,000"
+    },
+    {
+      "text": "2,000 × 40 = ?",
+      "type": "free-input",
+      "correct": ["80000", "80,000"],
+      "explanation": "2,000 × 40 = 80,000"
+    },
+    {
+      "text": "חשבו: 5 × 4 + 6 × 9 = ?",
+      "type": "free-input",
+      "correct": ["74"],
+      "explanation": "5×4=20, 6×9=54. סה\"כ 74"
+    },
+    {
+      "text": "חשבו: 2 × 2 - 1 = ?",
+      "type": "free-input",
+      "correct": ["3"],
+      "explanation": "כפל קודם: 2×2=4, ואז 4-1=3"
+    },
+    {
+      "text": "חשבו: (5 + 5) × 5 = ?",
+      "type": "free-input",
+      "correct": ["50"],
+      "explanation": "סוגריים: 5+5=10, ואז 10×5=50"
+    },
+    {
+      "text": "חשבו: (5 + 8) × 3 = ?",
+      "type": "free-input",
+      "correct": ["39"],
+      "explanation": "סוגריים: 5+8=13, ואז 13×3=39"
+    },
+    {
+      "text": "חשבו: (3 + 7) × 4 = ?",
+      "type": "free-input",
+      "correct": ["40"],
+      "explanation": "סוגריים: 3+7=10, ואז 10×4=40"
+    },
+    {
+      "text": "חשבו: 5 + 6 × 8 = ?",
+      "type": "free-input",
+      "correct": ["53"],
+      "explanation": "כפל קודם: 6×8=48, ואז 5+48=53"
+    },
+    {
+      "text": "חשבו: 5 × 4 + 5 × 8 = ?",
+      "type": "free-input",
+      "correct": ["60"],
+      "explanation": "5×4=20, 5×8=40. סה\"כ 60"
+    },
+    {
+      "text": "חשבו: 2 × 7 - 9 = ?",
+      "type": "free-input",
+      "correct": ["5"],
+      "explanation": "כפל קודם: 2×7=14, ואז 14-9=5"
+    }
+  ]
+}

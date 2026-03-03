@@ -1,0 +1,220 @@
+{
+  "id": "long-multiply-4",
+  "name": "כפל במאונך ועוד...",
+  "icon": "✖️",
+  "description": "כפל דו-ספרתי במאונך, מספרים חסרים, השפעת גורמים על מכפלה",
+  "questionsPerSession": 15,
+  "shuffle": true,
+  "questions": [
+    {
+      "text": "42 × 11 = ?",
+      "type": "free-input",
+      "correct": ["462"],
+      "explanation": "42 × 11 = 462"
+    },
+    {
+      "text": "36 × 42 = ?",
+      "type": "free-input",
+      "correct": ["1512", "1,512"],
+      "explanation": "36 × 42 = 1,512"
+    },
+    {
+      "text": "33 × 28 = ?",
+      "type": "free-input",
+      "correct": ["924"],
+      "explanation": "33 × 28 = 924"
+    },
+    {
+      "text": "49 × 17 = ?",
+      "type": "free-input",
+      "correct": ["833"],
+      "explanation": "49 × 17 = 833"
+    },
+    {
+      "text": "47 × 16 = ?",
+      "type": "free-input",
+      "correct": ["752"],
+      "explanation": "47 × 16 = 752"
+    },
+    {
+      "text": "45 × 35 = ?",
+      "type": "free-input",
+      "correct": ["1575", "1,575"],
+      "explanation": "45 × 35 = 1,575"
+    },
+    {
+      "text": "23 × 31 = ?",
+      "type": "free-input",
+      "correct": ["713"],
+      "explanation": "23 × 31 = 713"
+    },
+    {
+      "text": "54 × 27 = ?",
+      "type": "free-input",
+      "correct": ["1458", "1,458"],
+      "explanation": "54 × 27 = 1,458"
+    },
+    {
+      "text": "63 × 18 = ?",
+      "type": "free-input",
+      "correct": ["1134", "1,134"],
+      "explanation": "63 × 18 = 1,134"
+    },
+    {
+      "text": "85 × 24 = ?",
+      "type": "free-input",
+      "correct": ["2040", "2,040"],
+      "explanation": "85 × 24 = 2,040"
+    },
+    {
+      "text": "76 × 32 = ?",
+      "type": "free-input",
+      "correct": ["2432", "2,432"],
+      "explanation": "76 × 32 = 2,432"
+    },
+    {
+      "text": "28 × 45 = ?",
+      "type": "free-input",
+      "correct": ["1260", "1,260"],
+      "explanation": "28 × 45 = 1,260"
+    },
+    {
+      "text": "67 × 19 = ?",
+      "type": "free-input",
+      "correct": ["1273", "1,273"],
+      "explanation": "67 × 19 = 1,273"
+    },
+    {
+      "text": "53 × 34 = ?",
+      "type": "free-input",
+      "correct": ["1802", "1,802"],
+      "explanation": "53 × 34 = 1,802"
+    },
+    {
+      "text": "11 × ___ = 66. מה המספר החסר?",
+      "type": "free-input",
+      "correct": ["6"],
+      "explanation": "66 ÷ 11 = 6"
+    },
+    {
+      "text": "3 × ___ = 24. מה המספר החסר?",
+      "type": "free-input",
+      "correct": ["8"],
+      "explanation": "24 ÷ 3 = 8"
+    },
+    {
+      "text": "7 × ___ = 56. מה המספר החסר?",
+      "type": "free-input",
+      "correct": ["8"],
+      "explanation": "56 ÷ 7 = 8"
+    },
+    {
+      "text": "___ × 12 = 144. מה המספר החסר?",
+      "type": "free-input",
+      "correct": ["12"],
+      "explanation": "144 ÷ 12 = 12"
+    },
+    {
+      "text": "15 × ___ = 75. מה המספר החסר?",
+      "type": "free-input",
+      "correct": ["5"],
+      "explanation": "75 ÷ 15 = 5"
+    },
+    {
+      "text": "___ × 9 = 108. מה המספר החסר?",
+      "type": "free-input",
+      "correct": ["12"],
+      "explanation": "108 ÷ 9 = 12"
+    },
+    {
+      "text": "אם 108 ÷ 9 = 12, מה זה 12 × 9?",
+      "type": "free-input",
+      "correct": ["108"],
+      "explanation": "12 × 9 = 108"
+    },
+    {
+      "text": "אם 32 ÷ 8 = 4, מה זה 4 × 8?",
+      "type": "free-input",
+      "correct": ["32"],
+      "explanation": "4 × 8 = 32"
+    },
+    {
+      "text": "אם 3 × 10 = 30, מה זה 30 ÷ 3?",
+      "type": "free-input",
+      "correct": ["10"],
+      "explanation": "30 ÷ 3 = 10"
+    },
+    {
+      "text": "אם 12 × 9 = 108, מה זה 108 ÷ 12?",
+      "type": "free-input",
+      "correct": ["9"],
+      "explanation": "108 ÷ 12 = 9"
+    },
+    {
+      "text": "אם 10 × 8 = 80, מה זה 80 ÷ 10?",
+      "type": "free-input",
+      "correct": ["8"],
+      "explanation": "80 ÷ 10 = 8"
+    },
+    {
+      "text": "אם 11 × 11 = 121, מה זה 22 × 33?",
+      "type": "free-input",
+      "correct": ["726"],
+      "explanation": "×2 ו-×3 → 121 × 6 = 726"
+    },
+    {
+      "text": "אם 11 × 8 = 88, מה זה 22 × 16?",
+      "type": "free-input",
+      "correct": ["352"],
+      "explanation": "×2 ו-×2 → 88 × 4 = 352"
+    },
+    {
+      "text": "אם 10 × 6 = 60, מה זה 30 × 18?",
+      "type": "free-input",
+      "correct": ["540"],
+      "explanation": "×3 ו-×3 → 60 × 9 = 540"
+    },
+    {
+      "text": "אם 5 × 11 = 55, מה זה 15 × 22?",
+      "type": "free-input",
+      "correct": ["330"],
+      "explanation": "×3 ו-×2 → 55 × 6 = 330"
+    },
+    {
+      "text": "אם 6 × 3 = 18, מה זה 18 × 3?",
+      "type": "free-input",
+      "correct": ["54"],
+      "explanation": "הגורם הוכפל ב-3 → 18 × 3 = 54"
+    },
+    {
+      "text": "אם 4 × 6 = 24, מה זה 2 × 6?",
+      "type": "free-input",
+      "correct": ["12"],
+      "explanation": "הגורם חולק ב-2 → 24 ÷ 2 = 12"
+    },
+    {
+      "text": "אם 7 × 5 = 35, מה זה 14 × 5?",
+      "type": "free-input",
+      "correct": ["70"],
+      "explanation": "הגורם הוכפל ב-2 → 35 × 2 = 70"
+    },
+    {
+      "text": "אם 8 × 4 = 32, מה זה 8 × 8?",
+      "type": "free-input",
+      "correct": ["64"],
+      "explanation": "הגורם הוכפל ב-2 → 32 × 2 = 64"
+    },
+    {
+      "text": "אם 12 × 5 = 60, מה זה 6 × 5?",
+      "type": "free-input",
+      "correct": ["30"],
+      "explanation": "הגורם חולק ב-2 → 60 ÷ 2 = 30"
+    },
+    {
+      "text": "אם 9 × 4 = 36, מה זה 27 × 4?",
+      "type": "free-input",
+      "correct": ["108"],
+      "explanation": "הגורם הוכפל ב-3 → 36 × 3 = 108"
+    }
+  ]
+}
