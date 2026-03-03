@@ -267,6 +267,7 @@
         <button class="speed-option-btn" id="time30" onclick="setDrillTime(30)">30 שניות</button>
         <button class="speed-option-btn selected" id="time60" onclick="setDrillTime(60)">דקה</button>
         <button class="speed-option-btn" id="time120" onclick="setDrillTime(120)">2 דקות</button>
+        <button class="speed-option-btn" id="time180" onclick="setDrillTime(180)">3 דקות</button>
       </div>
 
       <button class="start-speed-btn" id="startSpeedBtn" onclick="startSpeedDrill()">יאללה, מתחילים! ⚡</button>
@@ -294,6 +295,7 @@
         <div class="item"><div class="label">סה"כ שאלות</div><div class="value" id="speedResTotal"></div></div>
         <div class="item"><div class="label">אחוז הצלחה</div><div class="value" id="speedResAccuracy"></div></div>
         <div class="item"><div class="label">רצף מקסימלי</div><div class="value" id="speedResStreak"></div></div>
+        <div class="item"><div class="label">ממוצע לשאלה</div><div class="value" id="speedResAvg"></div></div>
       </div>
       <div class="speed-mistakes-list" id="speedMistakesList" style="display:none">
         <h3>💡 כדאי לתרגל:</h3>
@@ -371,7 +373,7 @@
 
     function setDrillTime(t) {
       speedDrillTime = t;
-      ['time30', 'time60', 'time120'].forEach(id => document.getElementById(id).classList.remove('selected'));
+      ['time30', 'time60', 'time120', 'time180'].forEach(id => document.getElementById(id).classList.remove('selected'));
       document.getElementById('time' + t).classList.add('selected');
     }
 
@@ -489,6 +491,12 @@
       document.getElementById('speedResAccuracy').textContent =
         speedTotal > 0 ? Math.round(speedCorrect / speedTotal * 100) + '%' : '-';
       document.getElementById('speedResStreak').textContent = speedMaxStreak;
+      if (speedTotal > 0) {
+        var avg = speedDrillTime / speedTotal;
+        document.getElementById('speedResAvg').textContent = avg.toFixed(1) + ' שנ׳';
+      } else {
+        document.getElementById('speedResAvg').textContent = '-';
+      }
 
       if (speedMistakes.length > 0) {
         document.getElementById('speedMistakesList').style.display = 'block';
