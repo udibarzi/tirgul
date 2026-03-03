@@ -71,67 +71,59 @@
       "explanation": "20 ÷ 10 × 1 = 2"
     },
     {
-      "text": "השלימו את הסימן: 2/6 ___ 5/6 — כתבו > או < או =",
-      "type": "free-input",
-      "correct": [
-        "<"
-      ],
+      "text": "השלימו את הסימן: 2/6 ___ 5/6",
+      "type": "multiple-choice",
+      "options": ["<", "=", ">"],
+      "correct": 0,
       "explanation": "2/6 < 5/6 כי 5 חלקים > 2 חלקים"
     },
     {
-      "text": "השלימו את הסימן: 2/8 ___ 4/8 — כתבו > או < או =",
-      "type": "free-input",
-      "correct": [
-        "<"
-      ],
+      "text": "השלימו את הסימן: 2/8 ___ 4/8",
+      "type": "multiple-choice",
+      "options": ["<", "=", ">"],
+      "correct": 0,
       "explanation": "2/8 < 4/8 כי 4 חלקים > 2 חלקים"
     },
     {
-      "text": "השלימו את הסימן: 2/6 ___ 4/6 — כתבו > או < או =",
-      "type": "free-input",
-      "correct": [
-        "<"
-      ],
+      "text": "השלימו את הסימן: 2/6 ___ 4/6",
+      "type": "multiple-choice",
+      "options": ["<", "=", ">"],
+      "correct": 0,
       "explanation": "2/6 < 4/6 כי 4 חלקים > 2 חלקים"
     },
     {
-      "text": "השלימו את הסימן: 1/4 ___ 3/4 — כתבו > או < או =",
-      "type": "free-input",
-      "correct": [
-        "<"
-      ],
+      "text": "השלימו את הסימן: 1/4 ___ 3/4",
+      "type": "multiple-choice",
+      "options": ["<", "=", ">"],
+      "correct": 0,
       "explanation": "1/4 < 3/4 כי 3 חלקים > 1 חלקים"
     },
     {
-      "text": "השלימו את הסימן: 1/3 ___ 2/3 — כתבו > או < או =",
-      "type": "free-input",
-      "correct": [
-        "<"
-      ],
+      "text": "השלימו את הסימן: 1/3 ___ 2/3",
+      "type": "multiple-choice",
+      "options": ["<", "=", ">"],
+      "correct": 0,
       "explanation": "1/3 < 2/3 כי 2 חלקים > 1 חלקים"
     },
     {
-      "text": "השלימו את הסימן: 1/6 ___ 5/6 — כתבו > או < או =",
-      "type": "free-input",
-      "correct": [
-        "<"
-      ],
+      "text": "השלימו את הסימן: 1/6 ___ 5/6",
+      "type": "multiple-choice",
+      "options": ["<", "=", ">"],
+      "correct": 0,
       "explanation": "1/6 < 5/6 כי 5 חלקים > 1 חלקים"
     },
     {
-      "text": "השלימו את הסימן: 1/5 ___ 4/5 — כתבו > או < או =",
-      "type": "free-input",
-      "correct": [
-        "<"
-      ],
+      "text": "השלימו את הסימן: 1/5 ___ 4/5",
+      "type": "multiple-choice",
+      "options": ["<", "=", ">"],
+      "correct": 0,
       "explanation": "1/5 < 4/5 כי 4 חלקים > 1 חלקים"
     },
     {
-      "text": "השלימו את הסימן: 6/10 ___ 3/10 — כתבו > או < או =",
-      "type": "free-input",
-      "correct": [
-        ">"
-      ],
+      "text": "השלימו את הסימן: 6/10 ___ 3/10",
+      "type": "multiple-choice",
+      "options": ["<", "=", ">"],
+      "correct": 2,
       "explanation": "6/10 > 3/10 כי 6 חלקים > 3 חלקים"
     },
     {

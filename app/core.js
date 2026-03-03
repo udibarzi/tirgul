@@ -103,16 +103,53 @@ function fixBidi(text) {
 }
 
 /**
+ * renderFractions — Replaces slash-notation fractions (e.g. 3/4) with
+ * stacked HTML fractions (numerator over a line over denominator).
+ *
+ * Handles:
+ * - Simple fractions: 3/4 → stacked
+ * - Mixed numbers: 1 2/3 → whole number beside stacked fraction
+ *
+ * Only operates on text outside of HTML tags to avoid breaking attributes.
+ *
+ * @param {string} html - HTML string (after fixBidi processing)
+ * @returns {string} - HTML with fraction markup
+ */
+function renderFractions(html) {
+  if (!html) return '';
+
+  // Split into HTML tags and text segments to avoid replacing inside tags
+  const parts = html.split(/(<[^>]+>)/);
+
+  for (let i = 0; i < parts.length; i++) {
+    // Skip HTML tags
+    if (parts[i].startsWith('<')) continue;
+
+    // Replace mixed numbers first: "1 2/3" → whole + stacked fraction
+    parts[i] = parts[i].replace(/(\d+)\s+(\d+)\/(\d+)/g, function(_, whole, num, den) {
+      return whole + '<span class="fraction"><span class="frac-num">' + num + '</span><span class="frac-den">' + den + '</span></span>';
+    });
+
+    // Replace simple fractions: "3/4" → stacked fraction
+    parts[i] = parts[i].replace(/(\d+)\/(\d+)/g, function(_, num, den) {
+      return '<span class="fraction"><span class="frac-num">' + num + '</span><span class="frac-den">' + den + '</span></span>';
+    });
+  }
+
+  return parts.join('');
+}
+
+/**
  * setMixedText — Sets innerHTML of an element with bidi-fixed content.
  * Use this instead of directly setting textContent/innerHTML for any
  * Hebrew text that may contain math expressions.
- * 
+ *
  * @param {HTMLElement} el - Target element
  * @param {string} text - Hebrew text with potential math
  */
 function setMixedText(el, text) {
   if (!el) return;
-  el.innerHTML = fixBidi(text);
+  el.innerHTML = renderFractions(fixBidi(text));
 }
 
 
@@ -863,7 +900,7 @@ async function loadManifest(manifestUrl = '../content/manifest.json') {
 // If using modules in the future:
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = {
-    fixBidi, setMixedText, gcd, lcm, randInt, randChoice, shuffle,
+    fixBidi, renderFractions, setMixedText, gcd, lcm, randInt, randChoice, shuffle,
     formatFraction, renderVisual, ProgressManager, getCongratsMessage,
     launchConfetti, getConfettiCSS, loadContent, loadManifest,
     CONGRATS_MESSAGES,
