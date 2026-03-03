@@ -173,6 +173,33 @@
       min-height: 24px;
     }
 
+    .speed-input-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+    .speed-submit-btn {
+      background: linear-gradient(135deg, #8B5CF6, #6D28D9);
+      color: white;
+      border: none;
+      border-radius: var(--radius-lg);
+      width: 56px;
+      height: 56px;
+      font-size: 1.8em;
+      cursor: pointer;
+      transition: transform 0.15s;
+      flex-shrink: 0;
+    }
+    .speed-submit-btn:hover { transform: scale(1.05); }
+    .comma-feedback {
+      color: #E67E22;
+      font-weight: 600;
+      font-size: 0.9em;
+      margin-top: 8px;
+      min-height: 22px;
+    }
+
     .speed-result-big {
       font-size: 3em;
       font-weight: 700;
@@ -264,6 +291,11 @@
         <button class="speed-option-btn" id="time180" onclick="setDrillTime(180)">3 דקות</button>
       </div>
 
+      <p class="section-label">אפשרויות:</p>
+      <div class="speed-option-row">
+        <button class="speed-option-btn" id="commaToggle" onclick="toggleCommaMode()">✏️ כתיבת פסיקים</button>
+      </div>
+
       <button class="start-speed-btn" id="startSpeedBtn" onclick="startSpeedDrill()">יאללה, מתחילים! 🏅</button>
     </div>
 
@@ -276,7 +308,11 @@
         <div><span class="val" id="speedStreakCount">0</span>רצף 🔥</div>
       </div>
       <div class="speed-question-display" id="speedQuestion"></div>
-      <input class="speed-input" type="tel" id="speedInput" autocomplete="off" inputmode="numeric">
+      <div class="speed-input-row">
+        <input class="speed-input" type="tel" id="speedInput" autocomplete="off" inputmode="numeric">
+        <button class="speed-submit-btn" onclick="submitAnswer()">⏎</button>
+      </div>
+      <div class="comma-feedback" id="commaFeedback"></div>
       <div class="speed-streak" id="speedStreakMsg"></div>
     </div>
 
@@ -311,11 +347,13 @@
     const CATEGORIES = [
       { id: 'mul10',   label: '✖️ כפל ב-10/100/1000' },
       { id: 'div10',   label: '➗ חילוק ב-10/100/1000' },
-      { id: 'tens',    label: '🔢 עשרות ומאות שלמות' },
+      { id: 'tens',    label: '🔢 כפל עשרות ומאות' },
+      { id: 'divTens', label: '➗ חילוק בעשרות/מאות' },
       { id: 'order',   label: '📐 סדר פעולות' },
     ];
 
     let selectedCategories = new Set(['mul10', 'div10', 'tens']);
+    let commaMode = false;
     let speedDrillTime = 60;
     let speedTimer = null;
     let speedTimeRemaining = 0;
@@ -374,10 +412,31 @@
       return randChoice(templates)();
     }
 
+    function genDivTens() {
+      const tens = [20, 30, 40, 50, 60, 70, 80, 90];
+      const hundreds = [100, 200, 300, 400, 500];
+      const pool = [...tens, ...hundreds];
+      const divisor = randChoice(pool);
+      const result = randChoice(pool);
+      const dividend = divisor * result;
+      if (dividend > 1000000) return genDivTens();
+      return { q: dividend.toLocaleString() + ' ÷ ' + divisor.toLocaleString() + ' = ?', a: result };
+    }
+
+    function formatWithCommas(n) {
+      return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    }
+
+    function toggleCommaMode() {
+      commaMode = !commaMode;
+      document.getElementById('commaToggle').classList.toggle('selected', commaMode);
+    }
+
     const GENERATORS = {
       mul10: genMul10,
       div10: genDiv10,
       tens: genTens,
+      divTens: genDivTens,
       order: genOrder,
     };
 
@@ -431,9 +490,17 @@
 
       genQuestion();
       var inp = document.getElementById('speedInput');
+      if (commaMode) {
+        inp.type = 'text';
+        inp.inputMode = 'text';
+      } else {
+        inp.type = 'tel';
+        inp.inputMode = 'numeric';
+      }
       inp.value = '';
       inp.focus();
-      inp.oninput = onInput;
+      document.getElementById('commaFeedback').textContent = '';
+      inp.onkeydown = function(e) { if (e.key === 'Enter') submitAnswer(); };
 
       updateTimer();
       speedTimer = setInterval(function() {
@@ -460,51 +527,63 @@
       document.getElementById('speedQuestion').textContent = gen.q;
     }
 
-    function onInput() {
+    function submitAnswer() {
       var inp = document.getElementById('speedInput');
-      var val = inp.value.replace(/,/g, '').trim();
-      if (!val) return;
-      var num = parseInt(val);
+      var raw = inp.value.trim();
+      if (!raw) return;
+
+      document.getElementById('commaFeedback').textContent = '';
+      var numericStr = raw.replace(/,/g, '');
+      var num = parseInt(numericStr);
       if (isNaN(num)) return;
 
-      if (val.length >= String(speedCurrentAnswer).length) {
-        speedTotal++;
-        var ok = num === speedCurrentAnswer;
-        if (ok) {
-          speedCorrect++;
-          speedStreak++;
-          if (speedStreak > speedMaxStreak) speedMaxStreak = speedStreak;
-          inp.classList.add('flash-correct');
-          document.getElementById('speedCorrectCount').textContent = speedCorrect;
-          document.getElementById('speedStreakCount').textContent = speedStreak;
+      speedTotal++;
+      var numCorrect = (num === speedCurrentAnswer);
+      var commaCorrect = true;
 
-          var msgs = STREAK_MSGS[userGender] || STREAK_MSGS.female;
-          var sm = document.getElementById('speedStreakMsg');
-          if (speedStreak >= 20) sm.textContent = msgs[20];
-          else if (speedStreak >= 15) sm.textContent = msgs[15];
-          else if (speedStreak >= 10) sm.textContent = msgs[10];
-          else if (speedStreak >= 5) sm.textContent = msgs[5];
-          else sm.textContent = '';
-        } else {
-          speedStreak = 0;
-          inp.classList.add('flash-wrong');
-          document.getElementById('speedStreakCount').textContent = '0';
-          document.getElementById('speedStreakMsg').textContent = '';
-          speedMistakes.push(speedCurrentQuestion.replace('?', speedCurrentAnswer.toLocaleString()));
-        }
-
-        setTimeout(function() {
-          inp.classList.remove('flash-correct', 'flash-wrong');
-          inp.value = '';
-          genQuestion();
-        }, 200);
+      if (numCorrect && commaMode && speedCurrentAnswer >= 1000) {
+        commaCorrect = (raw === formatWithCommas(speedCurrentAnswer));
       }
+
+      if (numCorrect && commaCorrect) {
+        speedCorrect++;
+        speedStreak++;
+        if (speedStreak > speedMaxStreak) speedMaxStreak = speedStreak;
+        inp.classList.add('flash-correct');
+        document.getElementById('speedCorrectCount').textContent = speedCorrect;
+        document.getElementById('speedStreakCount').textContent = speedStreak;
+
+        var msgs = STREAK_MSGS[userGender] || STREAK_MSGS.female;
+        var sm = document.getElementById('speedStreakMsg');
+        if (speedStreak >= 20) sm.textContent = msgs[20];
+        else if (speedStreak >= 15) sm.textContent = msgs[15];
+        else if (speedStreak >= 10) sm.textContent = msgs[10];
+        else if (speedStreak >= 5) sm.textContent = msgs[5];
+        else sm.textContent = '';
+      } else {
+        speedStreak = 0;
+        inp.classList.add('flash-wrong');
+        document.getElementById('speedStreakCount').textContent = '0';
+        document.getElementById('speedStreakMsg').textContent = '';
+        if (numCorrect && !commaCorrect) {
+          document.getElementById('commaFeedback').textContent =
+            'המספר נכון, אבל שימו לב לפסיקים! → ' + formatWithCommas(speedCurrentAnswer);
+        }
+        speedMistakes.push(speedCurrentQuestion.replace('?', formatWithCommas(speedCurrentAnswer)));
+      }
+
+      setTimeout(function() {
+        inp.classList.remove('flash-correct', 'flash-wrong');
+        inp.value = '';
+        genQuestion();
+        inp.focus();
+      }, numCorrect && !commaCorrect ? 1500 : 200);
     }
 
     function endDrill() {
       clearInterval(speedTimer);
       speedTimer = null;
-      document.getElementById('speedInput').oninput = null;
+      document.getElementById('speedInput').onkeydown = null;
       document.getElementById('speedActive').style.display = 'none';
       document.getElementById('speedResults').style.display = 'block';
 
