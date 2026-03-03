@@ -52,7 +52,7 @@ The app tracks user gender (male/female) for grammatically correct Hebrew messag
 
 ## Content grades
 
-Three grade levels: 4 (כיתה ד׳), 5 (כיתה ה׳), 7 (כיתה ז׳). Grade is stored in `localStorage` as `math_app_grade`. Topics are filtered by grade on the landing page.
+Two grade levels: 4 (כיתה ד׳), 7 (כיתה ז׳). Grade is stored in `localStorage` as `math_app_grade`. Topics are filtered by grade on the landing page. Speed drill (אלופי הכפל) is only shown for grade 4.
 
 ## Adding new content
 
