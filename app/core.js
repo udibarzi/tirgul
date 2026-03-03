@@ -39,7 +39,16 @@
  */
 function fixBidi(text) {
   if (!text) return '';
-  
+
+  // Strip trailing ? before processing — it's sentence punctuation that must
+  // stay in RTL flow to appear at the visual end (left side) of the line.
+  // If it gets trapped inside an LTR math span, BiDi places it mid-text.
+  var trailingQ = '';
+  if (text.endsWith('?')) {
+    trailingQ = '?';
+    text = text.slice(0, -1);
+  }
+
   // Character classes for math expression detection
   // mathChar: any character that can appear INSIDE a math expression
   const mathChar = '[\\d□÷×·+\\-−=≠<>≤≥\\/\\.\\,\\(\\)\\[\\]\\{\\}\\^²³₪%\\?\\s' +
@@ -88,7 +97,7 @@ function fixBidi(text) {
   const wrap = '<span dir="ltr" style="unicode-bidi:isolate">';
   const wrapEnd = '</span>';
   
-  return text.replace(re, function(match) {
+  var result = text.replace(re, function(match) {
     // Split on sentence separators that create over-long LTR spans:
     //   ", " = comma-space (Hebrew list separator)
     //   ". " = period-space (sentence break — NOT a decimal like 3.14)
@@ -100,6 +109,8 @@ function fixBidi(text) {
     }
     return wrap + match + wrapEnd;
   });
+
+  return result + trailingQ;
 }
 
 /**
