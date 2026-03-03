@@ -384,9 +384,7 @@
     function genDiv10() {
       const divisors = [10, 100, 1000];
       const d = randChoice(divisors);
-      var result = randInt(2, 999);
-      // Ensure result has no trailing zeros (e.g. 786 ok, 780 not ok)
-      while (result % 10 === 0) result = randInt(2, 999);
+      const result = randInt(2, 999);
       const dividend = result * d;
       return { q: dividend.toLocaleString() + ' ÷ ' + d.toLocaleString() + ' = ?', a: result };
     }
