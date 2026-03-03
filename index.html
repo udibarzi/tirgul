@@ -464,6 +464,18 @@
         `;
         grid.appendChild(speedCard);
         cardIndex++;
+
+        const semifinalCard = document.createElement('a');
+        semifinalCard.className = 'topic-card animate-in';
+        semifinalCard.style.animationDelay = `${cardIndex * 60}ms`;
+        semifinalCard.href = `app/speed-semifinal.html?name=${nameParam}&gender=${gender}`;
+        semifinalCard.innerHTML = `
+          <div class="icon">🏅</div>
+          <div class="name">אלופי הכפל — חצי גמר וגמר</div>
+          <div class="stats" style="color:#8B5CF6;">תרגול מהיר עם טיימר</div>
+        `;
+        grid.appendChild(semifinalCard);
+        cardIndex++;
       }
 
       // Regular topic cards

@@ -16,21 +16,12 @@
       "grade": 4
     },
     {
-      "id": "multiply-semifinal-4",
-      "name": "אלופי הכפל — חצי גמר וגמר",
-      "icon": "🏅",
-      "description": "כפל וחילוק ב-10, 100, 1000, עשרות ומאות שלמות, סדר פעולות",
-      "difficulty": 2,
-      "order": 2,
-      "grade": 4
-    },
-    {
       "id": "long-multiply-4",
       "name": "כפל במאונך ועוד...",
       "icon": "✖️",
       "description": "כפל דו-ספרתי במאונך, מספרים חסרים, השפעת גורמים על מכפלה",
       "difficulty": 2,
-      "order": 3,
+      "order": 2,
       "grade": 4
     },
     {
@@ -39,7 +30,7 @@
       "icon": "📐",
       "description": "יחידות מידה, היקף ושטח של מלבנים ומצולעים",
       "difficulty": 2,
-      "order": 4,
+      "order": 3,
       "grade": 4
     },
     {
