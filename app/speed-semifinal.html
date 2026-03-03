@@ -382,11 +382,21 @@
     }
 
     function genDiv10() {
-      const divisors = [10, 100, 1000];
-      const d = randChoice(divisors);
-      const result = randInt(2, 999);
-      const dividend = result * d;
-      return { q: dividend.toLocaleString() + ' ÷ ' + d.toLocaleString() + ' = ?', a: result };
+      const base = randInt(2, 999);
+      // Scale up to create a large dividend (100 or 1000)
+      const scale = randChoice([100, 1000, 1000]);
+      const dividend = base * scale;
+      // ~80% of the time pick a divisor smaller than scale → answer has trailing zeros
+      // ~20% of the time divisor = scale → clean answer
+      var d;
+      if (Math.random() < 0.8) {
+        if (scale === 1000) d = randChoice([10, 100]);
+        else d = 10;
+      } else {
+        d = scale;
+      }
+      const answer = dividend / d;
+      return { q: dividend.toLocaleString() + ' ÷ ' + d.toLocaleString() + ' = ?', a: answer };
     }
 
     function genTens() {
