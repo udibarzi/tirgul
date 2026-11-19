@@ -69,6 +69,10 @@ The core library contains battle-tested solutions for:
 }
 ```
 
+### English Vocabulary
+
+English word lists are `"type": "vocab"` topics with a `words` array. Questions are generated automatically. See `docs/CONTENT-FORMAT.md`.
+
 ### Generating Content with Claude
 
 Share `docs/CONTENT-FORMAT.md` with Claude and ask:

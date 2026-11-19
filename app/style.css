@@ -719,3 +719,156 @@ body {
 .mb-sm { margin-bottom: var(--space-sm); }
 .mb-md { margin-bottom: var(--space-md); }
 .mb-lg { margin-bottom: var(--space-lg); }
+
+
+/* ============================================
+   ENGLISH VOCAB (vocab.js / vocab.html)
+   ============================================ */
+
+.topic-card.animate-in {
+  animation: cardStagger 0.4s cubic-bezier(0.4, 0, 0.2, 1) backwards;
+}
+
+.vocab-label {
+  font-size: 0.9em;
+  color: var(--color-text-light);
+  margin-bottom: var(--space-sm);
+}
+
+.vocab-word {
+  font-family: 'Rubik', sans-serif;
+  font-size: 2em;
+  font-weight: 600;
+  text-align: center;
+  color: var(--color-primary);
+  margin: var(--space-sm) 0;
+  line-height: 1.3;
+}
+
+.speak-btn {
+  border: none;
+  background: var(--color-primary-glow);
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  font-size: 0.55em;
+  cursor: pointer;
+  vertical-align: middle;
+}
+.word-table .speak-btn { font-size: 1em; width: 34px; height: 34px; }
+
+.vocab-hint {
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  gap: 4px;
+  margin-top: var(--space-sm);
+  flex-wrap: wrap;
+}
+.hint-letter {
+  display: inline-block;
+  width: 14px;
+  height: 18px;
+  border-bottom: 2.5px solid var(--color-text-light);
+}
+.hint-space { display: inline-block; width: 16px; }
+.hint-char { font-weight: 600; color: var(--color-text-light); }
+
+.option-btn.opt-en {
+  direction: ltr;
+  text-align: center;
+  font-size: 1.2em;
+}
+
+.vocab-answer {
+  font-size: 1.15em;
+}
+
+.vocab-missed {
+  text-align: center;
+  background: var(--color-error-bg);
+  border-radius: var(--radius-md);
+  padding: var(--space-md);
+  margin-top: var(--space-md);
+  line-height: 1.8;
+}
+
+.vocab-summary {
+  text-align: center;
+  background: var(--color-primary-glow);
+  border-radius: var(--radius-md);
+  padding: var(--space-md);
+  margin: var(--space-md) 0;
+  line-height: 1.8;
+}
+
+.count-row {
+  display: flex;
+  gap: var(--space-sm);
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: var(--space-md);
+  color: var(--color-text-light);
+}
+.count-chip {
+  font-family: 'Rubik', sans-serif;
+  font-size: 0.95em;
+  padding: 6px 14px;
+  border-radius: 20px;
+  border: 2px solid var(--color-border);
+  background: var(--color-card);
+  cursor: pointer;
+}
+.count-chip.active {
+  border-color: var(--color-primary);
+  background: var(--color-primary);
+  color: white;
+}
+
+.flashcard {
+  background: var(--color-card);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  min-height: 220px;
+  padding: var(--space-lg);
+  margin-bottom: var(--space-md);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  cursor: pointer;
+  user-select: none;
+}
+.flashcard-back {
+  border-top: 2px dashed var(--color-border);
+  margin-top: var(--space-md);
+  padding-top: var(--space-md);
+  width: 100%;
+}
+.flashcard-back .vocab-word { color: var(--color-success); }
+.flashcard-tap {
+  font-size: 0.85em;
+  color: var(--color-text-light);
+  margin-top: var(--space-md);
+}
+.cards-counter {
+  font-size: 0.9em;
+  color: var(--color-text-light);
+}
+
+.word-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.word-table td {
+  padding: 8px 6px;
+  border-bottom: 1px solid var(--color-border);
+}
+.word-table .wt-en {
+  font-weight: 600;
+  text-align: right;
+  color: var(--color-primary);
+}
+.word-table .wt-mark { width: 28px; text-align: center; }

@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>תרגול אנגלית</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Menu: pick a practice mode -->
+  <div id="menuScreen" class="topics-container hidden">
+    <div class="quiz-top-bar">
+      <a href="../index.html" class="back-btn">חזרה ←</a>
+      <div class="quiz-topic-title" id="menuTitle"></div>
+      <div></div>
+    </div>
+
+    <div class="vocab-summary" id="menuSummary"></div>
+
+    <div class="count-row">
+      <span>כמה שאלות?</span>
+      <button class="count-chip" data-n="10">10</button>
+      <button class="count-chip" data-n="20">20</button>
+      <button class="count-chip" data-n="0">כל המילים</button>
+    </div>
+
+    <div class="topics-grid" id="modesGrid"></div>
+  </div>
+
+  <!-- Flashcards -->
+  <div id="cardsScreen" class="quiz-container hidden">
+    <div class="quiz-top-bar">
+      <a class="back-btn" href="#" id="cardsBack">חזרה ←</a>
+      <div class="quiz-topic-title">כרטיסיות</div>
+      <div class="cards-counter" id="cardsCounter"></div>
+    </div>
+
+    <div class="count-row">
+      <span>מתחילים מ:</span>
+      <button class="count-chip" data-side="en">אנגלית</button>
+      <button class="count-chip" data-side="he">עברית</button>
+    </div>
+
+    <div class="flashcard" id="flashcard">
+      <div class="flashcard-front" id="cardFront"></div>
+      <div class="flashcard-back hidden" id="cardBack"></div>
+      <div class="flashcard-tap" id="cardTap">לחצו על הכרטיס כדי להפוך</div>
+    </div>
+
+    <div class="quiz-nav" id="cardButtons">
+      <button class="nav-btn" id="cardNo">✗ עוד לא</button>
+      <button class="nav-btn primary" id="cardYes">✓ ידעתי</button>
+    </div>
+  </div>
+
+  <!-- Word list -->
+  <div id="listScreen" class="quiz-container hidden">
+    <div class="quiz-top-bar">
+      <a class="back-btn" href="#" id="listBack">חזרה ←</a>
+      <div class="quiz-topic-title">רשימת המילים</div>
+      <div></div>
+    </div>
+    <div class="question-card">
+      <table class="word-table" id="wordTable"></table>
+    </div>
+  </div>
+
+  <div id="loadingScreen" class="landing-container">
+    <div style="text-align:center;"><div style="font-size:2em;margin-bottom:16px;">⏳</div><div>טוען...</div></div>
+  </div>
+
+  <script src="core.js"></script>
+  <script src="vocab.js"></script>
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const topicId = params.get('topic');
+    const userName = params.get('name') || '';
+    const userGender = params.get('gender') || localStorage.getItem('math_app_gender') || 'female';
+    let content = null;
+
+    function getPref(k, d) { try { return localStorage.getItem('tirgul_vocab_pref_' + k) || d; } catch (e) { return d; } }
+    function setPref(k, v) { try { localStorage.setItem('tirgul_vocab_pref_' + k, v); } catch (e) {} }
+
+    function show(id) {
+      ['menuScreen', 'cardsScreen', 'listScreen', 'loadingScreen'].forEach(s =>
+        document.getElementById(s).classList.toggle('hidden', s !== id));
+      window.scrollTo(0, 0);
+    }
+
+    async function init() {
+      content = topicId ? await loadContent(`../content/${topicId}.json`) : null;
+      if (!content || !Array.isArray(content.words)) {
+        document.getElementById('loadingScreen').innerHTML =
+          '<div style="text-align:center;">😕 לא נמצאה רשימת מילים<br><a href="../index.html">חזרה לתפריט</a></div>';
+        return;
+      }
+      document.title = content.name;
+      document.getElementById('menuTitle').textContent = content.name;
+      document.getElementById('cardsBack').onclick = (e) => { e.preventDefault(); showMenu(); };
+      document.getElementById('listBack').onclick = (e) => { e.preventDefault(); showMenu(); };
+      showMenu();
+    }
+
+    // ---------------- Menu ----------------
+    function showMenu() {
+      show('menuScreen');
+      const words = content.words;
+      const stats = VocabStats.get(topicId);
+      const seen = words.filter(w => stats[w.en]).length;
+      const known = words.filter(w => stats[w.en] && !VocabStats.needsWork(stats[w.en])).length;
+      const hard = VocabStats.hardWords(topicId, words);
+
+      document.getElementById('menuSummary').innerHTML =
+        `<div><strong>${words.length}</strong> מילים ברשימה</div>` +
+        (seen ? `<div>✅ ${known} יודעים · 💪 ${hard.length} לחיזוק · 🆕 ${words.length - seen} עוד לא תורגלו</div>` : '');
+
+      // Question-count chips
+      const n = getPref('n', String(content.questionsPerSession || 20));
+      document.querySelectorAll('#menuScreen .count-chip').forEach(chip => {
+        chip.classList.toggle('active', chip.dataset.n === n);
+        chip.onclick = () => { setPref('n', chip.dataset.n); showMenu(); };
+      });
+
+      const quizUrl = (mode) =>
+        `quiz.html?topic=${encodeURIComponent(topicId)}&mode=${mode}&n=${n}` +
+        `&name=${encodeURIComponent(userName)}&gender=${userGender}`;
+
+      const cards = [
+        { icon: '📇', name: 'כרטיסיות', sub: 'לומדים את המילים', onclick: startCards },
+        { icon: '🔤', name: VOCAB_MODES['en-he'].label, sub: 'רואים מילה באנגלית — בוחרים פירוש', href: quizUrl('en-he') },
+        { icon: '🇮🇱', name: VOCAB_MODES['he-en'].label, sub: 'רואים מילה בעברית — בוחרים באנגלית', href: quizUrl('he-en') },
+        { icon: '✍️', name: VOCAB_MODES['write'].label, sub: 'רואים בעברית — כותבים באנגלית', href: quizUrl('write') },
+        { icon: '🎯', name: VOCAB_MODES['mix'].label, sub: 'הכול ביחד — כמו במבחן', href: quizUrl('mix') },
+      ];
+      if (hard.length) {
+        cards.push({ icon: '💪', name: VOCAB_MODES['hard'].label, sub: `${hard.length} מילים שעוד מתבלבלים בהן`, href: quizUrl('hard') });
+      }
+      cards.push({ icon: '📋', name: 'רשימת המילים', sub: 'כל המילים והפירושים', onclick: showList });
+
+      const grid = document.getElementById('modesGrid');
+      grid.innerHTML = '';
+      cards.forEach((c, i) => {
+        const el = document.createElement('a');
+        el.className = 'topic-card animate-in';
+        el.style.animationDelay = `${i * 50}ms`;
+        if (c.href) el.href = c.href;
+        else { el.href = '#'; el.onclick = (e) => { e.preventDefault(); c.onclick(); }; }
+        el.innerHTML = `<div class="icon">${c.icon}</div><div class="name">${c.name}</div><div class="stats">${c.sub}</div>`;
+        grid.appendChild(el);
+      });
+    }
+
+    // ---------------- Flashcards ----------------
+    const cards = { deck: [], i: 0, flipped: false, yes: 0, missed: [] };
+
+    function startCards(deck) {
+      cards.deck = shuffle([...(Array.isArray(deck) ? deck : content.words)]);
+      cards.i = 0; cards.yes = 0; cards.missed = [];
+      show('cardsScreen');
+      document.querySelectorAll('#cardsScreen .count-chip').forEach(chip => {
+        chip.onclick = () => { setPref('side', chip.dataset.side); renderCard(); };
+      });
+      document.getElementById('flashcard').onclick = flipCard;
+      document.getElementById('cardYes').onclick = () => answerCard(true);
+      document.getElementById('cardNo').onclick = () => answerCard(false);
+      renderCard();
+    }
+
+    function sideHtml(word, lang) {
+      if (lang === 'en') {
+        return `<div class="vocab-word" dir="ltr" lang="en">${escapeHtml(word.en)} ` +
+               `<button type="button" class="speak-btn" title="השמעה">🔊</button></div>`;
+      }
+      return `<div class="vocab-word" dir="rtl">${escapeHtml(word.he)}</div>`;
+    }
+
+    function renderCard() {
+      const side = getPref('side', 'en');
+      document.querySelectorAll('#cardsScreen .count-chip').forEach(chip =>
+        chip.classList.toggle('active', chip.dataset.side === side));
+
+      document.getElementById('cardButtons').classList.remove('hidden');
+      document.getElementById('cardTap').classList.remove('hidden');
+      const word = cards.deck[cards.i];
+      cards.flipped = false;
+      document.getElementById('cardsCounter').textContent = `${cards.i + 1} / ${cards.deck.length}`;
+      document.getElementById('cardFront').innerHTML = sideHtml(word, side);
+      document.getElementById('cardBack').innerHTML = sideHtml(word, side === 'en' ? 'he' : 'en');
+      document.getElementById('cardBack').classList.add('hidden');
+      document.querySelectorAll('#flashcard .speak-btn').forEach(b =>
+        b.onclick = (e) => { e.stopPropagation(); speakEnglish(word.en); });
+    }
+
+    function flipCard() {
+      if (cards.i >= cards.deck.length) return;
+      cards.flipped = !cards.flipped;
+      document.getElementById('cardBack').classList.toggle('hidden', !cards.flipped);
+      document.getElementById('cardTap').classList.toggle('hidden', cards.flipped);
+    }
+
+    function answerCard(knew) {
+      const word = cards.deck[cards.i];
+      VocabStats.record(topicId, word.en, knew);
+      if (knew) cards.yes++; else cards.missed.push(word);
+      cards.i++;
+      if (cards.i < cards.deck.length) { renderCard(); return; }
+
+      // Deck finished
+      const total = cards.deck.length;
+      document.getElementById('cardsCounter').textContent = '';
+      document.getElementById('cardButtons').classList.add('hidden');
+      document.getElementById('cardTap').classList.add('hidden');
+      document.getElementById('cardBack').classList.add('hidden');
+      document.getElementById('cardFront').innerHTML = `
+        <div style="font-size:2.5em;">${cards.missed.length === 0 ? '🏆' : '⭐'}</div>
+        <div style="font-size:1.2em;margin:12px 0;">ידעת ${cards.yes} מתוך ${total}</div>
+        <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+          ${cards.missed.length ? `<button class="nav-btn primary" id="againMissed">חזרה על ${cards.missed.length} המילים שלא ידעת</button>` : ''}
+          <button class="nav-btn" id="againAll">שוב מההתחלה</button>
+        </div>`;
+      const missed = cards.missed.slice();
+      const am = document.getElementById('againMissed');
+      if (am) am.onclick = (e) => { e.stopPropagation(); startCards(missed); };
+      document.getElementById('againAll').onclick = (e) => { e.stopPropagation(); startCards(); };
+      if (cards.missed.length === 0) launchConfetti(60);
+    }
+
+    // ---------------- Word list ----------------
+    function showList() {
+      show('listScreen');
+      const stats = VocabStats.get(topicId);
+      const rows = [...content.words].sort((a, b) => a.en.localeCompare(b.en, 'en', { sensitivity: 'base' }));
+      const table = document.getElementById('wordTable');
+      table.innerHTML = rows.map((w, i) => {
+        const s = stats[w.en];
+        const mark = !s ? '' : VocabStats.needsWork(s) ? '💪' : '✅';
+        return `<tr>
+          <td class="wt-en" dir="ltr" lang="en">${escapeHtml(w.en)}</td>
+          <td class="wt-he">${escapeHtml(w.he)}</td>
+          <td class="wt-mark">${mark}</td>
+          <td><button type="button" class="speak-btn" data-i="${i}" title="השמעה">🔊</button></td>
+        </tr>`;
+      }).join('');
+      table.querySelectorAll('.speak-btn').forEach(b =>
+        b.onclick = () => speakEnglish(rows[+b.dataset.i].en));
+    }
+
+    init();
+  </script>
+</body>
+</html>

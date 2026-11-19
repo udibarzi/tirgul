@@ -3,6 +3,7 @@
   "language": "he",
   "grades": [
     { "id": 4, "name": "כיתה ד׳", "icon": "4️⃣" },
+    { "id": 5, "name": "כיתה ה׳", "icon": "5️⃣" },
     { "id": 7, "name": "כיתה ז׳", "icon": "7️⃣" }
   ],
   "topics": [
@@ -86,6 +87,17 @@
       "difficulty": 2,
       "order": 6,
       "grade": 7
+    },
+    {
+      "id": "english-words-1",
+      "name": "אנגלית — מילים 1",
+      "icon": "🔤",
+      "description": "אוצר מילים: חודשים, מספרים, חדרים ומקומות ועוד",
+      "type": "vocab",
+      "subject": "english",
+      "difficulty": 1,
+      "order": 1,
+      "grade": 5
     }
   ]
 }

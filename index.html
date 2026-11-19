@@ -489,7 +489,8 @@
           const card = document.createElement('a');
           card.className = 'topic-card animate-in';
           card.style.animationDelay = `${cardIndex * 60}ms`;
-          card.href = `app/quiz.html?topic=${topic.id}&name=${nameParam}&gender=${gender}`;
+          const page = topic.type === 'vocab' ? 'vocab' : 'quiz';
+          card.href = `app/${page}.html?topic=${topic.id}&name=${nameParam}&gender=${gender}`;
 
           card.innerHTML = `
             <div class="icon">${topic.icon || '📝'}</div>

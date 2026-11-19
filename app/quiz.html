@@ -11,7 +11,7 @@
   <div class="quiz-container" id="quizContainer">
     <!-- Top bar -->
     <div class="quiz-top-bar">
-      <a href="../index.html" class="back-btn" title="חזרה לתפריט">חזרה ←</a>
+      <a href="../index.html" class="back-btn" id="backBtn" title="חזרה לתפריט">חזרה ←</a>
       <div class="quiz-topic-title" id="topicTitle"></div>
       <div class="streak-badge" id="streakBadge">🔥 <span id="streakCount">0</span></div>
     </div>
@@ -68,6 +68,7 @@
   </div>
   
   <script src="core.js"></script>
+  <script src="vocab.js"></script>
   <script>
     // ============================================
     // STATE
@@ -102,6 +103,15 @@
       try {
         // Load topic content
         const content = await loadContent(`../content/${topicId}.json`);
+        if (content && Array.isArray(content.words)) {
+          // Vocab topic: questions are generated from the word list (vocab.js)
+          state.isVocab = true;
+          state.vocabMode = params.get('mode') || 'mix';
+          const n = params.has('n') ? parseInt(params.get('n')) || 0 : (content.questionsPerSession || 20);
+          content.questions = buildVocabQuestions(content, state.vocabMode, n, topicId);
+          content.shuffle = false;
+          content.questionsPerSession = 0;
+        }
         if (!content || !content.questions || content.questions.length === 0) {
           // Try generated questions if the JSON has a generator config
           showError('לא נמצאו שאלות לנושא זה');
@@ -113,6 +123,20 @@
         
         document.getElementById('topicTitle').textContent = content.name || topicId;
         document.title = `תרגול: ${content.name || topicId}`;
+        
+        if (state.isVocab) {
+          const mode = VOCAB_MODES[state.vocabMode] || VOCAB_MODES.mix;
+          document.getElementById('topicTitle').textContent = `${content.name} — ${mode.label}`;
+          document.getElementById('backBtn').href =
+            `vocab.html?topic=${encodeURIComponent(topicId)}&name=${encodeURIComponent(userName)}&gender=${userGender}`;
+          document.getElementById('flagBtn').classList.add('hidden');
+          const input = document.getElementById('answerInput');
+          input.placeholder = 'הקלידו באנגלית';
+          input.setAttribute('lang', 'en');
+          input.setAttribute('autocapitalize', 'off');
+          input.setAttribute('autocorrect', 'off');
+          input.setAttribute('spellcheck', 'false');
+        }
         
         // Load saved progress for streak
         const savedProgress = progress.getTopicProgress(topicId);
@@ -173,7 +197,11 @@
         `שאלה ${index + 1} מתוך ${state.questions.length}`;
       
       // Render question text with bidi fix
-      setMixedText(document.getElementById('questionText'), q.text);
+      if (q.vocab) {
+        renderVocabPrompt(document.getElementById('questionText'), q);
+      } else {
+        setMixedText(document.getElementById('questionText'), q.text);
+      }
       
       // Render visual if present
       const visualContainer = document.getElementById('visualContainer');
@@ -229,7 +257,12 @@
         q.options.forEach((opt, oi) => {
           const btn = document.createElement('button');
           btn.className = 'option-btn';
-          btn.innerHTML = fixBidi(String(opt));
+          if (q.vocab) {
+            btn.textContent = String(opt);
+            if (q.optionsLang === 'en') { btn.classList.add('opt-en'); btn.dir = 'ltr'; btn.lang = 'en'; }
+          } else {
+            btn.innerHTML = fixBidi(String(opt));
+          }
           
           if (answered) {
             btn.classList.add('disabled');
@@ -302,9 +335,10 @@
       const q = state.questions[state.currentQ];
       
       // Normalize answer comparison
-      const userAnswer = normalizeAnswer(value);
+      const norm = q.vocab ? vocabNormalize : normalizeAnswer;
+      const userAnswer = norm(value);
       const correctAnswers = Array.isArray(q.correct) ? q.correct : [q.correct];
-      const isCorrect = correctAnswers.some(ca => normalizeAnswer(String(ca)) === userAnswer);
+      const isCorrect = correctAnswers.some(ca => norm(String(ca)) === userAnswer);
       
       state.answers[state.currentQ] = {
         answered: true,
@@ -343,6 +377,8 @@
       }
       
       progress.recordAnswer(topicId, isCorrect);
+      const q = state.questions[state.currentQ];
+      if (q.vocab) VocabStats.record(topicId, q.word.en, isCorrect);
       updateStreakBadge();
       updateDots();
     }
@@ -362,6 +398,14 @@
       if (isCorrect) {
         title.textContent = getCongratsMessage(userName, state.streak, userGender);
         explanation.innerHTML = '';
+        // Spelling tip: months, names and "I" start with a capital letter
+        const a = state.answers[state.currentQ];
+        if (question.vocab && question.kind === 'write' && a && /^[A-Z]/.test(question.word.en) && !/^[A-Z]/.test(a.selected)) {
+          explanation.innerHTML = `💡 שימו לב: באנגלית כותבים באות גדולה — <strong dir="ltr" style="unicode-bidi:isolate">${escapeHtml(question.word.en)}</strong>`;
+        }
+      } else if (question.vocab) {
+        title.textContent = 'לא נכון, אבל אפשר ללמוד מזה!';
+        explanation.innerHTML = `<div class="vocab-answer"><span dir="ltr" lang="en" style="unicode-bidi:isolate"><strong>${escapeHtml(question.word.en)}</strong></span> = ${escapeHtml(question.word.he)}</div>`;
       } else {
         title.textContent = 'לא נכון, אבל אפשר ללמוד מזה!';
         
@@ -490,6 +534,7 @@
           <div style="font-size:1.3em;margin:16px 0;">
             ${correct} מתוך ${total} נכונות (${pct}%)
           </div>
+          ${state.isVocab ? vocabSummaryHtml() : ''}
           <div style="margin-top:24px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
             <button class="nav-btn primary" onclick="location.reload()">תרגול נוסף</button>
             <a href="../index.html" class="nav-btn" style="text-decoration:none;display:inline-block;">חזרה לתפריט</a>
@@ -501,6 +546,20 @@
       document.querySelector('.quiz-nav').classList.add('hidden');
       
       if (pct >= 80) launchConfetti(80);
+    }
+    
+    
+    function vocabSummaryHtml() {
+      const missed = [];
+      state.questions.forEach((q, i) => {
+        const a = state.answers[i];
+        if (a && !a.correct && !missed.includes(q.word)) missed.push(q.word);
+      });
+      if (!missed.length) return '';
+      return `<div class="vocab-missed">
+        <div style="font-weight:600;margin-bottom:8px;">מילים לחזרה:</div>
+        ${missed.map(w => `<div><span dir="ltr" lang="en" style="unicode-bidi:isolate"><strong>${escapeHtml(w.en)}</strong></span> = ${escapeHtml(w.he)}</div>`).join('')}
+      </div>`;
     }
     
     

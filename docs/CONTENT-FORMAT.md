@@ -188,6 +188,39 @@ Each topic is a single JSON file in `/content/` named `{topic-id}.json`:
 - Label sides and angles with Hebrew text where needed
 - Use clear, contrasting colors
 
+## English Vocabulary Topics (`"type": "vocab"`)
+
+A vocab topic has **no `questions`**: it holds a `words` list, and `app/vocab.js`
+generates the questions at runtime (multiple choice in both directions plus
+spelling). The landing page opens vocab topics in `app/vocab.html`, a menu with
+flashcards, the word list, and the quiz modes.
+
+```json
+{
+  "id": "english-words-2",
+  "name": "אנגלית — מילים 2",
+  "icon": "🔤",
+  "type": "vocab",
+  "questionsPerSession": 20,
+  "words": [
+    { "en": "flower", "he": "פרח" },
+    { "en": "April", "he": "אפריל", "group": "month" },
+    { "en": "fifteen", "he": "15", "group": "number" },
+    { "en": "I'm sorry", "he": "אני מצטער / סליחה", "alt": ["I am sorry"] }
+  ]
+}
+```
+
+| Field | Required | Description |
+|-------|----------|-------------|
+| `en` | ✅ | English word or phrase, spelled exactly as in the book (capitals matter for display; typing is case-insensitive) |
+| `he` | ✅ | Hebrew meaning. Several meanings: separate with ` / `. Numbers: use digits (`"15"`). No parentheses around Hebrew |
+| `group` | ❌ | Words in the same group are used as wrong-answer options for each other: `month`, `number`, `place`, `verb`. Use groups of 3+ words |
+| `alt` | ❌ | Other accepted spellings for the typing question |
+
+The manifest entry needs `"type": "vocab"` (plus `"subject": "english"`).
+Apostrophes, end punctuation and letter case are ignored when checking typed answers; spaces are not.
+
 ## BiDi / RTL Rules
 
 These rules are **critical** for correct rendering:

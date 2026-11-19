@@ -13,6 +13,8 @@ app/
   core.js               Shared library (BiDi, progress, visuals, confetti)
   style.css             Shared styles
   quiz.html             Quiz engine (loads topic JSON, renders questions)
+  vocab.js              English vocab engine — generates questions from a word list
+  vocab.html            English topic menu: flashcards, word list, quiz modes
   speed.html            Speed drill (timed multiplication/division practice)
 content/
   manifest.json         Topic registry with grades array and topic list
@@ -52,7 +54,7 @@ The app tracks user gender (male/female) for grammatically correct Hebrew messag
 
 ## Content grades
 
-Two grade levels: 4 (כיתה ד׳), 7 (כיתה ז׳). Grade is stored in `localStorage` as `math_app_grade`. Topics are filtered by grade on the landing page. Speed drill (אלופי הכפל) is only shown for grade 4.
+Three grade levels: 4 (כיתה ד׳), 5 (כיתה ה׳), 7 (כיתה ז׳). Grade 5 currently has English only. Grade is stored in `localStorage` as `math_app_grade`. Topics are filtered by grade on the landing page. Speed drill (אלופי הכפל) is only shown for grade 4.
 
 ## Adding new content
 
@@ -60,6 +62,18 @@ Two grade levels: 4 (כיתה ד׳), 7 (כיתה ז׳). Grade is stored in `loca
 2. Add entry to `content/manifest.json` `topics` array with `grade`, `order`, etc.
 3. Run `node _validate.js` to check for errors
 4. For 7th grade math: make sure answers include both Unicode minus (−) and regular hyphen (-) variants
+
+## English vocabulary (word lists from a photo)
+
+The user will send photos of English word lists, from the kid's textbook, that she needs for a test. To add one:
+
+1. Transcribe **every** word in the photo and count them against the photo.
+2. Create `content/english-words-N.json` with `"type": "vocab"` and a `words` array: `{ en, he, group?, alt? }`. See `docs/CONTENT-FORMAT.md`. Use child-friendly Hebrew meanings; use digits for number words; put `group` on months, numbers, places, verbs.
+3. Add a manifest entry: `"type": "vocab"`, `"subject": "english"`, `"grade": 5`, next `order`.
+4. `node _validate.js`. No questions to write; `app/vocab.js` generates them.
+
+Never pass English text through `fixBidi()`; vocab UI uses `escapeHtml()` inside `dir="ltr"` elements.
+Per-word stats live in localStorage under `tirgul_vocab_{topicId}`. They drive the "מילים לחיזוק" mode and weight question selection toward missed words.
 
 ## Common pitfalls
 
