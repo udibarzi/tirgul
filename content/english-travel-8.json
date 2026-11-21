@@ -31,5 +31,20 @@
     { "en": "crowded", "he": "צפוף / עמוס", "group": "other" },
     { "en": "local", "he": "מקומי", "group": "other" },
     { "en": "amazing", "he": "מדהים", "group": "other" }
+  ],
+  "sentences": [
+    { "en": "Have you ever been abroad?", "he": "היית פעם בחו״ל?", "blank": "abroad" },
+    { "en": "Our flight leaves at six in the morning.", "he": "הטיסה שלנו יוצאת בשש בבוקר.", "blank": "flight" },
+    { "en": "Don't forget your passport!", "he": "אל תשכחי את הדרכון!", "blank": "passport" },
+    { "en": "Our luggage is too heavy.", "he": "המזוודות שלנו כבדות מדי.", "blank": "luggage" },
+    { "en": "I have a reservation for two nights.", "he": "יש לי הזמנה לשני לילות.", "blank": "reservation" },
+    { "en": "The museum is very crowded today.", "he": "המוזיאון מאוד עמוס היום.", "blank": "crowded" },
+    { "en": "The view from the hotel is amazing.", "he": "הנוף מהמלון מדהים.", "blank": "view" },
+    { "en": "I bought a souvenir for my sister.", "he": "קניתי מזכרת לאחותי.", "blank": "souvenir" },
+    { "en": "We will arrive in London at noon.", "he": "נגיע ללונדון בצהריים.", "blank": "arrive" },
+    { "en": "Let's rent bikes and explore the city.", "he": "בואו נשכור אופניים ונגלה את העיר.", "blank": "explore" },
+    { "en": "It's easy to get lost in this city.", "he": "קל ללכת לאיבוד בעיר הזאת.", "blank": "get lost" },
+    { "en": "Let's try the local food.", "he": "בואו ננסה את האוכל המקומי.", "blank": "local" },
+    { "en": "We need to book a hotel.", "he": "אנחנו צריכים להזמין מלון.", "blank": "book" }
   ]
 }

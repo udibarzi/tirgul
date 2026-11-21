@@ -196,7 +196,7 @@
       "type": "vocab",
       "subject": "english",
       "difficulty": 2,
-      "order": 4,
+      "order": 5,
       "grade": 8
     },
     {
@@ -207,7 +207,7 @@
       "type": "vocab",
       "subject": "english",
       "difficulty": 2,
-      "order": 5,
+      "order": 6,
       "grade": 8
     },
     {
@@ -218,7 +218,7 @@
       "type": "vocab",
       "subject": "english",
       "difficulty": 2,
-      "order": 6,
+      "order": 7,
       "grade": 8
     },
     {
@@ -229,7 +229,29 @@
       "type": "vocab",
       "subject": "english",
       "difficulty": 2,
+      "order": 8,
+      "grade": 8
+    },
+    {
+      "id": "english-grammar-5",
+      "name": "אנגלית — דקדוק בסיסי",
+      "icon": "🧠",
+      "description": "am/is/are, הווה פשוט, עכשיו, was/were, יש לי",
+      "type": "vocab",
+      "subject": "english",
+      "difficulty": 2,
       "order": 7,
+      "grade": 5
+    },
+    {
+      "id": "english-tenses-8",
+      "name": "אנגלית — זמנים",
+      "icon": "⏳",
+      "description": "הווה, הווה מתמשך, עבר, עתיד והווה מושלם",
+      "type": "vocab",
+      "subject": "english",
+      "difficulty": 2,
+      "order": 4,
       "grade": 8
     }
   ]

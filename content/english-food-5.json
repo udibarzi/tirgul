@@ -30,5 +30,20 @@
     { "en": "thirsty", "he": "צמא", "group": "describe" },
     { "en": "delicious", "he": "טעים", "group": "describe" },
     { "en": "full", "he": "שבע", "group": "describe" }
+  ],
+  "sentences": [
+    { "en": "I'm hungry. Can I have some bread?", "he": "אני רעבה. אפשר קצת לחם?", "blank": "hungry" },
+    { "en": "I drink milk every morning.", "he": "אני שותה חלב כל בוקר.", "blank": "milk" },
+    { "en": "This cake is delicious!", "he": "העוגה הזאת טעימה!", "blank": "delicious" },
+    { "en": "Can I have a glass of water, please?", "he": "אפשר כוס מים, בבקשה?", "blank": "water" },
+    { "en": "My mom makes chicken soup.", "he": "אמא שלי מכינה מרק עוף.", "blank": "soup" },
+    { "en": "I eat an apple every day.", "he": "אני אוכלת תפוח כל יום.", "blank": "apple" },
+    { "en": "We eat rice and fish for dinner.", "he": "אנחנו אוכלים אורז ודג לארוחת ערב.", "blank": "fish" },
+    { "en": "Do you want orange juice?", "he": "רוצים מיץ תפוזים?", "blank": "juice" },
+    { "en": "I'm thirsty after the game.", "he": "אני צמאה אחרי המשחק.", "blank": "thirsty" },
+    { "en": "Put tomato and cucumber in the salad.", "he": "שימו עגבנייה ומלפפון בסלט.", "blank": "salad" },
+    { "en": "No more pasta, thank you. I'm full.", "he": "לא עוד פסטה, תודה. אני שבעה.", "blank": "full" },
+    { "en": "Chocolate ice cream is my favorite.", "he": "גלידת שוקולד היא האהובה עליי.", "blank": "ice cream" },
+    { "en": "I eat an egg and cheese for breakfast.", "he": "אני אוכלת ביצה וגבינה לארוחת בוקר.", "blank": "cheese" }
   ]
 }

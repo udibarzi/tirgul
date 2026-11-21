@@ -28,5 +28,19 @@
     { "en": "fun", "he": "כיף", "group": "other" },
     { "en": "game", "he": "משחק", "group": "other" },
     { "en": "team", "he": "קבוצה", "group": "other" }
+  ],
+  "sentences": [
+    { "en": "I ride a bike in the park.", "he": "אני רוכבת על אופניים בפארק.", "blank": "ride a bike" },
+    { "en": "My sister likes to dance and sing.", "he": "אחותי אוהבת לרקוד ולשיר.", "blank": "dance" },
+    { "en": "I meet friends on Friday.", "he": "אני נפגשת עם חברות ביום שישי.", "blank": "meet friends" },
+    { "en": "Can you swim?", "he": "את יודעת לשחות?", "blank": "swim" },
+    { "en": "I like to draw pictures of animals.", "he": "אני אוהבת לצייר ציורים של חיות.", "blank": "draw" },
+    { "en": "We play basketball after school.", "he": "אנחנו משחקים כדורסל אחרי בית הספר.", "blank": "play basketball" },
+    { "en": "My favorite game is chess.", "he": "המשחק האהוב עליי הוא שחמט.", "blank": "game" },
+    { "en": "I listen to music on my phone.", "he": "אני מקשיבה למוזיקה בטלפון שלי.", "blank": "listen to music" },
+    { "en": "It's fun to bake cookies with Mom.", "he": "כיף לאפות עוגיות עם אמא.", "blank": "bake" },
+    { "en": "Our team won the game!", "he": "הקבוצה שלנו ניצחה במשחק!", "blank": "team" },
+    { "en": "I read a book before I go to sleep.", "he": "אני קוראת ספר לפני שאני הולכת לישון.", "blank": "read a book" },
+    { "en": "Dad likes to take pictures.", "he": "אבא אוהב לצלם תמונות.", "blank": "take pictures" }
   ]
 }

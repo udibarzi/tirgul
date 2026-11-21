@@ -37,64 +37,95 @@ for (const topic of manifest.topics) {
     continue;
   }
 
-  // Vocab topics (English word lists): questions are generated at runtime
-  if (topic.type === 'vocab' || Array.isArray(data.words)) {
-    if (topic.type !== 'vocab') {
-      console.error(`  ERROR: ${topic.id} has a words array but manifest type is not "vocab"`);
+  // Vocab topics (English words / sentences): questions are generated at runtime
+  if (topic.type === 'vocab' || Array.isArray(data.words) || Array.isArray(data.sentences)) {
+    if (topic.type !== 'vocab' || data.type !== 'vocab') {
+      console.error(`  ERROR: ${topic.id}: vocab topics need "type": "vocab" in both manifest and content file`);
       errors++;
     }
-    if (!Array.isArray(data.words) || data.words.length < 4) {
-      console.error(`  ERROR: ${topic.id}: vocab topic needs a words array with at least 4 words`);
+    const levels = ['words', 'sentences'].filter(l => data[l] !== undefined);
+    if (!levels.length) {
+      console.error(`  ERROR: ${topic.id}: vocab topic needs a "words" and/or "sentences" array`);
       errors++;
       continue;
     }
-    const KINDS = ['en-he', 'he-en', 'write', 'listen'];
-    if (data.modes !== undefined && (!Array.isArray(data.modes) || data.modes.some(k => !KINDS.includes(k)))) {
-      console.error(`  ERROR: ${topic.id}: "modes" must be an array of ${KINDS.join(', ')}`);
-      errors++;
+    const KINDS = ['en-he', 'he-en', 'write', 'listen', 'order', 'cloze', 'speak'];
+    for (const key of ['modes', 'sentenceModes']) {
+      if (data[key] !== undefined && (!Array.isArray(data[key]) || data[key].some(k => !KINDS.includes(k)))) {
+        console.error(`  ERROR: ${topic.id}: "${key}" must be an array of ${KINDS.join(', ')}`);
+        errors++;
+      }
     }
-    const seen = new Set();
     let noAudio = 0;
-    data.words.forEach((w, i) => {
-      const where = `${topic.id} word ${i + 1}${w && w.en ? ` "${w.en}"` : ''}`;
-      if (!w.en || typeof w.en !== 'string' || !/^[A-Za-z][A-Za-z0-9 '’.,!?-]*$/.test(w.en)) {
-        console.error(`  ERROR: ${where}: "en" must be English letters only`);
+    const counts = [];
+    for (const level of levels) {
+      const items = data[level];
+      const kind = level === 'words' ? 'word' : 'sentence';
+      if (!Array.isArray(items) || items.length < 4) {
+        console.error(`  ERROR: ${topic.id}: "${level}" needs at least 4 items`);
         errors++;
+        continue;
       }
-      if (!w.he || typeof w.he !== 'string') {
-        console.error(`  ERROR: ${where}: missing "he"`);
-        errors++;
+      const seen = new Set();
+      items.forEach((w, i) => {
+        const where = `${topic.id} ${kind} ${i + 1}${w && w.en ? ` "${w.en}"` : ''}`;
+        if (!w.en || typeof w.en !== 'string' || !/^[A-Za-z][A-Za-z0-9 '’.,!?-]*$/.test(w.en)) {
+          console.error(`  ERROR: ${where}: "en" must be English letters/punctuation only`);
+          errors++;
+        }
+        if (!w.he || typeof w.he !== 'string') {
+          console.error(`  ERROR: ${where}: missing "he"`);
+          errors++;
+        }
+        if (w.alt && !Array.isArray(w.alt)) {
+          console.error(`  ERROR: ${where}: "alt" must be an array`);
+          errors++;
+        }
+        if (w.blank !== undefined) {
+          const esc = String(w.blank).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+          const re = new RegExp('(^|[^A-Za-z’\'])' + esc + '(?![A-Za-z])', 'g');
+          const hits = (String(w.en).match(re) || []).length;
+          if (hits !== 1) {
+            console.error(`  ERROR: ${where}: "blank" "${w.blank}" must appear exactly once as a whole word (found ${hits})`);
+            errors++;
+          }
+          if (w.choices && (!Array.isArray(w.choices) || w.choices.length < 3 || w.choices.includes(w.blank))) {
+            console.error(`  ERROR: ${where}: "choices" must be 3+ wrong options, not including the blank`);
+            errors++;
+          }
+          if (!w.choices && !(data.words || []).some(x => x.en.toLowerCase() === String(w.blank).toLowerCase())) {
+            console.warn(`  WARN: ${where}: blank "${w.blank}" is not in the word list and has no "choices" — distractors will be random`);
+            warnings++;
+          }
+        }
+        const key = String(w.en || '').toLowerCase();
+        if (seen.has(key)) {
+          console.error(`  ERROR: ${where}: duplicate`);
+          errors++;
+        }
+        seen.add(key);
+        if (w.en && !fs.existsSync(path.join(__dirname, 'audio', 'en', vocabSlug(w.en) + '.mp3'))) noAudio++;
+        if (w.he && hebrewInParens.test(w.he)) {
+          console.warn(`  BIDI: ${where}: Hebrew text in parentheses`);
+          bidiIssues++;
+        }
+      });
+      const groups = {};
+      items.forEach(w => { if (w.group) groups[w.group] = (groups[w.group] || 0) + 1; });
+      for (const [g, n] of Object.entries(groups)) {
+        if (n < 3) {
+          console.warn(`  WARN: ${topic.id}: group "${g}" has only ${n} item(s) — distractors work best with 3+`);
+          warnings++;
+        }
       }
-      if (w.alt && !Array.isArray(w.alt)) {
-        console.error(`  ERROR: ${where}: "alt" must be an array`);
-        errors++;
-      }
-      const key = String(w.en || '').toLowerCase();
-      if (seen.has(key)) {
-        console.error(`  ERROR: ${where}: duplicate word`);
-        errors++;
-      }
-      seen.add(key);
-      if (w.en && !fs.existsSync(path.join(__dirname, 'audio', 'en', vocabSlug(w.en) + '.mp3'))) noAudio++;
-      if (w.he && hebrewInParens.test(w.he)) {
-        console.warn(`  BIDI: ${where}: Hebrew text in parentheses`);
-        bidiIssues++;
-      }
-    });
-    const groups = {};
-    data.words.forEach(w => { if (w.group) groups[w.group] = (groups[w.group] || 0) + 1; });
-    for (const [g, n] of Object.entries(groups)) {
-      if (n < 3) {
-        console.warn(`  WARN: ${topic.id}: group "${g}" has only ${n} word(s) — distractors work best with 3+`);
-        warnings++;
-      }
+      totalQuestions += items.length;
+      counts.push(`${items.length} ${level}`);
     }
     if (noAudio) {
-      console.warn(`  WARN: ${topic.id}: ${noAudio} word(s) have no recording — run _build_audio.py (browser voice is used meanwhile)`);
+      console.warn(`  WARN: ${topic.id}: ${noAudio} item(s) have no recording — run _build_audio.py (browser voice is used meanwhile)`);
       warnings++;
     }
-    totalQuestions += data.words.length;
-    console.log(`  ${topic.id}: ${data.words.length} words (vocab, grade ${topic.grade || '?'}) ✓`);
+    console.log(`  ${topic.id}: ${counts.join(' + ')} (vocab, grade ${topic.grade || '?'}) ✓`);
     continue;
   }
 

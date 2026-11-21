@@ -15,7 +15,6 @@
     { "en": "literature", "he": "ספרות", "group": "noun" },
     { "en": "tear", "he": "דמעה", "group": "noun" },
     { "en": "website", "he": "אתר אינטרנט", "group": "noun" },
-
     { "en": "agree", "he": "להסכים", "group": "verb" },
     { "en": "charge", "he": "לחייב", "group": "verb" },
     { "en": "convince", "he": "לשכנע", "group": "verb" },
@@ -23,13 +22,11 @@
     { "en": "offer", "he": "להציע", "group": "verb" },
     { "en": "refuse", "he": "לסרב", "group": "verb" },
     { "en": "shop", "he": "לקנות", "group": "verb" },
-
     { "en": "clear", "he": "ברור", "group": "adjective" },
     { "en": "digital", "he": "דיגיטלי", "group": "adjective" },
     { "en": "essential", "he": "חיוני", "group": "adjective" },
     { "en": "lucky", "he": "בר מזל", "group": "adjective" },
     { "en": "positive", "he": "חיובי", "group": "adjective" },
-
     { "en": "be wrong", "he": "לטעות", "group": "other" },
     { "en": "Congratulations!", "he": "מזל טוב!", "group": "other" },
     { "en": "credit card", "he": "כרטיס אשראי", "group": "other" },
@@ -37,5 +34,34 @@
     { "en": "miss a chance", "he": "להחמיץ הזדמנות", "group": "other" },
     { "en": "plenty of", "he": "הרבה", "group": "other" },
     { "en": "somehow", "he": "איכשהו", "group": "other" }
+  ],
+  "sentences": [
+    { "en": "I saw an advertisement for a new phone.", "he": "ראיתי פרסומת לטלפון חדש.", "blank": "advertisement" },
+    { "en": "Can we have the bill, please?", "he": "אפשר את החשבון, בבקשה?", "blank": "bill" },
+    { "en": "She signed a contract with the company.", "he": "היא חתמה על חוזה עם החברה.", "blank": "contract" },
+    { "en": "It's a good deal, only fifty shekels!", "he": "זו עסקה טובה, רק חמישים שקלים!", "blank": "deal" },
+    { "en": "The trip was a great experience.", "he": "הטיול היה חוויה מצוינת.", "blank": "experience" },
+    { "en": "There is no fee for students.", "he": "אין תשלום לתלמידים.", "blank": "fee" },
+    { "en": "We read English literature in class.", "he": "אנחנו קוראים ספרות אנגלית בכיתה.", "blank": "literature" },
+    { "en": "A tear ran down her face.", "he": "דמעה זלגה על פניה.", "blank": "tear" },
+    { "en": "I found the recipe on a cooking website.", "he": "מצאתי את המתכון באתר בישול.", "blank": "website" },
+    { "en": "I agree with you completely.", "he": "אני מסכימה איתך לגמרי.", "blank": "agree" },
+    { "en": "They charge ten dollars for delivery.", "he": "הם גובים עשרה דולר על משלוח.", "blank": "charge" },
+    { "en": "I tried to convince my parents to buy a dog.", "he": "ניסיתי לשכנע את ההורים שלי לקנות כלב.", "blank": "convince" },
+    { "en": "Never lie to your friends.", "he": "אף פעם אל תשקרי לחברים שלך.", "blank": "lie" },
+    { "en": "Can I offer you something to drink?", "he": "אפשר להציע לך משהו לשתות?", "blank": "offer" },
+    { "en": "I refuse to give up!", "he": "אני מסרבת לוותר!", "blank": "refuse" },
+    { "en": "I like to shop online.", "he": "אני אוהבת לקנות באינטרנט.", "blank": "shop" },
+    { "en": "The instructions are very clear.", "he": "ההוראות מאוד ברורות.", "blank": "clear" },
+    { "en": "Most books today are also digital.", "he": "רוב הספרים היום הם גם דיגיטליים.", "blank": "digital" },
+    { "en": "Water is essential for life.", "he": "מים חיוניים לחיים.", "blank": "essential" },
+    { "en": "You are so lucky to have a sister!", "he": "יש לך מזל שיש לך אחות!", "blank": "lucky" },
+    { "en": "Try to stay positive.", "he": "תנסי להישאר חיובית.", "blank": "positive" },
+    { "en": "It's OK to be wrong sometimes.", "he": "זה בסדר לטעות לפעמים.", "blank": "be wrong" },
+    { "en": "Can I pay with a credit card?", "he": "אפשר לשלם בכרטיס אשראי?", "blank": "credit card" },
+    { "en": "We went out despite the rain.", "he": "יצאנו למרות הגשם.", "blank": "despite" },
+    { "en": "Don't miss a chance to learn something new.", "he": "אל תחמיצי הזדמנות ללמוד משהו חדש.", "blank": "miss a chance" },
+    { "en": "We have plenty of time.", "he": "יש לנו הרבה זמן.", "blank": "plenty of" },
+    { "en": "We somehow finished the project on time.", "he": "איכשהו סיימנו את הפרויקט בזמן.", "blank": "somehow" }
   ]
 }

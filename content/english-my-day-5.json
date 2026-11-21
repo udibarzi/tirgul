@@ -31,5 +31,21 @@
     { "en": "usually", "he": "בדרך כלל", "group": "often" },
     { "en": "sometimes", "he": "לפעמים", "group": "often" },
     { "en": "never", "he": "אף פעם", "group": "often" }
+  ],
+  "sentences": [
+    { "en": "I wake up at seven o'clock.", "he": "אני מתעוררת בשבע.", "blank": "wake up" },
+    { "en": "I brush my teeth every morning.", "he": "אני מצחצחת שיניים כל בוקר.", "blank": "brush my teeth" },
+    { "en": "We have breakfast together.", "he": "אנחנו אוכלים ארוחת בוקר ביחד.", "blank": "have breakfast" },
+    { "en": "I go to school by bus.", "he": "אני נוסעת לבית הספר באוטובוס.", "blank": "go to school" },
+    { "en": "After school, I do homework.", "he": "אחרי בית הספר אני מכינה שיעורי בית.", "blank": "do homework" },
+    { "en": "I come home at two o'clock.", "he": "אני חוזרת הביתה בשתיים.", "blank": "come home" },
+    { "en": "I always go to bed at nine.", "he": "אני תמיד הולכת לישון בתשע.", "blank": "always" },
+    { "en": "I sometimes take a shower in the morning.", "he": "לפעמים אני מתקלחת בבוקר.", "blank": "sometimes" },
+    { "en": "My dad usually comes home late.", "he": "אבא שלי בדרך כלל חוזר הביתה מאוחר.", "blank": "usually" },
+    { "en": "Yesterday I got up early.", "he": "אתמול קמתי מוקדם.", "blank": "early" },
+    { "en": "We have dinner in the evening.", "he": "אנחנו אוכלים ארוחת ערב בערב.", "blank": "evening" },
+    { "en": "We have a test tomorrow.", "he": "יש לנו מבחן מחר.", "blank": "tomorrow" },
+    { "en": "I never watch TV in the morning.", "he": "אני אף פעם לא רואה טלוויזיה בבוקר.", "blank": "never" },
+    { "en": "I get dressed and eat breakfast.", "he": "אני מתלבשת ואוכלת ארוחת בוקר.", "blank": "get dressed" }
   ]
 }

@@ -38,7 +38,7 @@ def collect_texts():
     for path in sorted(glob.glob(os.path.join(ROOT, "content", "*.json"))):
         with open(path, encoding="utf-8") as f:
             data = json.load(f)
-        for w in data.get("words", []):
+        for w in data.get("words", []) + data.get("sentences", []):
             slug = vocab_slug(w["en"])
             if slug in texts and texts[slug].lower().rstrip("!?.") != w["en"].lower().rstrip("!?."):
                 print(f"WARNING: '{w['en']}' and '{texts[slug]}' share audio file {slug}.mp3")

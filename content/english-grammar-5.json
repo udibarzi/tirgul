@@ -1,0 +1,32 @@
+{
+  "id": "english-grammar-5",
+  "name": "אנגלית — דקדוק בסיסי",
+  "icon": "🧠",
+  "version": "1.0.0",
+  "type": "vocab",
+  "questionsPerSession": 20,
+  "sentences": [
+    { "en": "I am a student.", "he": "אני תלמידה.", "blank": "am", "choices": ["is", "are", "be"] },
+    { "en": "She is my sister.", "he": "היא אחותי.", "blank": "is", "choices": ["am", "are", "be"] },
+    { "en": "We are in the classroom.", "he": "אנחנו בכיתה.", "blank": "are", "choices": ["is", "am", "be"] },
+    { "en": "He plays football every day.", "he": "הוא משחק כדורגל כל יום.", "blank": "plays", "choices": ["play", "playing", "played"] },
+    { "en": "I like ice cream.", "he": "אני אוהבת גלידה.", "blank": "like", "choices": ["likes", "liking", "to like"] },
+    { "en": "My mom works in a hospital.", "he": "אמא שלי עובדת בבית חולים.", "blank": "works", "choices": ["work", "working", "worked"] },
+    { "en": "Look! The baby is sleeping.", "he": "תראו! התינוק ישן.", "blank": "is sleeping", "choices": ["sleeps", "sleep", "slept"] },
+    { "en": "They are watching TV now.", "he": "הם רואים טלוויזיה עכשיו.", "blank": "are watching", "choices": ["watch", "is watching", "watches"] },
+    { "en": "There is a cat in the garden.", "he": "יש חתול בגינה.", "blank": "is", "choices": ["are", "am", "be"] },
+    { "en": "There are three books on the table.", "he": "יש שלושה ספרים על השולחן.", "blank": "are", "choices": ["is", "am", "be"] },
+    { "en": "I can swim very well.", "he": "אני יודעת לשחות טוב מאוד.", "blank": "swim", "choices": ["swims", "swimming", "to swim"] },
+    { "en": "Yesterday I was at home.", "he": "אתמול הייתי בבית.", "blank": "was", "choices": ["were", "am", "is"] },
+    { "en": "We were very happy.", "he": "היינו מאוד שמחים.", "blank": "were", "choices": ["was", "are", "am"] },
+    { "en": "Do you like pizza?", "he": "את אוהבת פיצה?", "blank": "Do", "choices": ["Does", "Are", "Is"] },
+    { "en": "Does he have a dog?", "he": "יש לו כלב?", "blank": "Does", "choices": ["Do", "Is", "Are"] },
+    { "en": "I don't like rain.", "he": "אני לא אוהבת גשם.", "blank": "don't", "choices": ["doesn't", "isn't", "not"] },
+    { "en": "She doesn't eat meat.", "he": "היא לא אוכלת בשר.", "blank": "doesn't", "choices": ["don't", "isn't", "not"] },
+    { "en": "I have two brothers.", "he": "יש לי שני אחים.", "blank": "have", "choices": ["has", "am", "is"] },
+    { "en": "He has a red bike.", "he": "יש לו אופניים אדומים.", "blank": "has", "choices": ["have", "is", "are"] },
+    { "en": "This is her bag.", "he": "זה התיק שלה.", "blank": "her", "choices": ["she", "his", "hers"] },
+    { "en": "These are my shoes.", "he": "אלה הנעליים שלי.", "blank": "These", "choices": ["This", "That", "It"] },
+    { "en": "We played in the park yesterday.", "he": "שיחקנו בפארק אתמול.", "blank": "played", "choices": ["play", "plays", "playing"] }
+  ]
+}

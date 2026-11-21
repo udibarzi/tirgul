@@ -30,5 +30,20 @@
     { "en": "baby", "he": "תינוק", "group": "family" },
     { "en": "friend", "he": "חבר / חברה", "group": "family" },
     { "en": "best friend", "he": "החבר הכי טוב / החברה הכי טובה", "group": "family" }
+  ],
+  "sentences": [
+    { "en": "I am happy when I see my friends.", "he": "אני שמחה כשאני רואה את החברות שלי.", "blank": "happy" },
+    { "en": "My little brother is scared of dogs.", "he": "אחי הקטן מפחד מכלבים.", "blank": "scared" },
+    { "en": "Why are you sad?", "he": "למה את עצובה?", "blank": "sad" },
+    { "en": "I'm so excited about the trip!", "he": "אני כל כך נרגשת לקראת הטיול!", "blank": "excited" },
+    { "en": "My grandmother is very kind.", "he": "סבתא שלי מאוד טובת לב.", "blank": "kind" },
+    { "en": "Mom is angry because my room is messy.", "he": "אמא כועסת כי החדר שלי מבולגן.", "blank": "angry" },
+    { "en": "My uncle has a new baby.", "he": "לדוד שלי יש תינוק חדש.", "blank": "baby" },
+    { "en": "My cousin lives in Tel Aviv.", "he": "בת הדודה שלי גרה בתל אביב.", "blank": "cousin" },
+    { "en": "I'm tired, I want to sleep.", "he": "אני עייפה, אני רוצה לישון.", "blank": "tired" },
+    { "en": "My parents work every day.", "he": "ההורים שלי עובדים כל יום.", "blank": "parents" },
+    { "en": "She is my best friend.", "he": "היא החברה הכי טובה שלי.", "blank": "best friend" },
+    { "en": "My father tells funny stories.", "he": "אבא שלי מספר סיפורים מצחיקים.", "blank": "funny" },
+    { "en": "Don't be worried, everything is OK.", "he": "אל תדאגי, הכול בסדר.", "blank": "worried" }
   ]
 }

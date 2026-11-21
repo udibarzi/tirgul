@@ -218,7 +218,24 @@ flashcards, the word list, and the quiz modes.
 | `group` | ❌ | Words in the same group are used as wrong-answer options for each other: `month`, `number`, `place`, `verb`. Use groups of 3+ words |
 | `alt` | ❌ | Other accepted spellings for the typing question |
 
-Optional top-level `"modes"` limits the question kinds: `en-he`, `he-en`, `write`, `listen`. The default is all of them. Use `["en-he", "he-en", "listen"]` for sentence packs, where spelling whole sentences is too strict.
+### Sentences level
+
+Add a `"sentences"` array; a topic can have `words`, `sentences`, or both. When it has both, the menu shows a words / sentences tab.
+
+```json
+"sentences": [
+  { "en": "I'm hungry. Can I have some bread?", "he": "אני רעבה. אפשר קצת לחם?", "blank": "hungry" },
+  { "en": "I went to the beach yesterday.", "he": "הלכתי לים אתמול.", "blank": "went", "choices": ["go", "goes", "going"] }
+]
+```
+
+| Field | Required | Description |
+|-------|----------|-------------|
+| `en`, `he` | ✅ | The sentence and its translation. Keep sentences short, 3–10 words, because they become word tiles |
+| `blank` | ❌ | The word or phrase hidden in the fill-in question. It must appear exactly once in `en` as a whole word, and must not be the sentence's first word, since the capital letter would give it away. It's best when it is a word from this topic's `words` list |
+| `choices` | ❌ | 3+ wrong options for the gap. Use these for tense practice, e.g. `went` with `go`/`goes`/`going`. Without them, the wrong options come from the word list |
+
+Optional `"modes"` (words level) and `"sentenceModes"` (sentences level) limit the question kinds. Words: `en-he`, `he-en`, `write`, `listen`, `speak`. Sentences: `order`, `cloze`, `en-he`, `he-en`, `listen`, `speak`. The default is all of them; `cloze` needs `blank`, and `speak` needs browser support.
 
 Recordings: run `~/.cache/explain-skill/venv/bin/python -I _build_audio.py` after adding words. It creates `audio/en/{slug}.mp3` for any word that doesn't have one yet.
 

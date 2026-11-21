@@ -30,5 +30,20 @@
     { "en": "exciting", "he": "מרגש / מלהיב", "group": "adjective" },
     { "en": "boring", "he": "משעמם", "group": "adjective" },
     { "en": "popular", "he": "פופולרי", "group": "adjective" }
+  ],
+  "sentences": [
+    { "en": "We usually hang out at the mall.", "he": "אנחנו בדרך כלל מבלים בקניון.", "blank": "hang out" },
+    { "en": "Do you want to go out tonight?", "he": "רוצה לצאת הערב?", "blank": "go out" },
+    { "en": "I want to invite you to my party.", "he": "אני רוצה להזמין אותך למסיבה שלי.", "blank": "invite" },
+    { "en": "We celebrate my birthday at the beach.", "he": "אנחנו חוגגים את יום ההולדת שלי בים.", "blank": "celebrate" },
+    { "en": "I practice basketball twice a week.", "he": "אני מתאמנת בכדורסל פעמיים בשבוע.", "blank": "practice" },
+    { "en": "Please text me when you get home.", "he": "תשלחי לי הודעה כשאת מגיעה הביתה.", "blank": "text" },
+    { "en": "I follow a lot of artists on social media.", "he": "אני עוקבת אחרי הרבה אמנים ברשתות החברתיות.", "blank": "social media" },
+    { "en": "We watched the whole series in one weekend.", "he": "צפינו בכל הסדרה בסוף שבוע אחד.", "blank": "series" },
+    { "en": "The next episode comes out on Friday.", "he": "הפרק הבא יוצא ביום שישי.", "blank": "episode" },
+    { "en": "The concert was so exciting!", "he": "ההופעה הייתה כל כך מרגשת!", "blank": "concert" },
+    { "en": "Our coach is strict but fair.", "he": "המאמן שלנו קפדן אבל הוגן.", "blank": "coach" },
+    { "en": "Do you have any plans for the weekend?", "he": "יש לך תוכניות לסוף השבוע?", "blank": "plans" },
+    { "en": "This game is boring, let's play something else.", "he": "המשחק הזה משעמם, בואו נשחק במשהו אחר.", "blank": "boring" }
   ]
 }

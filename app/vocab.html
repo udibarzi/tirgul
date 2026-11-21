@@ -16,13 +16,15 @@
       <div></div>
     </div>
 
+    <div class="level-tabs hidden" id="levelTabs"></div>
+
     <div class="vocab-summary" id="menuSummary"></div>
 
     <div class="count-row">
       <span>כמה שאלות?</span>
       <button class="count-chip" data-n="10">10</button>
       <button class="count-chip" data-n="20">20</button>
-      <button class="count-chip" data-n="0">כל המילים</button>
+      <button class="count-chip" data-n="0" id="allChip">הכול</button>
     </div>
 
     <div class="topics-grid" id="modesGrid"></div>
@@ -59,7 +61,7 @@
   <div id="listScreen" class="quiz-container hidden">
     <div class="quiz-top-bar">
       <a class="back-btn" href="#" id="listBack">חזרה ←</a>
-      <div class="quiz-topic-title">רשימת המילים</div>
+      <div class="quiz-topic-title" id="listTitle">רשימת המילים</div>
       <div></div>
     </div>
     <div class="question-card">
@@ -79,6 +81,7 @@
     const userName = params.get('name') || '';
     const userGender = params.get('gender') || localStorage.getItem('math_app_gender') || 'female';
     let content = null;
+    let level = 'words';
 
     function getPref(k, d) { try { return localStorage.getItem('tirgul_vocab_pref_' + k) || d; } catch (e) { return d; } }
     function setPref(k, v) { try { localStorage.setItem('tirgul_vocab_pref_' + k, v); } catch (e) {} }
@@ -91,7 +94,7 @@
 
     async function init() {
       content = topicId ? await loadContent(`../content/${topicId}.json`) : null;
-      if (!content || !Array.isArray(content.words)) {
+      if (!content || content.type !== 'vocab' || !vocabLevels(content).length) {
         document.getElementById('loadingScreen').innerHTML =
           '<div style="text-align:center;">😕 לא נמצאה רשימת מילים<br><a href="../index.html">חזרה לתפריט</a></div>';
         return;
@@ -100,20 +103,36 @@
       document.getElementById('menuTitle').textContent = content.name;
       document.getElementById('cardsBack').onclick = (e) => { e.preventDefault(); showMenu(); };
       document.getElementById('listBack').onclick = (e) => { e.preventDefault(); showMenu(); };
+      const levels = vocabLevels(content);
+      const wanted = params.get('level') || getPref('level_' + topicId, levels[0]);
+      level = levels.includes(wanted) ? wanted : levels[0];
       showMenu();
     }
 
     // ---------------- Menu ----------------
     function showMenu() {
       show('menuScreen');
-      const words = content.words;
+      const words = vocabItems(content, level);
+      const isSent = level === 'sentences';
+      const unit = isSent ? 'משפטים' : 'מילים';
       const stats = VocabStats.get(topicId);
       const seen = words.filter(w => stats[w.en]).length;
       const known = words.filter(w => stats[w.en] && !VocabStats.needsWork(stats[w.en])).length;
       const hard = VocabStats.hardWords(topicId, words);
 
+      // Words / sentences tabs (only when the topic has both)
+      const levels = vocabLevels(content);
+      const tabs = document.getElementById('levelTabs');
+      tabs.classList.toggle('hidden', levels.length < 2);
+      tabs.innerHTML = levels.map(l =>
+        `<button class="level-tab${l === level ? ' active' : ''}" data-level="${l}">` +
+        `${l === 'words' ? '🔤' : '💬'} ${VOCAB_LEVEL_NAMES[l]}</button>`).join('');
+      tabs.querySelectorAll('.level-tab').forEach(b => b.onclick = () => {
+        level = b.dataset.level; setPref('level_' + topicId, level); showMenu();
+      });
+
       document.getElementById('menuSummary').innerHTML =
-        `<div><strong>${words.length}</strong> מילים ברשימה</div>` +
+        `<div><strong>${words.length}</strong> ${unit} ברשימה</div>` +
         (seen ? `<div>✅ ${known} יודעים · 💪 ${hard.length} לחיזוק · 🆕 ${words.length - seen} עוד לא תורגלו</div>` : '');
 
       // Question-count chips
@@ -124,23 +143,26 @@
       });
 
       const quizUrl = (mode) =>
-        `quiz.html?topic=${encodeURIComponent(topicId)}&mode=${mode}&n=${n}` +
+        `quiz.html?topic=${encodeURIComponent(topicId)}&mode=${mode}&n=${n}&level=${level}` +
         `&name=${encodeURIComponent(userName)}&gender=${userGender}`;
 
-      const kinds = vocabKinds(content);
+      const kinds = vocabKinds(content, level);
       const kindCards = {
         'en-he':  { sub: 'רואים באנגלית — בוחרים פירוש' },
         'he-en':  { sub: 'רואים בעברית — בוחרים באנגלית' },
         'write':  { sub: 'רואים בעברית — כותבים באנגלית' },
         'listen': { sub: 'שומעים באנגלית — בוחרים פירוש' },
+        'order':  { sub: 'מסדרים את המילים למשפט נכון' },
+        'cloze':  { sub: 'בוחרים את המילה שחסרה במשפט' },
+        'speak':  { sub: 'רואים בעברית — אומרים באנגלית. ניסיוני' },
       };
-      const cards = [{ icon: '📇', name: 'כרטיסיות', sub: 'לומדים את המילים', onclick: startCards }];
+      const cards = [{ icon: '📇', name: 'כרטיסיות', sub: `לומדים את ה${unit}`, onclick: startCards }];
       kinds.forEach(k => cards.push({ icon: VOCAB_MODES[k].icon, name: VOCAB_MODES[k].label, sub: kindCards[k].sub, href: quizUrl(k) }));
       cards.push({ icon: '🎯', name: VOCAB_MODES['mix'].label, sub: 'הכול ביחד — כמו במבחן', href: quizUrl('mix') });
       if (hard.length) {
-        cards.push({ icon: '💪', name: VOCAB_MODES['hard'].label, sub: `${hard.length} מילים שעוד מתבלבלים בהן`, href: quizUrl('hard') });
+        cards.push({ icon: '💪', name: `${unit} ${VOCAB_MODES['hard'].label}`, sub: `${hard.length} ${unit} שעוד מתבלבלים בהם`, href: quizUrl('hard') });
       }
-      cards.push({ icon: '📋', name: 'רשימת המילים', sub: 'כל המילים והפירושים', onclick: showList });
+      cards.push({ icon: '📋', name: `רשימת ה${unit}`, sub: `כל ה${unit} והפירושים`, onclick: showList });
 
       const grid = document.getElementById('modesGrid');
       grid.innerHTML = '';
@@ -159,7 +181,7 @@
     const cards = { deck: [], i: 0, flipped: false, yes: 0, missed: [] };
 
     function startCards(deck) {
-      cards.deck = shuffle([...(Array.isArray(deck) ? deck : content.words)]);
+      cards.deck = shuffle([...(Array.isArray(deck) ? deck : vocabItems(content, level))]);
       cards.i = 0; cards.yes = 0; cards.missed = [];
       show('cardsScreen');
       document.querySelectorAll('#cardsScreen .count-chip').forEach(chip => {
@@ -228,7 +250,7 @@
         <div style="font-size:2.5em;">${cards.missed.length === 0 ? '🏆' : '⭐'}</div>
         <div style="font-size:1.2em;margin:12px 0;">ידעת ${cards.yes} מתוך ${total}</div>
         <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
-          ${cards.missed.length ? `<button class="nav-btn primary" id="againMissed">חזרה על ${cards.missed.length} המילים שלא ידעת</button>` : ''}
+          ${cards.missed.length ? `<button class="nav-btn primary" id="againMissed">חזרה על ${cards.missed.length} שלא ידעת</button>` : ''}
           <button class="nav-btn" id="againAll">שוב מההתחלה</button>
         </div>`;
       const missed = cards.missed.slice();
@@ -242,7 +264,9 @@
     function showList() {
       show('listScreen');
       const stats = VocabStats.get(topicId);
-      const rows = [...content.words].sort((a, b) => a.en.localeCompare(b.en, 'en', { sensitivity: 'base' }));
+      document.getElementById('listTitle').textContent = level === 'sentences' ? 'רשימת המשפטים' : 'רשימת המילים';
+      const rows = [...vocabItems(content, level)];
+      if (level === 'words') rows.sort((a, b) => a.en.localeCompare(b.en, 'en', { sensitivity: 'base' }));
       const table = document.getElementById('wordTable');
       table.innerHTML = rows.map((w, i) => {
         const s = stats[w.en];

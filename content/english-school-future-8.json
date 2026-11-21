@@ -31,5 +31,21 @@
     { "en": "difficult", "he": "קשה", "group": "adjective" },
     { "en": "easy", "he": "קל", "group": "adjective" },
     { "en": "important", "he": "חשוב", "group": "adjective" }
+  ],
+  "sentences": [
+    { "en": "I have a math exam tomorrow.", "he": "יש לי מבחן במתמטיקה מחר.", "blank": "exam" },
+    { "en": "She got a good grade in English.", "he": "היא קיבלה ציון טוב באנגלית.", "blank": "grade" },
+    { "en": "The deadline for the project is Sunday.", "he": "מועד ההגשה של הפרויקט הוא ביום ראשון.", "blank": "deadline" },
+    { "en": "It's OK to make a mistake.", "he": "זה בסדר לעשות טעות.", "blank": "mistake" },
+    { "en": "If you work hard, you will succeed.", "he": "אם תעבדי קשה, תצליחי.", "blank": "succeed" },
+    { "en": "I want to improve my English.", "he": "אני רוצה לשפר את האנגלית שלי.", "blank": "improve" },
+    { "en": "We need to prepare for the test.", "he": "אנחנו צריכים להתכונן למבחן.", "blank": "prepare" },
+    { "en": "Can you explain this question?", "he": "את יכולה להסביר את השאלה הזאת?", "blank": "explain" },
+    { "en": "It's hard to pass an exam without studying.", "he": "קשה לעבור מבחן בלי ללמוד.", "blank": "pass an exam" },
+    { "en": "She wants a career in medicine.", "he": "היא רוצה קריירה ברפואה.", "blank": "career" },
+    { "en": "I volunteer at an animal shelter.", "he": "אני מתנדבת במקלט לבעלי חיים.", "blank": "volunteer" },
+    { "en": "It's important to get enough sleep.", "he": "חשוב לישון מספיק.", "blank": "important" },
+    { "en": "Don't forget to bring your notebook.", "he": "אל תשכחי להביא את המחברת.", "blank": "forget" },
+    { "en": "I can't decide what to study at university.", "he": "אני לא מצליחה להחליט מה ללמוד באוניברסיטה.", "blank": "decide" }
   ]
 }

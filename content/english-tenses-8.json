@@ -1,0 +1,32 @@
+{
+  "id": "english-tenses-8",
+  "name": "אנגלית — זמנים",
+  "icon": "⏳",
+  "version": "1.0.0",
+  "type": "vocab",
+  "questionsPerSession": 20,
+  "sentences": [
+    { "en": "She walks to school every day.", "he": "היא הולכת לבית הספר ברגל כל יום.", "blank": "walks", "choices": ["walk", "walking", "walked"] },
+    { "en": "Look! It is raining.", "he": "תראי! יורד גשם.", "blank": "is raining", "choices": ["rains", "rained", "raining"] },
+    { "en": "I am reading a book right now.", "he": "אני קוראת ספר עכשיו.", "blank": "am reading", "choices": ["read", "reads", "was reading"] },
+    { "en": "He doesn't like coffee.", "he": "הוא לא אוהב קפה.", "blank": "doesn't", "choices": ["don't", "isn't", "didn't"] },
+    { "en": "Do you play any sports?", "he": "את עושה ספורט כלשהו?", "blank": "Do", "choices": ["Does", "Are", "Is"] },
+    { "en": "Last summer we visited London.", "he": "בקיץ שעבר ביקרנו בלונדון.", "blank": "visited", "choices": ["visit", "visits", "will visit"] },
+    { "en": "I was sleeping when you called.", "he": "ישנתי כשהתקשרת.", "blank": "was sleeping", "choices": ["slept", "am sleeping", "sleep"] },
+    { "en": "Tomorrow it will be sunny.", "he": "מחר יהיה שמשי.", "blank": "will be", "choices": ["was", "is being", "were"] },
+    { "en": "I'm going to study medicine.", "he": "אני הולכת ללמוד רפואה.", "blank": "going to", "choices": ["go to", "went to", "goes to"] },
+    { "en": "I have never been to Paris.", "he": "אף פעם לא הייתי בפריז.", "blank": "been", "choices": ["be", "was", "being"] },
+    { "en": "She has already finished her homework.", "he": "היא כבר סיימה את שיעורי הבית.", "blank": "has", "choices": ["have", "is", "did"] },
+    { "en": "They are playing football right now.", "he": "הם משחקים כדורגל עכשיו.", "blank": "are playing", "choices": ["played", "plays", "play"] },
+    { "en": "Did you finish the test?", "he": "סיימת את המבחן?", "blank": "Did", "choices": ["Do", "Does", "Are"] },
+    { "en": "We didn't go to school yesterday.", "he": "לא הלכנו לבית הספר אתמול.", "blank": "didn't go", "choices": ["don't go", "didn't went", "doesn't go"] },
+    { "en": "My brother always forgets his keys.", "he": "אחי תמיד שוכח את המפתחות.", "blank": "forgets", "choices": ["forget", "forgot", "forgetting"] },
+    { "en": "I will call you later.", "he": "אתקשר אלייך אחר כך.", "blank": "will call", "choices": ["called", "calling", "calls"] },
+    { "en": "What are you doing now?", "he": "מה את עושה עכשיו?", "blank": "doing", "choices": ["do", "did", "does"] },
+    { "en": "He has lived here for five years.", "he": "הוא גר כאן כבר חמש שנים.", "blank": "has lived", "choices": ["lives", "lived", "is living"] },
+    { "en": "When I was young, I lived in Haifa.", "he": "כשהייתי קטנה, גרתי בחיפה.", "blank": "lived", "choices": ["live", "living", "lives"] },
+    { "en": "Are you coming to the party?", "he": "את באה למסיבה?", "blank": "coming", "choices": ["come", "came", "comes"] },
+    { "en": "She can speak three languages.", "he": "היא יודעת לדבר שלוש שפות.", "blank": "speak", "choices": ["speaks", "spoke", "speaking"] },
+    { "en": "If it rains, we will stay home.", "he": "אם ירד גשם, נישאר בבית.", "blank": "rains", "choices": ["will rain", "rain", "rained"] }
+  ]
+}

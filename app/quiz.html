@@ -103,12 +103,12 @@
       try {
         // Load topic content
         const content = await loadContent(`../content/${topicId}.json`);
-        if (content && Array.isArray(content.words)) {
-          // Vocab topic: questions are generated from the word list (vocab.js)
+        if (content && content.type === 'vocab') {
+          // Vocab topic: questions are generated from the word/sentence lists (vocab.js)
           state.isVocab = true;
           state.vocabMode = params.get('mode') || 'mix';
           const n = params.has('n') ? parseInt(params.get('n')) || 0 : (content.questionsPerSession || 20);
-          content.questions = buildVocabQuestions(content, state.vocabMode, n, topicId);
+          content.questions = buildVocabQuestions(content, state.vocabMode, n, topicId, params.get('level'));
           content.shuffle = false;
           content.questionsPerSession = 0;
         }
@@ -128,7 +128,8 @@
           const mode = VOCAB_MODES[state.vocabMode] || VOCAB_MODES.mix;
           document.getElementById('topicTitle').textContent = `${content.name} — ${mode.label}`;
           document.getElementById('backBtn').href =
-            `vocab.html?topic=${encodeURIComponent(topicId)}&name=${encodeURIComponent(userName)}&gender=${userGender}`;
+            `vocab.html?topic=${encodeURIComponent(topicId)}&name=${encodeURIComponent(userName)}&gender=${userGender}` +
+            (params.get('level') ? `&level=${params.get('level')}` : '');
           document.getElementById('flagBtn').classList.add('hidden');
           const input = document.getElementById('answerInput');
           input.placeholder = 'הקלידו באנגלית';
@@ -198,6 +199,7 @@
       
       // Render question text with bidi fix
       if (q.vocab) {
+        if (!answered && q.kind !== 'listen' && _vocabAudio) { _vocabAudio.pause(); }
         renderVocabPrompt(document.getElementById('questionText'), q, !!answered);
         if (q.kind === 'listen' && !answered) setTimeout(() => playEnglish(q.word.en), 300);
       } else {
@@ -249,6 +251,18 @@
           setTimeout(() => newInput.focus(), 100);
         }
         
+      } else if (q.type === 'order' || q.type === 'speak') {
+        // Vocab: build-the-sentence tiles / say it aloud (vocab.js)
+        freeInputGroup.classList.add('hidden');
+        optionsGrid.classList.remove('hidden');
+        const render = q.type === 'order' ? renderOrderQuestion : renderSpeakQuestion;
+        render(optionsGrid, q, answered, (isCorrect, selected) => {
+          state.answers[state.currentQ] = { answered: true, correct: isCorrect, selected };
+          recordResult(isCorrect);
+          render(optionsGrid, q, state.answers[state.currentQ]);
+          showFeedback(isCorrect, q);
+          if (isCorrect) playEnglish(q.word.en);
+        });
       } else {
         // Multiple choice (default)
         freeInputGroup.classList.add('hidden');
@@ -316,7 +330,7 @@
       };
       
       recordResult(isCorrect);
-      if (q.vocab && q.kind === 'listen') renderVocabPrompt(document.getElementById('questionText'), q, true);
+      if (q.vocab && (q.kind === 'listen' || q.kind === 'cloze')) renderVocabPrompt(document.getElementById('questionText'), q, true);
       
       // Update option buttons
       const buttons = document.querySelectorAll('.option-btn');
@@ -407,7 +421,7 @@
         }
       } else if (question.vocab) {
         title.textContent = 'לא נכון, אבל אפשר ללמוד מזה!';
-        explanation.innerHTML = `<div class="vocab-answer"><span dir="ltr" lang="en" style="unicode-bidi:isolate"><strong>${escapeHtml(question.word.en)}</strong></span> = ${escapeHtml(question.word.he)}</div>`;
+        explanation.innerHTML = vocabPairHtml(question.word, 'vocab-answer');
       } else {
         title.textContent = 'לא נכון, אבל אפשר ללמוד מזה!';
         
@@ -551,6 +565,12 @@
     }
     
     
+    /** English on its own LTR line, Hebrew below — never mixed on one line (BiDi). */
+    function vocabPairHtml(item, cls) {
+      return `<div class="${cls}"><div class="pair-en" dir="ltr" lang="en">${escapeHtml(item.en)}</div>` +
+             `<div class="pair-he" dir="rtl">${escapeHtml(item.he)}</div></div>`;
+    }
+    
     function vocabSummaryHtml() {
       const missed = [];
       state.questions.forEach((q, i) => {
@@ -559,8 +579,8 @@
       });
       if (!missed.length) return '';
       return `<div class="vocab-missed">
-        <div style="font-weight:600;margin-bottom:8px;">מילים לחזרה:</div>
-        ${missed.map(w => `<div><span dir="ltr" lang="en" style="unicode-bidi:isolate"><strong>${escapeHtml(w.en)}</strong></span> = ${escapeHtml(w.he)}</div>`).join('')}
+        <div style="font-weight:600;margin-bottom:8px;">כדאי לחזור על:</div>
+        ${missed.map(w => vocabPairHtml(w, 'missed-item')).join('')}
       </div>`;
     }
     

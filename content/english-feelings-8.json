@@ -30,5 +30,21 @@
     { "en": "suppose", "he": "להניח", "group": "verb" },
     { "en": "feel like", "he": "מתחשק לי / בא לי", "group": "verb" },
     { "en": "worry", "he": "לדאוג", "group": "verb" }
+  ],
+  "sentences": [
+    { "en": "I'm so proud of you!", "he": "אני כל כך גאה בך!", "blank": "proud" },
+    { "en": "I felt embarrassed when I fell in front of everyone.", "he": "הרגשתי נבוכה כשנפלתי מול כולם.", "blank": "embarrassed" },
+    { "en": "She is always nervous before a test.", "he": "היא תמיד מתוחה לפני מבחן.", "blank": "nervous" },
+    { "en": "He was disappointed with his grade.", "he": "הוא היה מאוכזב מהציון שלו.", "blank": "disappointed" },
+    { "en": "I'm grateful for my friends.", "he": "אני אסירת תודה על החברים שלי.", "blank": "grateful" },
+    { "en": "Don't be jealous, you will get one too.", "he": "אל תקנאי, גם את תקבלי אחד.", "blank": "jealous" },
+    { "en": "I feel relaxed after a long walk.", "he": "אני מרגישה רגועה אחרי הליכה ארוכה.", "blank": "relaxed" },
+    { "en": "I'm confused, can you explain again?", "he": "אני מבולבלת, את יכולה להסביר שוב?", "blank": "confused" },
+    { "en": "What's your opinion about the movie?", "he": "מה דעתך על הסרט?", "blank": "opinion" },
+    { "en": "I prefer tea to coffee.", "he": "אני מעדיפה תה על פני קפה.", "blank": "prefer" },
+    { "en": "I don't feel like going out tonight.", "he": "לא בא לי לצאת הערב.", "blank": "feel like" },
+    { "en": "He's in a bad mood today.", "he": "הוא במצב רוח רע היום.", "blank": "mood" },
+    { "en": "Don't worry, it will be fine.", "he": "אל תדאגי, יהיה בסדר.", "blank": "worry" },
+    { "en": "She seems lonely at the new school.", "he": "היא נראית בודדה בבית הספר החדש.", "blank": "lonely" }
   ]
 }

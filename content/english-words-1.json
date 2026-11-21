@@ -93,5 +93,31 @@
     { "en": "village", "he": "כפר", "group": "place" },
     { "en": "wait", "he": "לחכות", "group": "verb" },
     { "en": "year", "he": "שנה" }
+  ],
+  "sentences": [
+    { "en": "I have a lot of candy.", "he": "יש לי הרבה ממתקים.", "blank": "candy" },
+    { "en": "My birthday is in April.", "he": "יום ההולדת שלי באפריל.", "blank": "April" },
+    { "en": "Where is the bathroom?", "he": "איפה חדר האמבטיה?", "blank": "bathroom" },
+    { "en": "We live in a big building.", "he": "אנחנו גרים בבניין גדול.", "blank": "building" },
+    { "en": "Everyone is ready for the trip.", "he": "כולם מוכנים לטיול.", "blank": "ready" },
+    { "en": "My sister can play the guitar.", "he": "אחותי יודעת לנגן בגיטרה.", "blank": "guitar" },
+    { "en": "I'm sorry, I can't come today.", "he": "סליחה, אני לא יכולה לבוא היום.", "blank": "I'm sorry" },
+    { "en": "We buy flowers at the market.", "he": "אנחנו קונים פרחים בשוק.", "blank": "market" },
+    { "en": "My grandmother lives in a village.", "he": "סבתא שלי גרה בכפר.", "blank": "village" },
+    { "en": "What is your favorite subject?", "he": "מה המקצוע האהוב עלייך?", "blank": "subject" },
+    { "en": "The school is not far from my house.", "he": "בית הספר לא רחוק מהבית שלי.", "blank": "far" },
+    { "en": "Please wait outside.", "he": "בבקשה חכו בחוץ.", "blank": "outside" },
+    { "en": "He gave me a special present.", "he": "הוא נתן לי מתנה מיוחדת.", "blank": "present" },
+    { "en": "There are thirty students in my class.", "he": "יש שלושים תלמידים בכיתה שלי.", "blank": "thirty" },
+    { "en": "My hobby is to play the piano.", "he": "התחביב שלי הוא לנגן בפסנתר.", "blank": "piano" },
+    { "en": "She likes to kick the ball.", "he": "היא אוהבת לבעוט בכדור.", "blank": "kick" },
+    { "en": "We need flour to make a cake.", "he": "אנחנו צריכים קמח כדי להכין עוגה.", "blank": "flour" },
+    { "en": "My cousin is fifteen years old.", "he": "בת הדודה שלי בת חמש עשרה.", "blank": "fifteen" },
+    { "en": "I study English every day.", "he": "אני לומדת אנגלית כל יום.", "blank": "study" },
+    { "en": "The sofa is in the dining room.", "he": "הספה נמצאת בחדר האוכל.", "blank": "sofa" },
+    { "en": "Their flat is very pretty.", "he": "הדירה שלהם מאוד יפה.", "blank": "pretty" },
+    { "en": "Can you hear the song?", "he": "שומעים את השיר?", "blank": "hear" },
+    { "en": "Our teacher will teach us a new song.", "he": "המורה שלנו תלמד אותנו שיר חדש.", "blank": "teach" },
+    { "en": "We will go on a trip soon.", "he": "ניסע לטיול בקרוב.", "blank": "soon" }
   ]
 }
