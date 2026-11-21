@@ -1,0 +1,40 @@
+{
+  "id": "english-phrases-5",
+  "name": "אנגלית — משפטים לשיחה",
+  "icon": "💬",
+  "version": "1.0.0",
+  "type": "vocab",
+  "questionsPerSession": 20,
+  "modes": [
+    "en-he",
+    "he-en",
+    "listen"
+  ],
+  "words": [
+    { "en": "Hello, how are you?", "he": "שלום, מה שלומך?", "group": "question" },
+    { "en": "I'm fine, thank you.", "he": "אני בסדר, תודה.", "group": "say" },
+    { "en": "What's your name?", "he": "איך קוראים לך?", "group": "question" },
+    { "en": "How old are you?", "he": "בן כמה אתה? / בת כמה את?", "group": "question" },
+    { "en": "I am eleven years old.", "he": "אני בן / בת אחת עשרה.", "group": "say" },
+    { "en": "Where do you live?", "he": "איפה אתה גר? / איפה את גרה?", "group": "question" },
+    { "en": "I live in Israel.", "he": "אני גר / גרה בישראל.", "group": "say" },
+    { "en": "What do you like to do?", "he": "מה אתה אוהב לעשות? / מה את אוהבת לעשות?", "group": "question" },
+    { "en": "I like to play with my friends.", "he": "אני אוהב / אוהבת לשחק עם החברים שלי.", "group": "say" },
+    { "en": "What's your favorite food?", "he": "מה האוכל האהוב עליך?", "group": "question" },
+    { "en": "My favorite food is pizza.", "he": "האוכל האהוב עליי הוא פיצה.", "group": "say" },
+    { "en": "Do you have a brother or a sister?", "he": "יש לך אח או אחות?", "group": "question" },
+    { "en": "I have one brother and two sisters.", "he": "יש לי אח אחד ושתי אחיות.", "group": "say" },
+    { "en": "Can you help me, please?", "he": "אפשר עזרה, בבקשה?", "group": "question" },
+    { "en": "Thank you very much.", "he": "תודה רבה.", "group": "say" },
+    { "en": "You're welcome.", "he": "בבקשה / על לא דבר.", "group": "say" },
+    { "en": "I don't understand.", "he": "אני לא מבין / מבינה.", "group": "say" },
+    { "en": "Can you say it again, please?", "he": "אפשר להגיד את זה שוב, בבקשה?", "group": "question" },
+    { "en": "Let's play together!", "he": "בואו נשחק ביחד!", "group": "say" },
+    { "en": "See you tomorrow!", "he": "נתראה מחר!", "group": "say" },
+    { "en": "Good morning!", "he": "בוקר טוב!", "group": "say" },
+    { "en": "Have a nice day!", "he": "שיהיה לך יום נעים!", "group": "say" },
+    { "en": "Excuse me.", "he": "סליחה.", "group": "say" },
+    { "en": "What time is it?", "he": "מה השעה?", "group": "question" },
+    { "en": "It's my birthday today!", "he": "היום יום ההולדת שלי!", "group": "say" }
+  ]
+}

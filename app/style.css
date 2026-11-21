@@ -872,3 +872,20 @@ body {
   color: var(--color-primary);
 }
 .word-table .wt-mark { width: 28px; text-align: center; }
+
+.vocab-word.long { font-size: 1.5em; }
+.vocab-word.longer { font-size: 1.25em; }
+.listen-wrap { text-align: center; margin: var(--space-sm) 0; }
+.listen-btn {
+  border: none;
+  background: var(--color-primary);
+  color: white;
+  border-radius: 50%;
+  width: 84px;
+  height: 84px;
+  font-size: 2.2em;
+  cursor: pointer;
+  box-shadow: 0 6px 18px rgba(74, 86, 226, 0.35);
+}
+.listen-btn:active { transform: scale(0.95); }
+.flashcard .listen-btn.speak-btn { width: 84px; height: 84px; font-size: 2.2em; }

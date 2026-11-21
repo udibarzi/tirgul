@@ -198,7 +198,8 @@
       
       // Render question text with bidi fix
       if (q.vocab) {
-        renderVocabPrompt(document.getElementById('questionText'), q);
+        renderVocabPrompt(document.getElementById('questionText'), q, !!answered);
+        if (q.kind === 'listen' && !answered) setTimeout(() => playEnglish(q.word.en), 300);
       } else {
         setMixedText(document.getElementById('questionText'), q.text);
       }
@@ -315,6 +316,7 @@
       };
       
       recordResult(isCorrect);
+      if (q.vocab && q.kind === 'listen') renderVocabPrompt(document.getElementById('questionText'), q, true);
       
       // Update option buttons
       const buttons = document.querySelectorAll('.option-btn');

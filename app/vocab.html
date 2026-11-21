@@ -40,6 +40,7 @@
       <span>מתחילים מ:</span>
       <button class="count-chip" data-side="en">אנגלית</button>
       <button class="count-chip" data-side="he">עברית</button>
+      <button class="count-chip" data-side="audio">🎧 שמיעה</button>
     </div>
 
     <div class="flashcard" id="flashcard">
@@ -126,13 +127,16 @@
         `quiz.html?topic=${encodeURIComponent(topicId)}&mode=${mode}&n=${n}` +
         `&name=${encodeURIComponent(userName)}&gender=${userGender}`;
 
-      const cards = [
-        { icon: '📇', name: 'כרטיסיות', sub: 'לומדים את המילים', onclick: startCards },
-        { icon: '🔤', name: VOCAB_MODES['en-he'].label, sub: 'רואים מילה באנגלית — בוחרים פירוש', href: quizUrl('en-he') },
-        { icon: '🇮🇱', name: VOCAB_MODES['he-en'].label, sub: 'רואים מילה בעברית — בוחרים באנגלית', href: quizUrl('he-en') },
-        { icon: '✍️', name: VOCAB_MODES['write'].label, sub: 'רואים בעברית — כותבים באנגלית', href: quizUrl('write') },
-        { icon: '🎯', name: VOCAB_MODES['mix'].label, sub: 'הכול ביחד — כמו במבחן', href: quizUrl('mix') },
-      ];
+      const kinds = vocabKinds(content);
+      const kindCards = {
+        'en-he':  { sub: 'רואים באנגלית — בוחרים פירוש' },
+        'he-en':  { sub: 'רואים בעברית — בוחרים באנגלית' },
+        'write':  { sub: 'רואים בעברית — כותבים באנגלית' },
+        'listen': { sub: 'שומעים באנגלית — בוחרים פירוש' },
+      };
+      const cards = [{ icon: '📇', name: 'כרטיסיות', sub: 'לומדים את המילים', onclick: startCards }];
+      kinds.forEach(k => cards.push({ icon: VOCAB_MODES[k].icon, name: VOCAB_MODES[k].label, sub: kindCards[k].sub, href: quizUrl(k) }));
+      cards.push({ icon: '🎯', name: VOCAB_MODES['mix'].label, sub: 'הכול ביחד — כמו במבחן', href: quizUrl('mix') });
       if (hard.length) {
         cards.push({ icon: '💪', name: VOCAB_MODES['hard'].label, sub: `${hard.length} מילים שעוד מתבלבלים בהן`, href: quizUrl('hard') });
       }
@@ -168,11 +172,14 @@
     }
 
     function sideHtml(word, lang) {
+      if (lang === 'audio') {
+        return `<div class="listen-wrap"><button type="button" class="listen-btn speak-btn" title="השמעה">🔊</button></div>`;
+      }
       if (lang === 'en') {
-        return `<div class="vocab-word" dir="ltr" lang="en">${escapeHtml(word.en)} ` +
+        return `<div class="vocab-word${vocabSizeClass(word.en)}" dir="ltr" lang="en">${escapeHtml(word.en)} ` +
                `<button type="button" class="speak-btn" title="השמעה">🔊</button></div>`;
       }
-      return `<div class="vocab-word" dir="rtl">${escapeHtml(word.he)}</div>`;
+      return `<div class="vocab-word${vocabSizeClass(word.he)}" dir="rtl">${escapeHtml(word.he)}</div>`;
     }
 
     function renderCard() {
@@ -186,16 +193,21 @@
       cards.flipped = false;
       document.getElementById('cardsCounter').textContent = `${cards.i + 1} / ${cards.deck.length}`;
       document.getElementById('cardFront').innerHTML = sideHtml(word, side);
-      document.getElementById('cardBack').innerHTML = sideHtml(word, side === 'en' ? 'he' : 'en');
+      document.getElementById('cardBack').innerHTML = side === 'audio'
+        ? sideHtml(word, 'en') + sideHtml(word, 'he')
+        : sideHtml(word, side === 'en' ? 'he' : 'en');
       document.getElementById('cardBack').classList.add('hidden');
       document.querySelectorAll('#flashcard .speak-btn').forEach(b =>
-        b.onclick = (e) => { e.stopPropagation(); speakEnglish(word.en); });
+        b.onclick = (e) => { e.stopPropagation(); playEnglish(word.en); });
+      // Hear the English as soon as it's on screen
+      if (side !== 'he') playEnglish(word.en);
     }
 
     function flipCard() {
       if (cards.i >= cards.deck.length) return;
       cards.flipped = !cards.flipped;
       document.getElementById('cardBack').classList.toggle('hidden', !cards.flipped);
+      if (cards.flipped && getPref('side', 'en') === 'he') playEnglish(cards.deck[cards.i].en);
       document.getElementById('cardTap').classList.toggle('hidden', cards.flipped);
     }
 
@@ -243,7 +255,7 @@
         </tr>`;
       }).join('');
       table.querySelectorAll('.speak-btn').forEach(b =>
-        b.onclick = () => speakEnglish(rows[+b.dataset.i].en));
+        b.onclick = () => playEnglish(rows[+b.dataset.i].en));
     }
 
     init();

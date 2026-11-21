@@ -218,6 +218,10 @@ flashcards, the word list, and the quiz modes.
 | `group` | ❌ | Words in the same group are used as wrong-answer options for each other: `month`, `number`, `place`, `verb`. Use groups of 3+ words |
 | `alt` | ❌ | Other accepted spellings for the typing question |
 
+Optional top-level `"modes"` limits the question kinds: `en-he`, `he-en`, `write`, `listen`. The default is all of them. Use `["en-he", "he-en", "listen"]` for sentence packs, where spelling whole sentences is too strict.
+
+Recordings: run `~/.cache/explain-skill/venv/bin/python -I _build_audio.py` after adding words. It creates `audio/en/{slug}.mp3` for any word that doesn't have one yet.
+
 The manifest entry needs `"type": "vocab"` (plus `"subject": "english"`).
 Apostrophes, end punctuation and letter case are ignored when checking typed answers; spaces are not.
 

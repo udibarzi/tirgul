@@ -4,6 +4,7 @@
  */
 const fs = require('fs');
 const path = require('path');
+const { vocabSlug } = require('./app/vocab.js');
 
 const contentDir = path.join(__dirname, 'content');
 const manifest = JSON.parse(fs.readFileSync(path.join(contentDir, 'manifest.json'), 'utf-8'));
@@ -47,10 +48,16 @@ for (const topic of manifest.topics) {
       errors++;
       continue;
     }
+    const KINDS = ['en-he', 'he-en', 'write', 'listen'];
+    if (data.modes !== undefined && (!Array.isArray(data.modes) || data.modes.some(k => !KINDS.includes(k)))) {
+      console.error(`  ERROR: ${topic.id}: "modes" must be an array of ${KINDS.join(', ')}`);
+      errors++;
+    }
     const seen = new Set();
+    let noAudio = 0;
     data.words.forEach((w, i) => {
       const where = `${topic.id} word ${i + 1}${w && w.en ? ` "${w.en}"` : ''}`;
-      if (!w.en || typeof w.en !== 'string' || !/^[A-Za-z][A-Za-z '’.!?-]*$/.test(w.en)) {
+      if (!w.en || typeof w.en !== 'string' || !/^[A-Za-z][A-Za-z0-9 '’.,!?-]*$/.test(w.en)) {
         console.error(`  ERROR: ${where}: "en" must be English letters only`);
         errors++;
       }
@@ -68,6 +75,7 @@ for (const topic of manifest.topics) {
         errors++;
       }
       seen.add(key);
+      if (w.en && !fs.existsSync(path.join(__dirname, 'audio', 'en', vocabSlug(w.en) + '.mp3'))) noAudio++;
       if (w.he && hebrewInParens.test(w.he)) {
         console.warn(`  BIDI: ${where}: Hebrew text in parentheses`);
         bidiIssues++;
@@ -80,6 +88,10 @@ for (const topic of manifest.topics) {
         console.warn(`  WARN: ${topic.id}: group "${g}" has only ${n} word(s) — distractors work best with 3+`);
         warnings++;
       }
+    }
+    if (noAudio) {
+      console.warn(`  WARN: ${topic.id}: ${noAudio} word(s) have no recording — run _build_audio.py (browser voice is used meanwhile)`);
+      warnings++;
     }
     totalQuestions += data.words.length;
     console.log(`  ${topic.id}: ${data.words.length} words (vocab, grade ${topic.grade || '?'}) ✓`);

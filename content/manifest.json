@@ -110,6 +110,127 @@
       "difficulty": 2,
       "order": 1,
       "grade": 8
+    },
+    {
+      "id": "english-my-day-5",
+      "name": "אנגלית — היום שלי",
+      "icon": "🌅",
+      "description": "שגרת היום: לקום, לאכול, ללכת לבית הספר, מתי ובאיזו תדירות",
+      "type": "vocab",
+      "subject": "english",
+      "difficulty": 1,
+      "order": 2,
+      "grade": 5
+    },
+    {
+      "id": "english-food-5",
+      "name": "אנגלית — אוכל",
+      "icon": "🍎",
+      "description": "מאכלים, שתייה, פירות וירקות",
+      "type": "vocab",
+      "subject": "english",
+      "difficulty": 1,
+      "order": 3,
+      "grade": 5
+    },
+    {
+      "id": "english-feelings-family-5",
+      "name": "אנגלית — רגשות ומשפחה",
+      "icon": "😊",
+      "description": "איך אני מרגיש, בני המשפחה וחברים",
+      "type": "vocab",
+      "subject": "english",
+      "difficulty": 1,
+      "order": 4,
+      "grade": 5
+    },
+    {
+      "id": "english-hobbies-5",
+      "name": "אנגלית — תחביבים",
+      "icon": "⚽",
+      "description": "ספורט, משחקים ומה אוהבים לעשות בזמן הפנוי",
+      "type": "vocab",
+      "subject": "english",
+      "difficulty": 1,
+      "order": 5,
+      "grade": 5
+    },
+    {
+      "id": "english-phrases-5",
+      "name": "אנגלית — משפטים לשיחה",
+      "icon": "💬",
+      "description": "משפטים קצרים לשיחה: להכיר, לשאול, להודות",
+      "type": "vocab",
+      "subject": "english",
+      "difficulty": 1,
+      "order": 6,
+      "grade": 5
+    },
+    {
+      "id": "english-phrases-8",
+      "name": "אנגלית — ביטויים לשיחה",
+      "icon": "💬",
+      "description": "להביע דעה, להסכים, לשאול ולהמשיך שיחה",
+      "type": "vocab",
+      "subject": "english",
+      "difficulty": 2,
+      "order": 2,
+      "grade": 8
+    },
+    {
+      "id": "english-past-8",
+      "name": "אנגלית — לספר מה היה",
+      "icon": "🕰️",
+      "description": "משפטים בזמן עבר: מה עשיתי, איפה הייתי, מה קרה",
+      "type": "vocab",
+      "subject": "english",
+      "difficulty": 2,
+      "order": 3,
+      "grade": 8
+    },
+    {
+      "id": "english-feelings-8",
+      "name": "אנגלית — רגשות ודעות",
+      "icon": "🎭",
+      "description": "לתאר רגשות ומצבי רוח, להביע העדפה ודעה",
+      "type": "vocab",
+      "subject": "english",
+      "difficulty": 2,
+      "order": 4,
+      "grade": 8
+    },
+    {
+      "id": "english-free-time-8",
+      "name": "אנגלית — פנאי וחברים",
+      "icon": "🎧",
+      "description": "לבלות, ספורט, רשתות חברתיות וסדרות",
+      "type": "vocab",
+      "subject": "english",
+      "difficulty": 2,
+      "order": 5,
+      "grade": 8
+    },
+    {
+      "id": "english-travel-8",
+      "name": "אנגלית — טיולים ונסיעות",
+      "icon": "✈️",
+      "description": "טיסה, מלון, מקומות ומה עושים בחו״ל",
+      "type": "vocab",
+      "subject": "english",
+      "difficulty": 2,
+      "order": 6,
+      "grade": 8
+    },
+    {
+      "id": "english-school-future-8",
+      "name": "אנגלית — לימודים ועתיד",
+      "icon": "🎓",
+      "description": "מבחנים, עבודות, הצלחה ותוכניות לעתיד",
+      "type": "vocab",
+      "subject": "english",
+      "difficulty": 2,
+      "order": 7,
+      "grade": 8
     }
   ]
 }

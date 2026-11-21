@@ -22,6 +22,8 @@ content/
 _build_grade4.js        Generator script for 4th grade content
 _build_grade7.js        Extractor script for 7th grade content
 _validate.js            Validates all content JSON + manifest
+_build_audio.py         Generates English recordings → audio/en/*.mp3 (local Kokoro TTS)
+audio/en/               One MP3 per English word/phrase, named by vocabSlug()
 ```
 
 ### Data flow
@@ -70,8 +72,12 @@ The user will send photos of English word lists that a kid needs for a test: fro
 1. Transcribe **every** word in the photo and count them against the photo.
 2. Create `content/english-....json` with `"type": "vocab"` and a `words` array: `{ en, he, group?, alt? }`. See `docs/CONTENT-FORMAT.md`. Use child-friendly Hebrew meanings; use digits for number words; put `group` on months, numbers, places, verbs.
 3. Add a manifest entry: `"type": "vocab"`, `"subject": "english"`, `"grade"` (5 or 8), next `order` within that grade.
-4. `node _validate.js`. No questions to write; `app/vocab.js` generates them.
+4. Generate recordings: `~/.cache/explain-skill/venv/bin/python -I _build_audio.py`. It only creates missing files and uses the Kokoro voice `af_heart`.
+5. `node _validate.js`. It warns about words that have no recording. No questions to write; `app/vocab.js` generates them.
 
+Besides textbook lists, there are topic packs written by Claude: everyday words, conversation phrases, past-tense sentences. The goal is for both girls to be able to hold a conversation in English. Phrase and sentence packs set `"modes": ["en-he", "he-en", "listen"]`, which skips spelling whole sentences.
+
+Question kinds: `en-he`, `he-en`, `write` (spelling), `listen` (hear the audio, pick the meaning). Audio plays from `audio/en/{vocabSlug(en)}.mp3`; if the file is missing, the browser voice is used instead. `vocabSlug` in `app/vocab.js` and `vocab_slug` in `_build_audio.py` must stay identical.
 Never pass English text through `fixBidi()`; vocab UI uses `escapeHtml()` inside `dir="ltr"` elements.
 Per-word stats live in localStorage under `tirgul_vocab_{topicId}`. They drive the "מילים לחיזוק" mode and weight question selection toward missed words.
 

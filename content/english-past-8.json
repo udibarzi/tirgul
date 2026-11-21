@@ -1,0 +1,36 @@
+{
+  "id": "english-past-8",
+  "name": "אנגלית — לספר מה היה",
+  "icon": "🕰️",
+  "version": "1.0.0",
+  "type": "vocab",
+  "questionsPerSession": 20,
+  "modes": [
+    "en-he",
+    "he-en",
+    "listen"
+  ],
+  "words": [
+    { "en": "What did you do on the weekend?", "he": "מה עשית בסוף השבוע?", "group": "question" },
+    { "en": "I went to the beach yesterday.", "he": "הלכתי לים אתמול.", "group": "say" },
+    { "en": "We had a great time.", "he": "נהנינו מאוד.", "group": "say" },
+    { "en": "I watched a movie with my friends.", "he": "ראיתי סרט עם החברים שלי.", "group": "say" },
+    { "en": "I didn't sleep well last night.", "he": "לא ישנתי טוב בלילה.", "group": "say" },
+    { "en": "Where did you go?", "he": "לאן הלכת?", "group": "question" },
+    { "en": "Did you see the game?", "he": "ראית את המשחק?", "group": "question" },
+    { "en": "We won the match!", "he": "ניצחנו במשחק!", "group": "say" },
+    { "en": "She bought a new phone.", "he": "היא קנתה טלפון חדש.", "group": "say" },
+    { "en": "They came home late.", "he": "הם חזרו הביתה מאוחר.", "group": "say" },
+    { "en": "I forgot my homework at home.", "he": "שכחתי את שיעורי הבית בבית.", "group": "say" },
+    { "en": "We were at my grandmother's house.", "he": "היינו בבית של סבתא שלי.", "group": "say" },
+    { "en": "It was very hot outside.", "he": "היה חם מאוד בחוץ.", "group": "say" },
+    { "en": "I met an old friend.", "he": "פגשתי חבר ותיק.", "group": "say" },
+    { "en": "He told me a funny story.", "he": "הוא סיפר לי סיפור מצחיק.", "group": "say" },
+    { "en": "I was really tired.", "he": "הייתי ממש עייף / עייפה.", "group": "say" },
+    { "en": "We took a lot of pictures.", "he": "צילמנו הרבה תמונות.", "group": "say" },
+    { "en": "I made pancakes for breakfast.", "he": "הכנתי פנקייקים לארוחת בוקר.", "group": "say" },
+    { "en": "I didn't know that!", "he": "לא ידעתי את זה!", "group": "say" },
+    { "en": "I lost my keys.", "he": "איבדתי את המפתחות שלי.", "group": "say" },
+    { "en": "She felt much better.", "he": "היא הרגישה הרבה יותר טוב.", "group": "say" }
+  ]
+}

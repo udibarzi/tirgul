@@ -1,0 +1,32 @@
+{
+  "id": "english-hobbies-5",
+  "name": "אנגלית — תחביבים",
+  "icon": "⚽",
+  "version": "1.0.0",
+  "type": "vocab",
+  "questionsPerSession": 20,
+  "words": [
+    { "en": "play football", "he": "לשחק כדורגל", "group": "activity" },
+    { "en": "play basketball", "he": "לשחק כדורסל", "group": "activity" },
+    { "en": "ride a bike", "he": "לרכוב על אופניים", "group": "activity" },
+    { "en": "swim", "he": "לשחות", "group": "activity" },
+    { "en": "dance", "he": "לרקוד", "group": "activity" },
+    { "en": "sing", "he": "לשיר", "group": "activity" },
+    { "en": "draw", "he": "לצייר", "group": "activity" },
+    { "en": "read a book", "he": "לקרוא ספר", "group": "activity" },
+    { "en": "watch TV", "he": "לראות טלוויזיה", "group": "activity" },
+    { "en": "play computer games", "he": "לשחק במשחקי מחשב", "group": "activity" },
+    { "en": "listen to music", "he": "להקשיב למוזיקה", "group": "activity" },
+    { "en": "cook", "he": "לבשל", "group": "activity" },
+    { "en": "bake", "he": "לאפות", "group": "activity" },
+    { "en": "run", "he": "לרוץ", "group": "activity" },
+    { "en": "jump", "he": "לקפוץ", "group": "activity" },
+    { "en": "take pictures", "he": "לצלם תמונות", "group": "activity" },
+    { "en": "go to the park", "he": "ללכת לפארק", "group": "activity" },
+    { "en": "meet friends", "he": "להיפגש עם חברים", "group": "activity" },
+    { "en": "favorite", "he": "אהוב / מועדף", "group": "other" },
+    { "en": "fun", "he": "כיף", "group": "other" },
+    { "en": "game", "he": "משחק", "group": "other" },
+    { "en": "team", "he": "קבוצה", "group": "other" }
+  ]
+}
