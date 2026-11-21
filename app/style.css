@@ -1005,3 +1005,8 @@ body {
 .vocab-answer .pair-he, .missed-item .pair-he { text-align: center; }
 .missed-item { padding: 6px 0; border-bottom: 1px solid rgba(239, 68, 68, 0.15); }
 .missed-item:last-child { border-bottom: none; }
+
+/* Flashcard answer reveal after "ידעתי" / "עוד לא" */
+.flashcard { transition: box-shadow 0.2s, border-color 0.2s; border: 3px solid transparent; }
+.flashcard.knew { border-color: var(--color-success); }
+.flashcard.notyet { border-color: var(--color-warning); }

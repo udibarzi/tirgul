@@ -183,6 +183,10 @@
     function startCards(deck) {
       cards.deck = shuffle([...(Array.isArray(deck) ? deck : vocabItems(content, level))]);
       cards.i = 0; cards.yes = 0; cards.missed = [];
+      cards.deckId = (cards.deckId || 0) + 1; cards.busy = false;
+      document.getElementById('flashcard').classList.remove('knew', 'notyet');
+      document.getElementById('cardYes').disabled = false;
+      document.getElementById('cardNo').disabled = false;
       show('cardsScreen');
       document.querySelectorAll('#cardsScreen .count-chip').forEach(chip => {
         chip.onclick = () => { setPref('side', chip.dataset.side); renderCard(); };
@@ -226,7 +230,7 @@
     }
 
     function flipCard() {
-      if (cards.i >= cards.deck.length) return;
+      if (cards.i >= cards.deck.length || cards.busy) return;
       cards.flipped = !cards.flipped;
       document.getElementById('cardBack').classList.toggle('hidden', !cards.flipped);
       if (cards.flipped && getPref('side', 'en') === 'he') playEnglish(cards.deck[cards.i].en);
@@ -234,9 +238,29 @@
     }
 
     function answerCard(knew) {
+      if (cards.busy) return;
       const word = cards.deck[cards.i];
       VocabStats.record(topicId, word.en, knew);
       if (knew) cards.yes++; else cards.missed.push(word);
+      if (cards.flipped) { nextCard(); return; }
+      // Not flipped yet: show the answer for a moment, then move on
+      cards.busy = true;
+      document.getElementById('flashcard').classList.add(knew ? 'knew' : 'notyet');
+      document.getElementById('cardYes').disabled = true;
+      document.getElementById('cardNo').disabled = true;
+      cards.flipped = true;
+      document.getElementById('cardBack').classList.remove('hidden');
+      document.getElementById('cardTap').classList.add('hidden');
+      if (getPref('side', 'en') === 'he') playEnglish(word.en);
+      const deckId = cards.deckId;
+      setTimeout(() => { if (cards.deckId === deckId) { cards.busy = false; nextCard(); } }, knew ? 1500 : 2500);
+    }
+
+    function nextCard() {
+      const fc = document.getElementById('flashcard');
+      fc.classList.remove('knew', 'notyet');
+      document.getElementById('cardYes').disabled = false;
+      document.getElementById('cardNo').disabled = false;
       cards.i++;
       if (cards.i < cards.deck.length) { renderCard(); return; }
 
