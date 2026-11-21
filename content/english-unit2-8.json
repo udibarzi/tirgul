@@ -1,0 +1,41 @@
+{
+  "id": "english-unit2-8",
+  "name": "אנגלית — יחידה 2",
+  "icon": "🔤",
+  "version": "1.0.0",
+  "type": "vocab",
+  "questionsPerSession": 20,
+  "words": [
+    { "en": "advertisement", "he": "פרסומת", "group": "noun" },
+    { "en": "bill", "he": "חשבון", "group": "noun" },
+    { "en": "contract", "he": "חוזה", "group": "noun" },
+    { "en": "deal", "he": "עסקה", "group": "noun" },
+    { "en": "experience", "he": "ניסיון / חוויה", "group": "noun" },
+    { "en": "fee", "he": "תשלום", "group": "noun" },
+    { "en": "literature", "he": "ספרות", "group": "noun" },
+    { "en": "tear", "he": "דמעה", "group": "noun" },
+    { "en": "website", "he": "אתר אינטרנט", "group": "noun" },
+
+    { "en": "agree", "he": "להסכים", "group": "verb" },
+    { "en": "charge", "he": "לחייב", "group": "verb" },
+    { "en": "convince", "he": "לשכנע", "group": "verb" },
+    { "en": "lie", "he": "לשקר", "group": "verb" },
+    { "en": "offer", "he": "להציע", "group": "verb" },
+    { "en": "refuse", "he": "לסרב", "group": "verb" },
+    { "en": "shop", "he": "לקנות", "group": "verb" },
+
+    { "en": "clear", "he": "ברור", "group": "adjective" },
+    { "en": "digital", "he": "דיגיטלי", "group": "adjective" },
+    { "en": "essential", "he": "חיוני", "group": "adjective" },
+    { "en": "lucky", "he": "בר מזל", "group": "adjective" },
+    { "en": "positive", "he": "חיובי", "group": "adjective" },
+
+    { "en": "be wrong", "he": "לטעות", "group": "other" },
+    { "en": "Congratulations!", "he": "מזל טוב!", "group": "other" },
+    { "en": "credit card", "he": "כרטיס אשראי", "group": "other" },
+    { "en": "despite", "he": "למרות", "group": "other" },
+    { "en": "miss a chance", "he": "להחמיץ הזדמנות", "group": "other" },
+    { "en": "plenty of", "he": "הרבה", "group": "other" },
+    { "en": "somehow", "he": "איכשהו", "group": "other" }
+  ]
+}

@@ -54,7 +54,7 @@ The app tracks user gender (male/female) for grammatically correct Hebrew messag
 
 ## Content grades
 
-Three grade levels: 4 (כיתה ד׳), 5 (כיתה ה׳), 7 (כיתה ז׳). Grade 5 currently has English only. Grade is stored in `localStorage` as `math_app_grade`. Topics are filtered by grade on the landing page. Speed drill (אלופי הכפל) is only shown for grade 4.
+Four grade levels: 4 (כיתה ד׳), 5 (כיתה ה׳), 7 (כיתה ז׳), 8 (כיתה ח׳). Grades 5 and 8 currently have English only — two different kids, one in each. Grade is stored in `localStorage` as `math_app_grade`. Topics are filtered by grade on the landing page. Speed drill (אלופי הכפל) is only shown for grade 4.
 
 ## Adding new content
 
@@ -65,11 +65,11 @@ Three grade levels: 4 (כיתה ד׳), 5 (כיתה ה׳), 7 (כיתה ז׳). Gra
 
 ## English vocabulary (word lists from a photo)
 
-The user will send photos of English word lists, from the kid's textbook, that she needs for a test. To add one:
+The user will send photos of English word lists that a kid needs for a test: from a textbook page or a screenshot of an existing word list. Ask which grade if unclear: 5th grade is `english-words-N`, 8th grade is `english-unitN-8`. To add one:
 
 1. Transcribe **every** word in the photo and count them against the photo.
-2. Create `content/english-words-N.json` with `"type": "vocab"` and a `words` array: `{ en, he, group?, alt? }`. See `docs/CONTENT-FORMAT.md`. Use child-friendly Hebrew meanings; use digits for number words; put `group` on months, numbers, places, verbs.
-3. Add a manifest entry: `"type": "vocab"`, `"subject": "english"`, `"grade": 5`, next `order`.
+2. Create `content/english-....json` with `"type": "vocab"` and a `words` array: `{ en, he, group?, alt? }`. See `docs/CONTENT-FORMAT.md`. Use child-friendly Hebrew meanings; use digits for number words; put `group` on months, numbers, places, verbs.
+3. Add a manifest entry: `"type": "vocab"`, `"subject": "english"`, `"grade"` (5 or 8), next `order` within that grade.
 4. `node _validate.js`. No questions to write; `app/vocab.js` generates them.
 
 Never pass English text through `fixBidi()`; vocab UI uses `escapeHtml()` inside `dir="ltr"` elements.

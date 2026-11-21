@@ -50,7 +50,7 @@ for (const topic of manifest.topics) {
     const seen = new Set();
     data.words.forEach((w, i) => {
       const where = `${topic.id} word ${i + 1}${w && w.en ? ` "${w.en}"` : ''}`;
-      if (!w.en || typeof w.en !== 'string' || !/^[A-Za-z][A-Za-z '’.-]*$/.test(w.en)) {
+      if (!w.en || typeof w.en !== 'string' || !/^[A-Za-z][A-Za-z '’.!?-]*$/.test(w.en)) {
         console.error(`  ERROR: ${where}: "en" must be English letters only`);
         errors++;
       }

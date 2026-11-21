@@ -4,7 +4,8 @@
   "grades": [
     { "id": 4, "name": "כיתה ד׳", "icon": "4️⃣" },
     { "id": 5, "name": "כיתה ה׳", "icon": "5️⃣" },
-    { "id": 7, "name": "כיתה ז׳", "icon": "7️⃣" }
+    { "id": 7, "name": "כיתה ז׳", "icon": "7️⃣" },
+    { "id": 8, "name": "כיתה ח׳", "icon": "8️⃣" }
   ],
   "topics": [
     {
@@ -98,6 +99,17 @@
       "difficulty": 1,
       "order": 1,
       "grade": 5
+    },
+    {
+      "id": "english-unit2-8",
+      "name": "אנגלית — יחידה 2",
+      "icon": "🔤",
+      "description": "Unit 2: שמות עצם, פעלים, תארים וביטויים",
+      "type": "vocab",
+      "subject": "english",
+      "difficulty": 2,
+      "order": 1,
+      "grade": 8
     }
   ]
 }
