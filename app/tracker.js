@@ -269,7 +269,7 @@
         const r = await env.fetch(c.url, { method: 'POST', headers: { 'Content-Type': 'text/plain' }, body: body(batch) });
         const j = await r.json();
         if (!j || !j.ok) return { ok: false, sent: 0 };
-        const done = new Set([].concat(j.saved || [], j.dup || []));
+        const done = new Set([].concat(j.saved || [], j.dup || [], j.bad || []));
         setJSON(KEYS.outbox, outbox().filter(e => !(e && done.has(e.id))));
         return { ok: true, sent: batch.length };
       } catch (e) {

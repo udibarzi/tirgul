@@ -78,7 +78,7 @@ test('send removes only confirmed ids', async () => {
   t.answer({ kind: 'en-he', item: 'b', correct: true });
   t.answer({ kind: 'en-he', item: 'c', correct: true });
   const [e1, e2, e3] = t.outbox();
-  reply = { ok: true, saved: [e1.id], dup: [e2.id] };
+  reply = { ok: true, saved: [e1.id], dup: [e2.id], bad: [] };
   const r = await t.send();
   assert.equal(r.ok, true);
   assert.equal(r.sent, 3);
@@ -90,6 +90,17 @@ test('send removes only confirmed ids', async () => {
   const body = JSON.parse(call.opts.body);
   assert.equal(body.key, 'w1');
   assert.equal(body.events.length, 3);
+});
+
+test('events the server rejects as bad are dropped', async () => {
+  let reply;
+  const { t } = setup({ fetchImpl: () => jsonResponse(reply) });
+  t.answer({ kind: 'en-he', item: 'a', correct: true });
+  t.answer({ kind: 'en-he', item: 'b', correct: true });
+  const [e1, e2] = t.outbox();
+  reply = { ok: true, saved: [e1.id], dup: [], bad: [e2.id] };
+  await t.send();
+  assert.equal(t.outbox().length, 0);
 });
 
 test('events queued during a send are kept', async () => {
