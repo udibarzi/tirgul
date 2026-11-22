@@ -264,6 +264,17 @@
       "difficulty": 1,
       "order": 0,
       "grade": 5
+    },
+    {
+      "id": "english-test-more-5",
+      "name": "אנגלית — עוד 60 משפטים למבחן",
+      "icon": "✍️",
+      "description": "עוד תרגול על am, is, are, have, has — 60 משפטים חדשים",
+      "type": "vocab",
+      "subject": "english",
+      "difficulty": 1,
+      "order": 0,
+      "grade": 5
     }
   ]
 }
