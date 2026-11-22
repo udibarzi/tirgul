@@ -25,6 +25,13 @@
   const VOCAB_BASE = 'tirgul_vocab__';
   const LEGACY_TOPIC_RE = /^math_app_(?!_)(?!username$|grade$|gender$)(.+)$/;
   const LEGACY_VOCAB_RE = /^tirgul_vocab_(?!_)(?!pref_)(.+)$/;
+  const OUTBOX_CAP = 5000;
+  const SEND_MAX = 300;
+  const BEACON_MAX = 100;               // sendBeacon payloads are limited to ~64 KB
+  const SEND_INTERVAL_MS = 60000;
+  const ACTIVE_WINDOW_MS = 60000;
+  const PRACTICE_DAY_SECONDS = 300;
+  const DAY_MS = 86400000;
 
   function b64urlDecode(s) {
     let b = String(s).replace(/-/g, '+').replace(/_/g, '/');
@@ -115,6 +122,7 @@
     function setCurrent(name) {
       name = String(name || '').trim();
       if (!name) return;
+      if (name !== currentName()) flushTime();
       set(KEYS.current, name);
       set(KEYS.legacyName, name);
       const p = getProfiles().find(x => x.name === name);
@@ -178,11 +186,156 @@
       if (currentName() === from) setCurrent(to);
     }
 
+    // ---- events and outbox ----
+    let page = { topic: '', level: '', mode: '' };
+    let lastActivity = -Infinity;
+    let pending = 0;          // active seconds not yet queued
+    let pendingAt = 0;        // time of the last counted second
+    let sending = false;
+
+    function outbox() { const b = getJSON(KEYS.outbox, []); return Array.isArray(b) ? b : []; }
+    function capOutbox(box) {
+      let excess = box.length - OUTBOX_CAP;
+      if (excess <= 0) return box;
+      box = box.filter(e => !(excess > 0 && e && e.type === 'time' && excess-- > 0));
+      return box.length > OUTBOX_CAP ? box.slice(box.length - OUTBOX_CAP) : box;
+    }
+    function enqueue(fields, tsMs) {
+      const learner = currentName();
+      if (!learner) return null;
+      const ev = {
+        id: env.uuid(), ts: new Date(tsMs == null ? env.now() : tsMs).toISOString(), learner,
+        type: '', topic: page.topic, level: page.level, mode: page.mode,
+        kind: '', item: '', correct: '', given: '', seconds: '',
+        ...fields,
+      };
+      setJSON(KEYS.outbox, capOutbox(outbox().concat([ev])));
+      return ev;
+    }
+    function clip(s, n) { return String(s == null ? '' : s).slice(0, n); }
+
+    function setPage(ctx) {
+      flushTime();
+      page = { topic: clip(ctx && ctx.topic, 80), level: clip(ctx && ctx.level, 20), mode: clip(ctx && ctx.mode, 20) };
+    }
+    function session() { enqueue({ type: 'session' }); }
+    function answer({ kind, item, correct, given }) {
+      enqueue({ type: 'answer', kind: clip(kind, 30), item: clip(item, 200), correct: correct ? 1 : 0, given: kind === 'write' ? clip(given, 60) : '' });
+    }
+    function card({ item, correct }) { enqueue({ type: 'card', kind: 'card', item: clip(item, 200), correct: correct ? 1 : 0 }); }
+
+    function activity() { lastActivity = env.now(); }
+    function tick(visible) {
+      const now = env.now();
+      if (!visible || now - lastActivity > ACTIVE_WINDOW_MS) return;
+      if (pending > 0 && dayKey(new Date(pendingAt)) !== dayKey(new Date(now))) flushTime();
+      pending++;
+      pendingAt = now;
+    }
+    function flushTime() {
+      if (pending <= 0) return;
+      const secs = pending, at = pendingAt;
+      pending = 0;
+      const ev = enqueue({ type: 'time', seconds: secs }, at);
+      if (ev && ev.topic !== 'menu') addDaySeconds(ev.learner, dayKey(new Date(at)), secs);
+    }
+    function addDaySeconds(name, day, secs) {
+      const days = getJSON(KEYS.days(name), {});
+      days[day] = (days[day] || 0) + secs;
+      const oldest = dayKey(new Date(env.now() - 60 * DAY_MS));
+      for (const k in days) if (k < oldest) delete days[k];
+      setJSON(KEYS.days(name), days);
+    }
+    function localWeek(name, nowMs) {
+      const days = getJSON(KEYS.days(name), {});
+      const start = weekStartKey(new Date(nowMs == null ? env.now() : nowMs));
+      const end = addDaysKey(start, 7);
+      let secs = 0, count = 0;
+      for (const k in days) {
+        if (k >= start && k < end) { secs += days[k]; if (days[k] >= PRACTICE_DAY_SECONDS) count++; }
+      }
+      return { minutes: Math.floor(secs / 60), days: count };
+    }
+
+    // ---- sending ----
+    function body(events) { const c = getConfig(); return JSON.stringify({ key: c.key, events }); }
+    async function send() {
+      const c = getConfig();
+      if (!c || sending) return { ok: false, sent: 0 };
+      const batch = outbox().slice(0, SEND_MAX);
+      if (!batch.length) return { ok: true, sent: 0 };
+      sending = true;
+      try {
+        const r = await env.fetch(c.url, { method: 'POST', headers: { 'Content-Type': 'text/plain' }, body: body(batch) });
+        const j = await r.json();
+        if (!j || !j.ok) return { ok: false, sent: 0 };
+        const done = new Set([].concat(j.saved || [], j.dup || []));
+        setJSON(KEYS.outbox, outbox().filter(e => !(e && done.has(e.id))));
+        return { ok: true, sent: batch.length };
+      } catch (e) {
+        return { ok: false, sent: 0 };
+      } finally {
+        sending = false;
+      }
+    }
+    function beacon() {
+      const c = getConfig();
+      const batch = outbox().slice(0, BEACON_MAX);
+      if (!c || !batch.length) return;
+      try { env.sendBeacon(c.url, body(batch)); } catch (e) { /* ignore */ }
+    }
+    async function getJSONFrom(params) {
+      const c = getConfig();
+      if (!c) return null;
+      const q = Object.entries({ ...params, key: c.key }).map(([k, v]) => k + '=' + encodeURIComponent(v)).join('&');
+      try {
+        const r = await env.fetch(c.url + (c.url.includes('?') ? '&' : '?') + q);
+        const j = await r.json();
+        return j && j.ok ? j : null;
+      } catch (e) { return null; }
+    }
+    async function fetchLearners() {
+      const j = await getJSONFrom({ action: 'learners' });
+      if (!j || !Array.isArray(j.learners)) return null;
+      setSheetLearners(j.learners);
+      return sheetLearners();
+    }
+    async function fetchWeek(name) {
+      const j = await getJSONFrom({ action: 'week', learner: name });
+      return j ? { minutes: Number(j.minutes) || 0, days: Number(j.days) || 0 } : null;
+    }
+
+    // ---- browser wiring ----
+    let attached = false;
+    function attach() {
+      if (attached || typeof document === 'undefined') return;
+      attached = true;
+      const onAct = () => activity();
+      ['pointerdown', 'keydown', 'touchstart'].forEach(t => document.addEventListener(t, onAct, { passive: true, capture: true }));
+      setInterval(() => tick(document.visibilityState === 'visible'), 1000);
+      setInterval(() => { flushTime(); if (outbox().length) send(); }, SEND_INTERVAL_MS);
+      const away = () => { flushTime(); beacon(); };
+      document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') away(); });
+      window.addEventListener('pagehide', away);
+      send();
+    }
+
     return {
       getConfig, applySetupHash,
       getProfiles, addLocalProfile, setSheetLearners, getCurrent, setCurrent,
       progressPrefix, vocabKey, migrateLegacy, unmappedLocalNames, mapLearner,
+      setPage, session, answer, card, activity, tick, flushTime, outbox,
+      send, beacon, localWeek, fetchLearners, fetchWeek, attach,
     };
+  }
+
+  // ---- local-time date keys ----
+  function pad(n) { return (n < 10 ? '0' : '') + n; }
+  function dayKey(d) { return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()); }
+  function weekStartKey(d) { return dayKey(new Date(d.getFullYear(), d.getMonth(), d.getDate() - d.getDay())); }
+  function addDaysKey(key, n) {
+    const [y, m, dd] = key.split('-').map(Number);
+    return dayKey(new Date(y, m - 1, dd + n));
   }
 
   // ---- browser instance ----
@@ -200,5 +353,5 @@
     });
   }
 
-  if (typeof module !== 'undefined') module.exports = { createTracker };
+  if (typeof module !== 'undefined') module.exports = { createTracker, weekStartKey, dayKey };
 })();
