@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex">
+  <title>דוח תרגול</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .report-container { max-width: 980px; margin: 0 auto; padding: 20px 16px 48px; }
+    .report-header { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 14px; }
+    .report-header h1 { font-family: var(--font-display); font-weight: 400; font-size: 1.7em; }
+    .report-status { text-align: center; color: var(--color-text-light); padding: 24px 0; }
+    .report-status.error { color: var(--color-error); }
+    .weekpick { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
+    .week-chip {
+      font: inherit; font-size: 0.85em; padding: 6px 14px; border-radius: 999px; cursor: pointer;
+      border: 1px solid var(--color-border); background: var(--color-card); color: var(--color-text-light);
+    }
+    .week-chip.active { background: var(--color-text); color: #fff; border-color: var(--color-text); }
+    .week-chip small { opacity: 0.75; }
+    .report-cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; align-items: start; }
+    .learner-card {
+      background: var(--color-card); border: 1px solid var(--color-border); border-radius: 18px;
+      padding: 18px; display: flex; flex-direction: column; gap: 16px; min-width: 0; box-shadow: var(--shadow-sm);
+    }
+    .lc-head { display: flex; align-items: center; gap: 10px; }
+    .lc-avatar {
+      width: 44px; height: 44px; border-radius: 50%; display: grid; place-items: center; flex: none;
+      background: linear-gradient(135deg, var(--color-primary), #6366F1); color: #fff; font-family: var(--font-display); font-size: 1.3em;
+    }
+    .lc-name { font-weight: 700; font-size: 1.15em; }
+    .lc-sub { font-size: 0.8em; color: var(--color-text-light); }
+    .pill { margin-inline-start: auto; font-size: 0.75em; font-weight: 600; padding: 4px 10px; border-radius: 999px; white-space: nowrap; }
+    .pill.ok { background: var(--color-success-bg); color: #15803D; }
+    .pill.mid { background: #FFF4E5; color: #B45309; }
+    .pill.none { background: #F1F5F9; color: var(--color-text-light); }
+    .lbl { font-size: 0.78em; color: var(--color-text-light); margin-bottom: 4px; }
+    .goal-line { font-size: 1.05em; }
+    .goal-line .num { font-family: var(--font-display); font-size: 1.5em; }
+    .bar { height: 10px; border-radius: 99px; background: var(--color-primary-glow); overflow: hidden; margin-top: 6px; }
+    .bar i { display: block; height: 100%; border-radius: 99px; background: var(--color-primary); }
+    .bar.ok i { background: var(--color-success); }
+    .days { display: flex; gap: 6px; margin-top: 6px; }
+    .day { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 0.72em; color: var(--color-text-light); }
+    .day i { width: 24px; height: 24px; border-radius: 50%; border: 2px solid var(--color-border); }
+    .day.on i { background: var(--color-primary); border-color: var(--color-primary); }
+    .day.short i { border-color: var(--color-primary); border-style: dashed; }
+    .day.future { opacity: 0.4; }
+    .tiles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+    .tile { border: 1px solid var(--color-border); border-radius: 12px; padding: 8px 4px; text-align: center; }
+    .tile b { display: block; font-size: 1.25em; font-variant-numeric: tabular-nums; }
+    .tile span { font-size: 0.75em; color: var(--color-text-light); }
+    .rw { display: flex; height: 8px; border-radius: 99px; overflow: hidden; background: var(--color-border); margin-top: 4px; }
+    .rw .r { background: var(--color-success); }
+    .rw .w { background: var(--color-error); }
+    .mini { width: 100%; border-collapse: collapse; font-size: 0.85em; }
+    .mini th { font-weight: 500; color: var(--color-text-light); text-align: right; padding: 4px 6px; border-bottom: 1px solid var(--color-border); }
+    .mini td { padding: 6px; border-bottom: 1px solid #F1F5F9; }
+    .mini td.n { text-align: center; font-variant-numeric: tabular-nums; width: 3.5em; }
+    .mini th.n { text-align: center; }
+    .miss-row { display: flex; align-items: baseline; gap: 8px; padding: 6px 10px; border: 1px solid var(--color-border); border-radius: 10px; margin-top: 6px; font-size: 0.9em; }
+    .miss-row .en { font-weight: 500; }
+    .miss-row .typed { color: var(--color-error); text-decoration: line-through; font-size: 0.85em; }
+    .miss-row .x { margin-inline-start: auto; color: var(--color-text-light); font-size: 0.8em; white-space: nowrap; }
+    .trend { display: flex; align-items: flex-end; gap: 8px; height: 70px; direction: ltr; }
+    .trend .col { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 100%; gap: 3px; }
+    .trend .col i { width: 100%; background: var(--color-primary-glow); border-radius: 5px 5px 0 0; min-height: 2px; }
+    .trend .col.now i { background: var(--color-primary); }
+    .trend .col span { font-size: 0.7em; color: var(--color-text-light); font-variant-numeric: tabular-nums; }
+    .muted { color: var(--color-text-light); font-size: 0.82em; }
+    .edit-goal-btn, .save-goal-btn, .cancel-goal-btn {
+      font: inherit; font-size: 0.85em; cursor: pointer; border-radius: 10px; padding: 7px 14px;
+    }
+    .edit-goal-btn { align-self: flex-start; border: 1px solid var(--color-primary); background: none; color: var(--color-primary); }
+    .goal-form { display: flex; flex-wrap: wrap; gap: 10px; align-items: flex-end; padding: 12px; border-radius: 12px; background: var(--color-primary-glow); }
+    .goal-form label { display: flex; flex-direction: column; gap: 4px; font-size: 0.8em; color: var(--color-text-light); }
+    .goal-form input { font: inherit; width: 5.5em; padding: 6px 8px; border: 1px solid var(--color-border); border-radius: 8px; }
+    .save-goal-btn { border: none; background: var(--color-primary); color: #fff; }
+    .cancel-goal-btn { border: none; background: none; color: var(--color-text-light); }
+    .goal-error { color: var(--color-error); font-size: 0.8em; width: 100%; }
+    .others { margin-top: 24px; padding: 16px; border: 1px dashed var(--color-border); border-radius: 16px; }
+    .others h2 { font-size: 1em; margin-bottom: 6px; }
+    .setup-help { max-width: 520px; margin: 40px auto; background: var(--color-card); border-radius: 18px; padding: 24px; line-height: 1.7; box-shadow: var(--shadow-sm); }
+    .setup-help h2 { font-family: var(--font-display); font-weight: 400; margin-bottom: 8px; }
+  </style>
+</head>
+<body>
+  <div class="report-container">
+    <header class="report-header">
+      <h1>דוח תרגול</h1>
+      <a href="../index.html" class="back-btn">לאפליקציה ←</a>
+    </header>
+    <div id="status" class="report-status">טוען…</div>
+    <div class="weekpick hidden" id="weekPick"></div>
+    <div class="report-cols" id="cards"></div>
+    <section class="others hidden" id="others"></section>
+  </div>
+
+  <script src="report.js"></script>
+  <script>
+    const R = window.Report;
+    const TZ = 'Asia/Jerusalem';
+    const DAY_LETTERS = ['א', 'ב', 'ג', 'ד', 'ה', 'ו', 'ש'];
+    const KIND_NAMES = {
+      'en-he': 'מאנגלית לעברית', 'he-en': 'מעברית לאנגלית', 'write': 'כתיבה באנגלית', 'listen': 'הקשבה',
+      'order': 'בניית משפט', 'cloze': 'השלמת מילה', 'speak': 'להגיד בקול', 'card': 'כרטיסיות',
+      'multiple-choice': 'חשבון — בחירה', 'free-input': 'חשבון — כתיבה',
+    };
+    const data = { cfg: null, learners: [], events: [], topicNames: {}, gradeNames: {}, thisWeek: '', week: '', editing: '' };
+
+    function esc(s) {
+      return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+    }
+    function loadCfg() { try { return JSON.parse(localStorage.getItem('tirgul_report')); } catch (e) { return null; } }
+    function saveCfg(c) { try { localStorage.setItem('tirgul_report', JSON.stringify(c)); } catch (e) {} }
+
+    async function apiGet(params) {
+      const q = Object.entries({ ...params, key: data.cfg.key }).map(([k, v]) => k + '=' + encodeURIComponent(v)).join('&');
+      const r = await fetch(data.cfg.url + (data.cfg.url.includes('?') ? '&' : '?') + q);
+      return r.json();
+    }
+    async function apiPost(body) {
+      const r = await fetch(data.cfg.url, { method: 'POST', headers: { 'Content-Type': 'text/plain' }, body: JSON.stringify({ key: data.cfg.key, ...body }) });
+      return r.json();
+    }
+
+    function setStatus(msg, isError) {
+      const el = document.getElementById('status');
+      el.textContent = msg || '';
+      el.classList.toggle('hidden', !msg);
+      el.classList.toggle('error', !!isError);
+    }
+
+    async function init() {
+      const fromHash = R.parseSetupHash(location.hash);
+      if (fromHash) {
+        saveCfg(fromHash);
+        try { history.replaceState(null, '', location.pathname + location.search); } catch (e) {}
+      }
+      data.cfg = fromHash || loadCfg();
+      if (!data.cfg || !data.cfg.url || !data.cfg.key) return showSetupHelp();
+      await load();
+    }
+
+    function showSetupHelp() {
+      setStatus('');
+      document.querySelector('.report-container').insertAdjacentHTML('beforeend', `
+        <div class="setup-help">
+          <h2>הדף הזה מיועד להורים</h2>
+          <p>כאן רואים כמה כל אחת מהבנות תרגלה השבוע, מה הצליח ובמה עוד מתבלבלות, וקובעים יעד שבועי.</p>
+          <p>כדי להשתמש בו צריך הגדרה חד־פעמית של גיליון Google, כ־5 דקות. ההוראות נמצאות
+            <a href="https://github.com/udibarzi/tirgul/blob/main/_tracking/SETUP.md" target="_blank" rel="noopener">כאן</a>.
+            בסוף ההגדרה מקבלים קישור אישי לדף הזה.</p>
+        </div>`);
+    }
+
+    async function load() {
+      setStatus('טוען…');
+      data.thisWeek = R.weekStartOf(Date.now(), TZ);
+      if (!data.week) data.week = data.thisWeek;
+      const from = R.addDays(data.thisWeek, -7 * (R.TREND_WEEKS - 1));
+      const to = R.addDays(data.thisWeek, 6);
+      try {
+        const [l, e, manifest] = await Promise.all([
+          apiGet({ action: 'learners' }),
+          apiGet({ action: 'events', from, to }),
+          fetch('../content/manifest.json').then(r => r.json()).catch(() => null),
+        ]);
+        if (!l.ok || !e.ok) {
+          setStatus(l.error === 'key' || e.error === 'key' ? 'הקישור לא תקין. פתחו שוב את קישור ההורים מהגיליון.' : 'לא הצלחתי לטעון את הנתונים. נסו לרענן.', true);
+          return;
+        }
+        data.learners = l.learners || [];
+        data.events = e.events || [];
+        if (manifest) {
+          (manifest.topics || []).forEach(t => { data.topicNames[t.id] = t.name; });
+          (manifest.grades || []).forEach(g => { data.gradeNames[g.id] = g.name; });
+        }
+        setStatus('');
+        render();
+      } catch (err) {
+        setStatus('אין חיבור לגיליון כרגע. בדקו את האינטרנט ונסו לרענן.', true);
+      }
+    }
+
+    function weekLabel(i) {
+      return i === 0 ? 'השבוע' : i === 1 ? 'שבוע שעבר' : `לפני ${i} שבועות`;
+    }
+    function shortRange(ws) {
+      const a = ws.split('-'), b = R.addDays(ws, 6).split('-');
+      return `${Number(a[2])}.${Number(a[1])}–${Number(b[2])}.${Number(b[1])}`;
+    }
+
+    function render() {
+      const pick = document.getElementById('weekPick');
+      pick.classList.remove('hidden');
+      pick.innerHTML = '';
+      for (let i = 0; i < R.TREND_WEEKS; i++) {
+        const ws = R.addDays(data.thisWeek, -7 * i);
+        const b = document.createElement('button');
+        b.className = 'week-chip' + (ws === data.week ? ' active' : '');
+        b.innerHTML = `${weekLabel(i)} <small dir="ltr">${shortRange(ws)}</small>`;
+        b.onclick = () => { data.week = ws; render(); };
+        pick.appendChild(b);
+      }
+
+      const agg = R.aggregate(data.events, { weekStart: data.week, tz: TZ, topicNames: data.topicNames });
+      const trendAgg = R.aggregate(data.events, { weekStart: data.thisWeek, tz: TZ, topicNames: data.topicNames });
+      const cards = document.getElementById('cards');
+      cards.innerHTML = data.learners.map(l => learnerCard(l, agg[l.name] || R.emptyWeek(), (trendAgg[l.name] || R.emptyWeek()).trend)).join('');
+      if (!data.learners.length) {
+        cards.innerHTML = '<div class="report-status">אין עדיין בנות בלשונית learners בגיליון.</div>';
+      }
+      cards.querySelectorAll('.learner-card').forEach(wireGoalForm);
+
+      // Names that aren't in the learners tab, e.g. a typo or the setup "test" row
+      const known = new Set(data.learners.map(l => l.name));
+      const all = R.aggregate(data.events, { weekStart: data.thisWeek, tz: TZ });
+      const others = [...new Set(data.events.map(e => e.learner))].filter(n => n && !known.has(n));
+      const box = document.getElementById('others');
+      box.classList.toggle('hidden', !others.length);
+      box.innerHTML = others.length ? `<h2>שמות אחרים</h2>
+        <p class="muted">שמות שהגיעו מהאפליקציה ולא מופיעים בלשונית learners — 6 השבועות האחרונים. השם test מגיע מבדיקת ההגדרה.</p>
+        <table class="mini"><tr><th>שם</th><th class="n">דקות</th><th class="n">פריטים</th><th>לאחרונה</th></tr>
+        ${others.map(n => {
+          const evs = data.events.filter(e => e.learner === n);
+          const mins = Math.floor(evs.filter(e => e.type === 'time' && e.topic !== 'menu').reduce((s, e) => s + (Number(e.seconds) || 0), 0) / 60);
+          const items = evs.filter(e => e.type === 'answer' || e.type === 'card').length;
+          const last = evs.reduce((m, e) => (e.ts > m ? e.ts : m), '');
+          return `<tr><td>${esc(n)}</td><td class="n">${mins}</td><td class="n">${items}</td><td>${esc(when(last))}</td></tr>`;
+        }).join('')}</table>` : '';
+    }
+
+    function when(ts) {
+      if (!ts) return '';
+      const d = new Date(ts);
+      const day = new Intl.DateTimeFormat('he-IL', { timeZone: TZ, weekday: 'short', day: 'numeric', month: 'numeric' }).format(d);
+      const time = new Intl.DateTimeFormat('he-IL', { timeZone: TZ, hour: '2-digit', minute: '2-digit' }).format(d);
+      return `${day}, ${time}`;
+    }
+
+    function learnerCard(l, w, trend) {
+      const female = l.gender !== 'male';
+      const goal = l.minutesPerWeek || 0, goalDays = l.daysPerWeek || 0;
+      const met = goal > 0 && w.minutes >= goal && (!goalDays || w.days.length >= goalDays);
+      const isNow = data.week === data.thisWeek;
+      const todayIdx = isNow ? new Date(R.dayKey(Date.now(), TZ) + 'T12:00:00Z').getUTCDay() : 7;
+      const answered = w.correct + w.wrong;
+      const pill = !goal ? '' : met ? `<span class="pill ok">${female ? 'עמדה ביעד' : 'עמד ביעד'}</span>`
+        : w.minutes === 0 && !answered && !w.sessions ? `<span class="pill none">${isNow ? (female ? 'עוד לא התחילה' : 'עוד לא התחיל') : 'לא תרגלה'}</span>`
+        : `<span class="pill mid">${isNow ? 'בדרך' : (female ? 'לא עמדה ביעד' : 'לא עמד ביעד')}</span>`;
+      const pctRight = answered ? Math.round(w.correct / answered * 100) : 0;
+      const trendMax = Math.max(goal, ...trend, 1);
+      const missing = R.keepsMissing(data.events, l.name, Date.now());
+      const last = data.events.filter(e => e.learner === l.name).reduce((m, e) => (e.ts > m ? e.ts : m), '');
+
+      return `<article class="learner-card" data-learner="${esc(l.name)}">
+        <div class="lc-head">
+          <div class="lc-avatar">${esc(l.name.charAt(0))}</div>
+          <div><div class="lc-name">${esc(l.name)}</div>
+            <div class="lc-sub">${esc(data.gradeNames[l.grade] || '')}${last ? ' · לאחרונה: ' + esc(when(last)) : ''}</div></div>
+          ${pill}
+        </div>
+
+        <div>
+          <div class="lbl">דקות תרגול</div>
+          <div class="goal-line"><span class="num" dir="ltr">${goal ? `${w.minutes} / ${goal}` : w.minutes}</span> דק׳${goal ? '' : ' <span class="muted">— אין יעד</span>'}</div>
+          ${goal ? `<div class="bar${met ? ' ok' : ''}"><i style="width:${Math.min(100, Math.round(w.minutes / goal * 100))}%"></i></div>` : ''}
+        </div>
+
+        <div>
+          <div class="lbl">ימי תרגול: ${w.days.length}${goalDays ? ` מתוך ${goalDays}` : ''} <span class="muted">— יום נספר מ־5 דקות</span></div>
+          <div class="days">${DAY_LETTERS.map((d, i) =>
+            `<div class="day${w.dayDots[i] ? ' on' : w.shortDays[i] ? ' short' : ''}${i > todayIdx ? ' future' : ''}"><i></i>${d}</div>`).join('')}</div>
+        </div>
+
+        <div class="tiles">
+          <div class="tile"><b data-stat="sessions">${w.sessions}</b><span>תרגולים</span></div>
+          <div class="tile"><b data-stat="questions">${w.questions}</b><span>שאלות</span></div>
+          <div class="tile"><b data-stat="cards">${w.cards}</b><span>כרטיסיות</span></div>
+        </div>
+
+        ${answered ? `<div>
+          <div class="lbl">נכון ${pctRight}% · טעות ${100 - pctRight}% <span class="muted">— שאלות וכרטיסיות</span></div>
+          <div class="rw"><span class="r" style="width:${pctRight}%"></span><span class="w" style="width:${100 - pctRight}%"></span></div>
+        </div>` : ''}
+
+        ${w.byTopic.length ? `<div><div class="lbl">לפי נושא</div>
+          <table class="mini"><tr><th>נושא</th><th class="n">דקות</th><th class="n">פריטים</th><th class="n">נכון</th></tr>
+          ${w.byTopic.map(t => `<tr><td>${esc(t.name)}</td><td class="n">${t.minutes}</td><td class="n">${t.questions}</td><td class="n">${t.questions ? t.pct + '%' : '—'}</td></tr>`).join('')}
+          </table></div>` : ''}
+
+        ${w.byKind.length ? `<div><div class="lbl">לפי סוג תרגיל</div>
+          <table class="mini"><tr><th>סוג</th><th class="n">פריטים</th><th class="n">נכון</th></tr>
+          ${w.byKind.map(k => `<tr><td>${esc(KIND_NAMES[k.kind] || k.kind)}</td><td class="n">${k.questions}</td><td class="n">${k.pct}%</td></tr>`).join('')}
+          </table></div>` : ''}
+
+        ${missing.length ? `<div><div class="lbl">טועה בהן שוב ושוב <span class="muted">— 4 שבועות אחרונים</span></div>
+          ${missing.map(m => `<div class="miss-row"><span class="en" dir="ltr" lang="en">${esc(m.item)}</span>${m.lastGiven ? `<span class="typed" dir="ltr" lang="en">${esc(m.lastGiven)}</span>` : ''}<span class="x">${m.wrong === 1 ? 'טעות אחת' : m.wrong + ' טעויות'}</span></div>`).join('')}
+        </div>` : ''}
+
+        <div>
+          <div class="lbl">דקות בכל שבוע — 6 השבועות האחרונים</div>
+          <div class="trend">${trend.map((m, i) => `<div class="col${i === trend.length - 1 ? ' now' : ''}"><span>${m}</span><i style="height:${Math.round(m / trendMax * 100)}%"></i></div>`).join('')}</div>
+        </div>
+
+        ${w.menuMinutes ? `<div class="muted">זמן בתפריטים: ${w.menuMinutes} דק׳ — לא נספר ביעד</div>` : ''}
+
+        <button class="edit-goal-btn" type="button">עריכת יעד</button>
+        <form class="goal-form hidden">
+          <label>דקות בשבוע<input name="minutes" id="min-${esc(l.name)}" type="number" min="0" max="3000" inputmode="numeric" value="${goal || ''}"></label>
+          <label>ימים בשבוע<input name="days" id="days-${esc(l.name)}" type="number" min="0" max="7" inputmode="numeric" value="${goalDays || ''}"></label>
+          <button class="save-goal-btn" type="submit">שמירה</button>
+          <button class="cancel-goal-btn" type="button">ביטול</button>
+          <div class="goal-error hidden"></div>
+        </form>
+      </article>`;
+    }
+
+    function wireGoalForm(card) {
+      const name = card.dataset.learner;
+      const form = card.querySelector('.goal-form');
+      const btn = card.querySelector('.edit-goal-btn');
+      const err = card.querySelector('.goal-error');
+      btn.onclick = () => { form.classList.remove('hidden'); btn.classList.add('hidden'); };
+      card.querySelector('.cancel-goal-btn').onclick = () => { form.classList.add('hidden'); btn.classList.remove('hidden'); };
+      form.onsubmit = async (e) => {
+        e.preventDefault();
+        const minutes = Number(form.minutes.value || 0), days = Number(form.days.value || 0);
+        if (!(minutes >= 0 && minutes <= 3000) || !(days >= 0 && days <= 7)) {
+          err.textContent = 'דקות: 0 עד 3000. ימים: 0 עד 7.';
+          err.classList.remove('hidden');
+          return;
+        }
+        const save = card.querySelector('.save-goal-btn');
+        save.disabled = true;
+        try {
+          const r = await apiPost({ action: 'setGoal', learner: name, minutesPerWeek: minutes, daysPerWeek: days });
+          if (!r.ok) throw new Error(r.error);
+          const l = data.learners.find(x => x.name === name);
+          if (l) {
+            if (minutes > 0) l.minutesPerWeek = minutes; else delete l.minutesPerWeek;
+            if (days > 0) l.daysPerWeek = days; else delete l.daysPerWeek;
+          }
+          render();
+        } catch (ex) {
+          err.textContent = 'השמירה נכשלה. נסו שוב.';
+          err.classList.remove('hidden');
+          save.disabled = false;
+        }
+      };
+    }
+
+    init();
+  </script>
+</body>
+</html>

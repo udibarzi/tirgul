@@ -236,6 +236,17 @@ async function step(name, fn) {
     });
   }
 
+  await step('report without setup explains how', async () => {
+    const ctx4 = await browser.newContext({ viewport: { width: 390, height: 844 } });
+    const p4 = await ctx4.newPage();
+    p4.on('pageerror', e => errors.push(e.message));
+    await p4.goto(`${B}/app/report.html`);
+    await p4.waitForSelector('.setup-help');
+    assert.ok((await p4.textContent('.setup-help')).includes('הגדרה'));
+    assert.equal(await p4.evaluate(() => localStorage.getItem('tirgul_sync')), null, 'report never configures a device');
+    await ctx4.close();
+  });
+
   assert.deepEqual(errors, [], 'page errors');
   await browser.close();
   server.kill();
