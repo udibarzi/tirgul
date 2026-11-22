@@ -169,7 +169,7 @@ function vocabDistractors(word, field, words) {
 
 /** Distractors for a cloze gap: the item's own "choices", else similar words from the topic. */
 function clozeDistractors(item, words) {
-  if (Array.isArray(item.choices) && item.choices.length) return shuffle(item.choices.slice()).slice(0, 3);
+  if (Array.isArray(item.choices) && item.choices.length) return shuffle(item.choices.slice()).slice(0, 4);
   const key = vocabNormalize(item.blank);
   const match = words.find(w => vocabNormalize(w.en) === key);
   if (match) return vocabDistractors(match, 'en', words);

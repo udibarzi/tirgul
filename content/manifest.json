@@ -253,6 +253,17 @@
       "difficulty": 2,
       "order": 4,
       "grade": 8
+    },
+    {
+      "id": "english-test-2311-5",
+      "name": "אנגלית — חזרה למבחן 23.11",
+      "icon": "📝",
+      "description": "46 המשפטים מדפי העבודה: am, is, are, have, has",
+      "type": "vocab",
+      "subject": "english",
+      "difficulty": 1,
+      "order": 0,
+      "grade": 5
     }
   ]
 }
