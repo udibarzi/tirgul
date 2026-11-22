@@ -68,6 +68,7 @@
   </div>
   
   <script src="core.js"></script>
+  <script src="tracker.js"></script>
   <script src="vocab.js"></script>
   <script>
     // ============================================
@@ -79,7 +80,9 @@
     const userName = decodeURIComponent(params.get('name') || '');
     const userGender = params.get('gender') || localStorage.getItem('math_app_gender') || 'female';
     
-    const progress = new ProgressManager('math_app');
+    const progress = new ProgressManager(Tracker.progressPrefix());
+    Tracker.setPage({ topic: topicId || '', mode: params.get('mode') || '', level: params.get('level') || '' });
+    Tracker.attach();
     
     const state = {
       questions: [],
@@ -120,6 +123,12 @@
         
         state.topicMeta = content;
         state.questions = prepareQuestions(content);
+        Tracker.setPage({
+          topic: topicId,
+          level: state.isVocab ? (params.get('level') || vocabLevels(content)[0]) : '',
+          mode: state.isVocab ? state.vocabMode : (params.get('mode') || ''),
+        });
+        Tracker.session();
         
         document.getElementById('topicTitle').textContent = content.name || topicId;
         document.title = `תרגול: ${content.name || topicId}`;
@@ -395,6 +404,13 @@
       progress.recordAnswer(topicId, isCorrect);
       const q = state.questions[state.currentQ];
       if (q.vocab) VocabStats.record(topicId, q.word.en, isCorrect);
+      const given = (state.answers[state.currentQ] || {}).selected;
+      Tracker.answer({
+        kind: q.vocab ? q.kind : q.type,
+        item: q.vocab ? q.word.en : String(q.text || '').slice(0, 60),
+        correct: isCorrect,
+        given: q.vocab && q.kind === 'write' ? given : '',
+      });
       updateStreakBadge();
       updateDots();
     }

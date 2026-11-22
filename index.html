@@ -195,6 +195,38 @@
       border-color: var(--color-warning);
       box-shadow: 0 8px 25px rgba(245, 158, 11, 0.2);
     }
+
+    /* Who's practicing? */
+    .learner-card-pick { display: flex; flex-direction: column; align-items: center; gap: 6px; min-width: 120px; }
+    .learner-avatar {
+      width: 52px; height: 52px; border-radius: 50%;
+      display: grid; place-items: center;
+      background: linear-gradient(135deg, var(--color-primary), #6366F1);
+      color: white; font-family: var(--font-display); font-size: 1.5em;
+    }
+    .learner-add .learner-avatar { background: var(--color-border); color: var(--color-text-light); }
+    .learner-grade { font-size: 0.8em; color: var(--color-text-light); }
+
+    /* First-setup mapping rows */
+    .map-row { border: 1px solid var(--color-border); border-radius: 14px; padding: 12px; margin-top: 12px; }
+    .map-name { font-weight: 600; margin-bottom: 8px; text-align: center; }
+    .map-btns { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
+    .map-btn {
+      font: inherit; padding: 8px 16px; border-radius: 10px; cursor: pointer;
+      border: 2px solid var(--color-primary); background: var(--color-card); color: var(--color-primary); font-weight: 600;
+    }
+    .map-btn.map-none { border-color: var(--color-border); color: var(--color-text-light); font-weight: 400; }
+
+    /* This week's goal line */
+    .week-line {
+      background: var(--color-primary-glow); border-radius: var(--radius-md);
+      padding: 10px 14px; margin-bottom: var(--space-md); font-size: 0.92em; text-align: center;
+    }
+    .week-line .progress-bar { margin-top: 6px; background: rgba(255,255,255,0.7); }
+    .week-line.met { background: var(--color-success-bg); }
+    .week-line.met .progress-fill { background: var(--color-success); }
+    .week-cheer { font-weight: 700; color: var(--color-success); margin-bottom: 2px; }
+    .week-num { font-weight: 600; font-variant-numeric: tabular-nums; }
   </style>
 </head>
 <body>
@@ -249,6 +281,25 @@
     </div>
   </div>
 
+  <!-- Who's practicing? -->
+  <div id="learnerScreen" class="landing-container hidden">
+    <div class="welcome-card">
+      <div class="landing-logo text-center">👋</div>
+      <h1 class="landing-title text-center">מי מתרגלת?</h1>
+      <div class="picker-grid" id="learnerGrid"></div>
+    </div>
+  </div>
+
+  <!-- First setup on a device that was already used -->
+  <div id="mapScreen" class="landing-container hidden">
+    <div class="welcome-card">
+      <div class="landing-logo text-center">🔗</div>
+      <h1 class="landing-title text-center">רגע לפני שמתחילים</h1>
+      <p class="picker-subtitle">מי תרגלה במכשיר הזה עד עכשיו? כך ההתקדמות שלה תישמר.</p>
+      <div id="mapList"></div>
+    </div>
+  </div>
+
   <!-- Screen 4: Topic Selection -->
   <div id="topicsScreen" class="topics-container hidden">
     <div class="topics-header">
@@ -258,9 +309,14 @@
       </div>
       <div class="settings-row">
         <a class="settings-link" id="changeNameLink">שינוי שם</a>
-        <span class="settings-divider">|</span>
+        <span class="settings-divider" id="settingsDivider">|</span>
         <a class="settings-link" id="changeGradeLink">שינוי כיתה</a>
       </div>
+    </div>
+
+    <div class="week-line hidden" id="weekLine">
+      <div class="week-text" id="weekText"></div>
+      <div class="progress-bar"><div class="progress-fill" id="weekFill"></div></div>
     </div>
 
     <div class="total-stats" id="totalStats">
@@ -274,9 +330,19 @@
   </div>
 
   <script src="app/core.js"></script>
+  <script src="app/tracker.js"></script>
   <script>
-    const progress = new ProgressManager('math_app');
+    const T = window.Tracker;
     let manifest = null;
+    // A learner being added through the name → grade → gender flow
+    const adding = { name: '', grade: 0 };
+
+    function pm() { return new ProgressManager(T.progressPrefix()); }
+    function chosenThisVisit() { try { return sessionStorage.getItem('tirgul_chosen') === '1'; } catch (e) { return false; } }
+    function markChosen() { try { sessionStorage.setItem('tirgul_chosen', '1'); } catch (e) {} }
+    function sheetProfiles() { return T.getProfiles().filter(p => p.fromSheet); }
+    function isConfigured() { return !!T.getConfig() && sheetProfiles().length > 0; }
+    function gradeInfo(g) { return (manifest.grades || []).find(x => x.id === g); }
 
     // ---- Initialization ----
     async function init() {
@@ -287,40 +353,98 @@
         return;
       }
 
-      const savedName = progress.getUserName();
-      const savedGrade = getGrade();
-      const savedGender = getGender();
-
-      // If saved grade no longer exists in manifest, reset to grade picker
-      const validGrades = (manifest.grades || []).map(g => g.id);
-      if (savedGrade && !validGrades.includes(savedGrade)) {
-        setGrade(0);
+      T.migrateLegacy();
+      if (T.applySetupHash(location.hash)) {
+        try { history.replaceState(null, '', location.pathname + location.search); } catch (e) {}
       }
+      T.setPage({ topic: 'menu' });
+      T.attach();
+      if (T.getConfig()) await Promise.race([T.fetchLearners(), new Promise(r => setTimeout(r, 4000))]);
+      route();
+    }
 
-      const grade = getGrade();
-      if (savedName && grade && savedGender) {
-        showTopics(savedName, grade);
-      } else if (savedName && grade && !savedGender) {
-        showGenderPicker(savedName);
-      } else if (savedName && !grade) {
-        showGradePicker(savedName);
-      } else {
-        showNameScreen();
+    function route() {
+      if (T.getConfig() && T.unmappedLocalNames().length) return showMapScreen();
+      const sheet = sheetProfiles();
+      const cur = T.getCurrent();
+      if (T.getConfig() && sheet.length) {
+        if (sheet.length === 1) { T.setCurrent(sheet[0].name); return showTopics(); }
+        if (cur && chosenThisVisit() && sheet.some(p => p.name === cur.name)) return showTopics();
+        return showLearnerScreen();
       }
+      // Not set up: the original name → grade → gender flow
+      if (!cur) return showNameScreen();
+      if (!gradeInfo(cur.grade)) return showGradePicker(cur.name);
+      if (!getGender()) return showGenderPicker(cur.name);
+      showTopics();
     }
 
-    // ---- LocalStorage helpers for grade/gender ----
-    function getGrade() {
-      try { return parseInt(localStorage.getItem('math_app_grade')) || 0; } catch (e) { return 0; }
-    }
-    function setGrade(g) {
-      try { localStorage.setItem('math_app_grade', String(g)); } catch (e) {}
-    }
     function getGender() {
       try { return localStorage.getItem('math_app_gender') || ''; } catch (e) { return ''; }
     }
-    function setGender(g) {
-      try { localStorage.setItem('math_app_gender', g); } catch (e) {}
+
+    // ---- Who's practicing? ----
+    function showLearnerScreen() {
+      const list = isConfigured() ? sheetProfiles() : T.getProfiles();
+      if (!list.length && !isConfigured()) return showNameScreen();
+      hideAll();
+      document.getElementById('learnerScreen').classList.remove('hidden');
+      const grid = document.getElementById('learnerGrid');
+      grid.innerHTML = '';
+      list.forEach(p => {
+        const card = document.createElement('div');
+        card.className = 'picker-card learner-card-pick';
+        const g = gradeInfo(p.grade);
+        card.innerHTML = '<span class="learner-avatar"></span><span class="picker-label"></span><span class="learner-grade"></span>';
+        card.querySelector('.learner-avatar').textContent = p.name.charAt(0);
+        card.querySelector('.picker-label').textContent = p.name;
+        card.querySelector('.learner-grade').textContent = g ? g.name : '';
+        card.addEventListener('click', () => {
+          T.setCurrent(p.name);
+          markChosen();
+          if (!gradeInfo(p.grade)) return showGradePicker(p.name);
+          showTopics();
+        });
+        grid.appendChild(card);
+      });
+      if (!isConfigured()) {
+        const add = document.createElement('div');
+        add.className = 'picker-card learner-card-pick learner-add';
+        add.innerHTML = '<span class="learner-avatar">+</span><span class="picker-label">הוספה</span><span class="learner-grade">שם חדש</span>';
+        add.addEventListener('click', () => showNameScreen());
+        grid.appendChild(add);
+      }
+    }
+
+    // ---- First setup: whose progress is already on this device? ----
+    function showMapScreen() {
+      hideAll();
+      document.getElementById('mapScreen').classList.remove('hidden');
+      const box = document.getElementById('mapList');
+      box.innerHTML = '';
+      const sheet = sheetProfiles();
+      T.unmappedLocalNames().forEach(from => {
+        const row = document.createElement('div');
+        row.className = 'map-row';
+        const name = document.createElement('div');
+        name.className = 'map-name';
+        name.textContent = from;
+        const btns = document.createElement('div');
+        btns.className = 'map-btns';
+        sheet.map(p => p.name).concat([null]).forEach(to => {
+          const b = document.createElement('button');
+          b.className = 'map-btn' + (to ? '' : ' map-none');
+          b.textContent = to || 'אף אחת';
+          b.addEventListener('click', () => {
+            T.mapLearner(from, to);
+            if (T.unmappedLocalNames().length) showMapScreen(); else route();
+          });
+          btns.appendChild(b);
+        });
+        row.appendChild(name);
+        row.appendChild(btns);
+        box.appendChild(row);
+      });
     }
 
     // ---- Name Screen ----
@@ -358,7 +482,8 @@
     }
 
     function startWithName(name) {
-      progress.setUserName(name);
+      adding.name = name;
+      adding.grade = 0;
       showGradePicker(name);
     }
 
@@ -379,26 +504,26 @@
         grid.appendChild(card);
       });
 
-      // Back link: go to topics if user already has grade+gender, else name screen
+      // Back link: go to topics if the current learner is complete, else name screen
       document.getElementById('gradeBackLink').onclick = () => {
-        const savedGrade = getGrade();
-        const savedGender = getGender();
-        if (savedGrade && savedGender) {
-          showTopics(name, savedGrade);
-        } else {
-          showNameScreen();
-        }
+        adding.name = '';
+        const cur = T.getCurrent();
+        if (cur && gradeInfo(cur.grade) && getGender()) showTopics();
+        else showNameScreen();
       };
     }
 
     function selectGrade(gradeId) {
-      setGrade(gradeId);
-      const savedGender = getGender();
-      if (savedGender) {
-        showTopics(progress.getUserName(), gradeId);
-      } else {
-        showGenderPicker(progress.getUserName());
+      if (adding.name) {
+        adding.grade = gradeId;
+        showGenderPicker(adding.name);
+        return;
       }
+      const cur = T.getCurrent();
+      if (!cur) return showNameScreen();
+      T.addLocalProfile({ ...cur, grade: gradeId });
+      T.setCurrent(cur.name);
+      if (getGender()) showTopics(); else showGenderPicker(cur.name);
     }
 
     // ---- Gender Picker ----
@@ -413,41 +538,77 @@
     }
 
     function selectGender(gender) {
-      setGender(gender);
-      showTopics(progress.getUserName(), getGrade());
+      if (adding.name) {
+        T.addLocalProfile({ name: adding.name, grade: adding.grade, gender });
+        T.setCurrent(adding.name);
+        adding.name = '';
+      } else {
+        const cur = T.getCurrent();
+        if (!cur) return showNameScreen();
+        T.addLocalProfile({ ...cur, gender });
+        T.setCurrent(cur.name);
+      }
+      showTopics();
     }
 
     // ---- Topics Screen ----
-    function showTopics(name, grade) {
+    function showTopics() {
+      const cur = T.getCurrent();
+      if (!cur) return showNameScreen();
       hideAll();
       document.getElementById('topicsScreen').classList.remove('hidden');
-      document.getElementById('displayName').textContent = name;
+      document.getElementById('displayName').textContent = cur.name;
 
-      // Show grade badge
-      const gradeInfo = (manifest.grades || []).find(g => g.id === grade);
-      document.getElementById('gradeBadge').textContent = gradeInfo ? gradeInfo.name : '';
+      const info = gradeInfo(cur.grade);
+      document.getElementById('gradeBadge').textContent = info ? info.name : '';
 
-      document.getElementById('changeNameLink').onclick = () => {
-        progress.setUserName('');
-        setGrade(0);
-        setGender('');
-        showNameScreen();
-      };
+      const nameLink = document.getElementById('changeNameLink');
+      nameLink.textContent = isConfigured() ? 'החלפה' : 'שינוי שם';
+      nameLink.onclick = () => showLearnerScreen();
 
-      document.getElementById('changeGradeLink').onclick = () => {
-        showGradePicker(name);
-      };
+      // Grade comes from the sheet for sheet learners
+      document.getElementById('changeGradeLink').classList.toggle('hidden', cur.fromSheet);
+      document.getElementById('settingsDivider').classList.toggle('hidden', cur.fromSheet);
+      document.getElementById('changeGradeLink').onclick = () => showGradePicker(cur.name);
 
-      renderTopicGrid(grade);
+      renderTopicGrid(cur);
       updateTotalStats();
+      renderWeekLine(cur);
     }
 
-    function renderTopicGrid(grade) {
+    // ---- This week's progress toward the goal ----
+    function renderWeekLine(cur) {
+      const el = document.getElementById('weekLine');
+      if (!cur.minutesPerWeek) { el.classList.add('hidden'); return; }
+      const draw = (w) => {
+        const goal = cur.minutesPerWeek, goalDays = cur.daysPerWeek || 0;
+        const met = w.minutes >= goal && (!goalDays || w.days >= goalDays);
+        document.getElementById('weekText').innerHTML =
+          (met ? '<div class="week-cheer">🎉 עמדת ביעד השבוע!</div>' : '') +
+          `<div>השבוע: <span dir="ltr" class="week-num">${w.minutes} / ${goal}</span> דק׳` +
+          (goalDays ? ` · ימים: <span dir="ltr" class="week-num">${w.days} / ${goalDays}</span>` : '') + '</div>';
+        document.getElementById('weekFill').style.width = Math.min(100, Math.round(w.minutes / goal * 100)) + '%';
+        el.classList.toggle('met', met);
+        el.classList.remove('hidden');
+      };
+      const local = T.localWeek(cur.name);
+      draw(local);
+      T.fetchWeek(cur.name).then(w => {
+        const now = T.getCurrent();
+        if (!w || !now || now.name !== cur.name) return;
+        // the server may not have this device's unsent minutes yet
+        draw({ minutes: Math.max(w.minutes, local.minutes), days: Math.max(w.days, local.days) });
+      });
+    }
+
+    function renderTopicGrid(cur) {
+      const grade = cur.grade;
+      const progress = pm();
       const grid = document.getElementById('topicsGrid');
       grid.innerHTML = '';
 
-      const gender = getGender();
-      const nameParam = encodeURIComponent(progress.getUserName());
+      const gender = cur.gender;
+      const nameParam = encodeURIComponent(cur.name);
 
       let cardIndex = 0;
 
@@ -511,7 +672,7 @@
     }
 
     function updateTotalStats() {
-      const allProgress = progress.getAllProgress();
+      const allProgress = pm().getAllProgress();
       let totalCorrect = 0;
       Object.values(allProgress).forEach(p => {
         totalCorrect += (p.correct || 0);
@@ -520,7 +681,7 @@
     }
 
     function hideAll() {
-      ['nameScreen', 'gradeScreen', 'genderScreen', 'topicsScreen'].forEach(id => {
+      ['nameScreen', 'gradeScreen', 'genderScreen', 'topicsScreen', 'learnerScreen', 'mapScreen'].forEach(id => {
         document.getElementById(id).classList.add('hidden');
       });
     }

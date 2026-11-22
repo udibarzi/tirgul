@@ -110,7 +110,11 @@ function vocabNormalize(s) {
 // Separate prefix from ProgressManager ('math_app_') so landing-page totals
 // don't pick these up. Keyed by the item's English text.
 const VocabStats = {
-  _key(topicId) { return 'tirgul_vocab_' + topicId; },
+  _key(topicId) {
+    // Per learner when the tracker is loaded (tirgul_vocab__<name>_<topic>)
+    if (typeof window !== 'undefined' && window.Tracker) return window.Tracker.vocabKey(topicId);
+    return 'tirgul_vocab_' + topicId;
+  },
   get(topicId) {
     try { return JSON.parse(localStorage.getItem(this._key(topicId))) || {}; }
     catch (e) { return {}; }

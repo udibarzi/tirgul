@@ -74,6 +74,7 @@
   </div>
 
   <script src="core.js"></script>
+  <script src="tracker.js"></script>
   <script src="vocab.js"></script>
   <script>
     const params = new URLSearchParams(window.location.search);
@@ -91,6 +92,9 @@
         document.getElementById(s).classList.toggle('hidden', s !== id));
       window.scrollTo(0, 0);
     }
+
+    Tracker.setPage({ topic: 'menu' });
+    Tracker.attach();
 
     async function init() {
       content = topicId ? await loadContent(`../content/${topicId}.json`) : null;
@@ -112,6 +116,7 @@
     // ---------------- Menu ----------------
     function showMenu() {
       show('menuScreen');
+      Tracker.setPage({ topic: 'menu' });
       const words = vocabItems(content, level);
       const isSent = level === 'sentences';
       const unit = isSent ? 'משפטים' : 'מילים';
@@ -188,6 +193,8 @@
       document.getElementById('cardYes').disabled = false;
       document.getElementById('cardNo').disabled = false;
       show('cardsScreen');
+      Tracker.setPage({ topic: topicId, level, mode: 'cards' });
+      Tracker.session();
       document.querySelectorAll('#cardsScreen .count-chip').forEach(chip => {
         chip.onclick = () => { setPref('side', chip.dataset.side); renderCard(); };
       });
@@ -241,6 +248,7 @@
       if (cards.busy) return;
       const word = cards.deck[cards.i];
       VocabStats.record(topicId, word.en, knew);
+      Tracker.card({ item: word.en, correct: knew });
       if (knew) cards.yes++; else cards.missed.push(word);
       if (cards.flipped) { nextCard(); return; }
       // Not flipped yet: show the answer for a moment, then move on
@@ -287,6 +295,7 @@
     // ---------------- Word list ----------------
     function showList() {
       show('listScreen');
+      Tracker.setPage({ topic: topicId, level, mode: 'list' });
       const stats = VocabStats.get(topicId);
       document.getElementById('listTitle').textContent = level === 'sentences' ? 'רשימת המשפטים' : 'רשימת המילים';
       const rows = [...vocabItems(content, level)];
