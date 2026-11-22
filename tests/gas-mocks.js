@@ -7,16 +7,20 @@ const crypto = require('crypto');
 function makeSheet(name) {
   const rows = [];
   const width = () => rows.reduce((m, r) => Math.max(m, r.length), 0);
+  let maxRows = 1000;                                   // a new Google Sheets tab has 1,000 rows
   const sheet = {
     _rows: rows,
+    _formats: [],
+    getMaxRows: () => maxRows,
+    insertRowsAfter: (after, n) => { maxRows += n; return sheet; },
     getName: () => name,
     getLastRow: () => rows.length,
     getLastColumn: () => width(),
-    appendRow: r => { rows.push(r.slice()); return sheet; },
+    appendRow: r => { rows.push(r.slice()); if (rows.length > maxRows) maxRows = rows.length; return sheet; },
     setFrozenRows: () => sheet,
     getDataRange: () => sheet.getRange(1, 1, Math.max(rows.length, 1), Math.max(width(), 1)),
     getRange(row, col, numRows = 1, numCols = 1) {
-      if (typeof row === 'string') return { setNumberFormat: () => {} };   // A1 notation: format only
+      if (typeof row === 'string') return { setNumberFormat: f => { sheet._formats.push({ a1: row, f }); } };   // A1 notation: format only
       return {
         getValues() {
           const out = [];
@@ -30,13 +34,14 @@ function makeSheet(name) {
         },
         setValues(values) {
           if (values.length !== numRows || values.some(v => v.length !== numCols)) throw new Error('setValues: size mismatch');
+          if (row - 1 + numRows > maxRows) throw new Error('Exception: The coordinates of the range are outside the dimensions of the sheet.');
           values.forEach((v, r) => {
             const i = row - 1 + r;
             while (rows.length <= i) rows.push([]);
             v.forEach((x, c) => { rows[i][col - 1 + c] = x; });
           });
         },
-        setNumberFormat: () => {},
+        setNumberFormat: f => { sheet._formats.push({ row, col, numRows, numCols, f }); },
         setFontWeight: () => {},
       };
     },
@@ -54,12 +59,13 @@ function formatDate(date, tz, fmt) {
   throw new Error('formatDate: unsupported format ' + fmt);
 }
 
-function loadGas({ props = {}, learners = [] } = {}) {
+function loadGas({ props = {}, learners = [], serviceUrl = 'https://script.google.com/macros/s/MOCK/exec', webAppUrl } = {}) {
   const sheets = new Map();
   let tz = 'America/New_York';
   const ss = {
     getSheetByName: n => sheets.get(n) || null,
     insertSheet: n => { const s = makeSheet(n); sheets.set(n, s); return s; },
+    deleteSheet: sh => { sheets.delete(sh.getName()); },
     setSpreadsheetTimeZone: t => { tz = t; },
     getSpreadsheetTimeZone: () => tz,
   };
@@ -85,9 +91,13 @@ function loadGas({ props = {}, learners = [] } = {}) {
       Charset: { UTF_8: 'utf8' },
       base64EncodeWebSafe: s => Buffer.from(String(s), 'utf8').toString('base64').replace(/\+/g, '-').replace(/\//g, '_'),
     },
-    ScriptApp: { getService: () => ({ getUrl: () => 'https://script.google.com/macros/s/MOCK/exec' }) },
+    ScriptApp: { getService: () => ({ getUrl: () => serviceUrl }) },
   };
-  const src = fs.readFileSync(path.join(__dirname, '..', '_tracking', 'Code.gs'), 'utf8');
+  let src = fs.readFileSync(path.join(__dirname, '..', '_tracking', 'Code.gs'), 'utf8');
+  if (webAppUrl !== undefined) {
+    if (!/^var WEB_APP_URL = '';$/m.test(src)) throw new Error('Code.gs has no WEB_APP_URL line');
+    src = src.replace(/^var WEB_APP_URL = '';$/m, `var WEB_APP_URL = ${JSON.stringify(webAppUrl)};`);
+  }
   vm.createContext(sandbox);
   vm.runInContext(src, sandbox, { filename: 'Code.gs' });
   const gas = sandbox.module.exports;
@@ -101,6 +111,8 @@ function loadGas({ props = {}, learners = [] } = {}) {
     props: store,
     logs,
     sheet: n => (sheets.get(n) ? sheets.get(n)._rows : null),
+    sheetObj: n => sheets.get(n) || null,
+    ss,
     tz: () => tz,
   };
 }

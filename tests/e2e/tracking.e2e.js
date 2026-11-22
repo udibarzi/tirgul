@@ -180,6 +180,26 @@ async function step(name, fn) {
     await ctx2.close();
   });
 
+  await step('quiz opened before home keeps old progress', async () => {
+    const c = await browser.newContext({ viewport: { width: 390, height: 844 } });
+    const p = await c.newPage();
+    p.on('pageerror', e => errors.push(e.message));
+    await p.goto(`${B}/content/manifest.json`);
+    await p.evaluate(() => {
+      localStorage.setItem('math_app_username', 'noa');
+      localStorage.setItem('math_app_grade', '5');
+      localStorage.setItem('math_app_gender', 'female');
+      localStorage.setItem('math_app_english-food-5', JSON.stringify({ correct: 7, total: 9, streak: 0, bestStreak: 3, flagged: [] }));
+    });
+    await p.goto(`${B}/app/quiz.html?topic=english-food-5&mode=en-he&n=1&level=words`);
+    await p.waitForSelector('.option-btn');
+    await p.evaluate(() => document.querySelectorAll('.option-btn')[state.questions[0].correct].click());
+    await p.goto(`${B}/`);
+    await p.waitForSelector('#topicsScreen:not(.hidden)');
+    assert.match(await p.textContent('a.topic-card[href*="english-food-5"] .stats'), /8\/10/);
+    await c.close();
+  });
+
   await step('unconfigured device keeps today\'s flow', async () => {
     const ctx3 = await browser.newContext({ viewport: { width: 390, height: 844 } });
     const p3 = await ctx3.newPage();

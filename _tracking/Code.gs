@@ -7,6 +7,9 @@
  * except inside the two links that showLinks() prints for you.
  */
 
+// After Deploy → New deployment, paste the "Web app URL" here (it ends with /exec), save, then run showLinks.
+var WEB_APP_URL = '';
+
 var TZ = 'Asia/Jerusalem';
 var EVENT_COLS = ['id', 'ts', 'learner', 'type', 'topic', 'level', 'mode', 'kind', 'item', 'correct', 'given', 'seconds', 'received'];
 var LEARNER_COLS = ['name', 'grade', 'gender', 'minutesPerWeek', 'daysPerWeek', 'active'];
@@ -40,7 +43,13 @@ function setup() {
 
 /** Prints the two setup links. Run after Deploy → New deployment → Web app. */
 function showLinks() {
-  var url = ScriptApp.getService().getUrl();
+  // Run from the editor, getUrl() often returns the /dev address, which only works for you
+  var url = String(WEB_APP_URL || '').trim() || ScriptApp.getService().getUrl();
+  if (!/^https:\/\/script\.google\.com\/.+\/exec$/.test(url)) {
+    Logger.log('Missing web app URL. Deploy → Manage deployments → copy the "Web app URL" that ends with /exec, ' +
+      'paste it between the quotes in the line WEB_APP_URL = \'\' at the top of this file, save, and run showLinks again.');
+    return;
+  }
   var props = PropertiesService.getScriptProperties();
   var dev = SITE + '#setup=' + b64_({ url: url, key: props.getProperty('WRITE_KEY') });
   var par = SITE + 'app/report.html#setup=' + b64_({ url: url, key: props.getProperty('PARENT_KEY') });
@@ -56,6 +65,14 @@ function ping() {
 // ---------- web app ----------
 
 function doPost(e) {
+  try { return handlePost_(e); } catch (err) { return json_({ ok: false, error: 'server', message: String(err && err.message || err).slice(0, 200) }); }
+}
+
+function doGet(e) {
+  try { return handleGet_(e); } catch (err) { return json_({ ok: false, error: 'server', message: String(err && err.message || err).slice(0, 200) }); }
+}
+
+function handlePost_(e) {
   var body;
   try { body = JSON.parse(e.postData.contents); } catch (err) { return json_({ ok: false, error: 'bad' }); }
   var role = role_(body && body.key);
@@ -69,7 +86,7 @@ function doPost(e) {
   return json_(appendEvents_(body.events.slice(0, MAX_EVENTS_PER_POST)));
 }
 
-function doGet(e) {
+function handleGet_(e) {
   var p = (e && e.parameter) || {};
   var role = role_(p.key);
   if (!role) return json_({ ok: false, error: 'key' });
@@ -121,6 +138,10 @@ function role_(key) {
 
 function clip_(v, n) { return String(v === undefined || v === null ? '' : v).slice(0, n); }
 
+// Text that starts like a formula is stored with a leading apostrophe, so the sheet never evaluates it
+function safe_(s) { return /^[=+\-@]/.test(s) ? "'" + s : s; }
+function unsafe_(s) { s = String(s); return /^'[=+\-@]/.test(s) ? s.slice(1) : s; }
+
 function cleanEvent_(x) {
   if (!x || typeof x.id !== 'string' || !x.id || x.id.length > 64) return null;
   var t = new Date(x.ts);
@@ -129,8 +150,8 @@ function cleanEvent_(x) {
   if (!learner || !EVENT_TYPES[x.type]) return null;
   var correct = x.correct === 1 || x.correct === '1' ? 1 : x.correct === 0 || x.correct === '0' ? 0 : '';
   var seconds = Number(x.seconds) > 0 ? Math.min(Math.round(Number(x.seconds)), 86400) : '';
-  return [x.id, t.toISOString(), learner, x.type, clip_(x.topic, 80), clip_(x.level, 20), clip_(x.mode, 20),
-    clip_(x.kind, 30), clip_(x.item, 200), correct, clip_(x.given, 60), seconds, new Date().toISOString()];
+  return [safe_(x.id), t.toISOString(), safe_(learner), x.type, safe_(clip_(x.topic, 80)), safe_(clip_(x.level, 20)), safe_(clip_(x.mode, 20)),
+    safe_(clip_(x.kind, 30)), safe_(clip_(x.item, 200)), correct, safe_(clip_(x.given, 60)), seconds, new Date().toISOString()];
 }
 
 function appendEvents_(events) {
@@ -140,17 +161,24 @@ function appendEvents_(events) {
     var sh = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('events');
     var last = sh.getLastRow();
     var seen = {};
-    if (last > 1) sh.getRange(2, 1, last - 1, 1).getValues().forEach(function (r) { seen[String(r[0])] = true; });
+    if (last > 1) sh.getRange(2, 1, last - 1, 1).getValues().forEach(function (r) { seen[safe_(unsafe_(r[0]))] = true; });
     var rows = [], saved = [], dup = [], bad = [];
     events.forEach(function (x) {
       var row = cleanEvent_(x);
       if (!row) { if (x && typeof x.id === 'string') bad.push(x.id); return; }
-      if (seen[row[0]]) { dup.push(row[0]); return; }
+      if (seen[row[0]]) { dup.push(x.id); return; }
       seen[row[0]] = true;
       rows.push(row);
-      saved.push(row[0]);
+      saved.push(x.id);
     });
-    if (rows.length) sh.getRange(last + 1, 1, rows.length, EVENT_COLS.length).setValues(rows);
+    if (rows.length) {
+      // A new tab has only 1,000 rows, and setValues does not add rows by itself
+      var need = last + rows.length - sh.getMaxRows();
+      if (need > 0) sh.insertRowsAfter(sh.getMaxRows(), need + 500);
+      var range = sh.getRange(last + 1, 1, rows.length, EVENT_COLS.length);
+      range.setNumberFormat('@');
+      range.setValues(rows);
+    }
     return { ok: true, saved: saved, dup: dup, bad: bad };
   } finally {
     lock.releaseLock();
@@ -164,12 +192,10 @@ function readEvents_() {
   return sh.getRange(2, 1, last - 1, EVENT_COLS.length).getValues().map(function (r) {
     var o = {};
     EVENT_COLS.forEach(function (c, i) { o[c] = r[i]; });
-    o.id = String(o.id);
+    ['id', 'learner', 'topic', 'level', 'mode', 'kind', 'item', 'given'].forEach(function (c) { o[c] = unsafe_(o[c]); });
     o.ts = o.ts instanceof Date ? o.ts.toISOString() : String(o.ts);
     o.correct = o.correct === '' ? '' : Number(o.correct);
     o.seconds = o.seconds === '' ? '' : Number(o.seconds);
-    o.given = String(o.given);
-    o.item = String(o.item);
     delete o.received;
     return o;
   });

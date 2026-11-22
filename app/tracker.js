@@ -26,6 +26,7 @@
   const LEGACY_TOPIC_RE = /^math_app_(?!_)(?!username$|grade$|gender$)(.+)$/;
   const LEGACY_VOCAB_RE = /^tirgul_vocab_(?!_)(?!pref_)(.+)$/;
   const OUTBOX_CAP = 5000;
+  const OUTBOX_CAP_UNCONFIGURED = 500;
   const SEND_MAX = 300;
   const BEACON_MAX = 100;               // sendBeacon payloads are limited to ~64 KB
   const SEND_INTERVAL_MS = 60000;
@@ -52,11 +53,46 @@
       try { for (let i = 0; i < env.storage.length; i++) out.push(env.storage.key(i)); } catch (e) { /* ignore */ }
       return out;
     }
+    // Move a progress or vocab-stats key; when the destination already has data, merge the two.
     function moveKey(from, to) {
       const v = get(from);
-      if (v == null || get(to) != null) return;   // never overwrite existing data
-      set(to, v);
-      if (get(to) === v) del(from);
+      if (v == null) return;
+      const existing = get(to);
+      let next = v;
+      if (existing != null) {
+        next = mergeStored(to, existing, v);
+        if (next == null) return;   // unknown shape: leave both untouched
+      }
+      set(to, next);
+      if (get(to) === next) del(from);
+    }
+    function mergeStored(key, a, b) {
+      let x, y;
+      try { x = JSON.parse(a); y = JSON.parse(b); } catch (e) { return null; }
+      if (!x || !y || typeof x !== 'object' || typeof y !== 'object') return null;
+      if (key.indexOf(PROGRESS_BASE) === 0) {
+        const flagged = Array.from(new Set([].concat(x.flagged || [], y.flagged || [])));
+        return JSON.stringify(Object.assign({}, x, {
+          correct: (x.correct || 0) + (y.correct || 0),
+          total: (x.total || 0) + (y.total || 0),
+          bestStreak: Math.max(x.bestStreak || 0, y.bestStreak || 0),
+          flagged,
+        }));
+      }
+      if (key.indexOf(VOCAB_BASE) === 0) {
+        const out = Object.assign({}, x);
+        for (const w in y) {
+          const p = x[w], q = y[w];
+          if (!p || !q) { out[w] = p || q; continue; }
+          const m = { r: (p.r || 0) + (q.r || 0), w: (p.w || 0) + (q.w || 0) };
+          if (p.last !== undefined || q.last !== undefined) {
+            m.last = Math.min(p.last === undefined ? 1 : p.last, q.last === undefined ? 1 : q.last);
+          }
+          out[w] = m;
+        }
+        return JSON.stringify(out);
+      }
+      return null;
     }
 
     // ---- config ----
@@ -195,10 +231,12 @@
 
     function outbox() { const b = getJSON(KEYS.outbox, []); return Array.isArray(b) ? b : []; }
     function capOutbox(box) {
-      let excess = box.length - OUTBOX_CAP;
+      // A device that is not set up never sends, so it keeps only a small recent history
+      const cap = getConfig() ? OUTBOX_CAP : OUTBOX_CAP_UNCONFIGURED;
+      let excess = box.length - cap;
       if (excess <= 0) return box;
       box = box.filter(e => !(excess > 0 && e && e.type === 'time' && excess-- > 0));
-      return box.length > OUTBOX_CAP ? box.slice(box.length - OUTBOX_CAP) : box;
+      return box.length > cap ? box.slice(box.length - cap) : box;
     }
     function enqueue(fields, tsMs) {
       const learner = currentName();
@@ -342,7 +380,7 @@
   if (typeof window !== 'undefined') {
     let storage;
     try { storage = window.localStorage; storage.getItem('x'); } catch (e) {
-      const m = {}; storage = { getItem: k => (k in m ? m[k] : null), setItem: (k, v) => { m[k] = String(v); }, removeItem: k => { delete m[k]; }, key: i => Object.keys(m)[i] ?? null, get length() { return Object.keys(m).length; } };
+      const m = {}; storage = { getItem: k => (k in m ? m[k] : null), setItem: (k, v) => { m[k] = String(v); }, removeItem: k => { delete m[k]; }, key: i => (i < Object.keys(m).length ? Object.keys(m)[i] : null), get length() { return Object.keys(m).length; } };
     }
     window.Tracker = createTracker({
       storage,
@@ -351,6 +389,8 @@
       sendBeacon: (url, body) => { try { return navigator.sendBeacon(url, body); } catch (e) { return false; } },
       uuid: () => (window.crypto && crypto.randomUUID ? crypto.randomUUID() : 'x' + Date.now().toString(36) + Math.random().toString(36).slice(2)),
     });
+    // Any page may be the first one opened after an update, so migrate here, not only on the home page
+    window.Tracker.migrateLegacy();
   }
 
   if (typeof module !== 'undefined') module.exports = { createTracker, weekStartKey, dayKey };

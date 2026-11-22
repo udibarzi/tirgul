@@ -132,3 +132,57 @@ test('showLinks logs device and parent links; ping adds a test row', () => {
   assert.equal(g.sheet('events').length, 2);
   assert.equal(g.sheet('events')[1][2], 'test');
 });
+
+test('writes keep working past the first 1,000 rows', () => {
+  const g = loadGas({ props: KEYS });
+  let saved = 0;
+  for (let b = 0; b < 5; b++) {
+    const batch = [];
+    for (let i = 0; i < 300; i++) batch.push(ev({ id: `b${b}-${i}` }));
+    const r = post(g, { key: 'w', events: batch });
+    assert.equal(r.ok, true, 'batch ' + b + ' ' + JSON.stringify(r).slice(0, 120));
+    saved += r.saved.length;
+  }
+  assert.equal(saved, 1500);
+  assert.equal(g.sheet('events').length, 1501);
+});
+
+test('every written range is plain text and formulas are neutralised', () => {
+  const g = loadGas({ props: KEYS });
+  post(g, { key: 'w', events: [ev({ id: 'f1', kind: 'write', given: '=IMAGE("http://x")', item: '+apple' }), ev({ id: 'f2', given: '007', kind: 'write' })] });
+  const sh = g.sheetObj('events');
+  assert.ok(sh._formats.some(f => f.row === 2 && f.numRows === 2 && f.numCols === 13 && f.f === '@'), 'format on write range');
+  const row = g.sheet('events')[1];
+  assert.ok(!String(row[10]).startsWith('='), 'given stored as text');
+  assert.ok(!String(row[8]).startsWith('+'), 'item stored as text');
+  const back = get(g, { action: 'events', key: 'p', from: '2026-11-22', to: '2026-11-28' }).events;
+  assert.equal(back.find(e => e.id === 'f1').given, '=IMAGE("http://x")');
+  assert.equal(back.find(e => e.id === 'f1').item, '+apple');
+  assert.equal(back.find(e => e.id === 'f2').given, '007');
+});
+
+test('errors come back as JSON', () => {
+  const g = loadGas({ props: KEYS });
+  g.ss.deleteSheet(g.sheetObj('events'));
+  const r = post(g, { key: 'w', events: [ev()] });
+  assert.equal(r.ok, false);
+  assert.equal(get(g, { action: 'week', key: 'w', learner: 'נועה' }).ok, false);
+});
+
+test('showLinks refuses a dev URL and uses the pasted web app URL', () => {
+  const dev = loadGas({ props: KEYS, serviceUrl: 'https://script.google.com/macros/s/ABC/dev' });
+  dev.gas.showLinks();
+  assert.ok(!dev.logs.join('\n').includes('#setup='), 'no links from a /dev URL');
+  assert.ok(dev.logs.join('\n').includes('WEB_APP_URL'), 'tells the parent what to do');
+
+  const pasted = loadGas({ props: KEYS, serviceUrl: 'https://script.google.com/macros/s/ABC/dev', webAppUrl: 'https://script.google.com/macros/s/REAL/exec' });
+  pasted.gas.showLinks();
+  const m = /#setup=([A-Za-z0-9_=-]+)/.exec(pasted.logs.join('\n'));
+  assert.ok(m);
+  const cfg = JSON.parse(Buffer.from(m[1].replace(/-/g, '+').replace(/_/g, '/'), 'base64').toString('utf8'));
+  assert.equal(cfg.url, 'https://script.google.com/macros/s/REAL/exec');
+
+  const bad = loadGas({ props: KEYS, webAppUrl: 'https://script.google.com/macros/s/REAL/dev' });
+  bad.gas.showLinks();
+  assert.ok(!bad.logs.join('\n').includes('#setup='));
+});

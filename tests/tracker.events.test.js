@@ -222,3 +222,14 @@ test('fetch failures resolve to null', async () => {
   assert.equal(await t.fetchLearners(), null);
   assert.equal(await t.fetchWeek('נועה'), null);
 });
+
+test('a device that is not set up keeps only a small outbox', () => {
+  const { env, t } = setup({ config: false });
+  const seed = [];
+  for (let i = 0; i < 600; i++) seed.push({ id: 'time-' + i, type: 'time', learner: 'נועה', seconds: 1 });
+  env.storage.setItem('tirgul_outbox', JSON.stringify(seed));
+  t.answer({ kind: 'en-he', item: 'a', correct: true });
+  const box = t.outbox();
+  assert.equal(box.length, 500);
+  assert.equal(box[box.length - 1].type, 'answer');
+});

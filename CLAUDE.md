@@ -88,7 +88,7 @@ Question kinds:
 - Sentences level: `order` (tap word tiles into order), `cloze` (pick the missing word), `en-he`, `he-en`, `listen`.
 - Both levels: `speak` (say it; uses browser speech recognition, experimental). It's hidden when unsupported and never included in mix. Audio plays from `audio/en/{vocabSlug(en)}.mp3`; if the file is missing, the browser voice is used instead. `vocabSlug` in `app/vocab.js` and `vocab_slug` in `_build_audio.py` must stay identical.
 Never pass English text through `fixBidi()`; vocab UI uses `escapeHtml()` inside `dir="ltr"` elements.
-Per-word stats live in localStorage under `tirgul_vocab_{topicId}`. They drive the "מילים לחיזוק" mode and weight question selection toward missed words.
+Per-word stats live in localStorage under `tirgul_vocab__{learner}_{topicId}` (see Practice tracking). They drive the "מילים לחיזוק" mode and weight question selection toward missed words.
 
 ## Practice tracking (goals and parent report)
 

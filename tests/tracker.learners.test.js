@@ -121,3 +121,51 @@ test('broken storage never throws', () => {
   const t = createTracker(env);
   assert.doesNotThrow(() => { t.migrateLegacy(); t.addLocalProfile({ name: 'a', grade: 5, gender: 'female' }); t.setCurrent('a'); t.getProfiles(); t.getCurrent(); });
 });
+
+test('mapping two local names onto one girl merges progress', () => {
+  const env = fakeEnv({ storage: {
+    'math_app__noa_food-5': JSON.stringify({ correct: 3, total: 4, streak: 1, bestStreak: 2, flagged: [1] }),
+    'math_app__Noa_food-5': JSON.stringify({ correct: 5, total: 6, streak: 4, bestStreak: 4, flagged: [1, 7] }),
+    'math_app__Noa_other': JSON.stringify({ correct: 1, total: 1, streak: 1, bestStreak: 1, flagged: [] }),
+    'tirgul_vocab__noa_english-food-5': JSON.stringify({ apple: { r: 1, w: 2, last: 0 }, egg: { r: 1, w: 0, last: 1 } }),
+    'tirgul_vocab__Noa_english-food-5': JSON.stringify({ apple: { r: 3, w: 0, last: 1 } }),
+  } });
+  const t = createTracker(env);
+  t.addLocalProfile({ name: 'noa', grade: 5, gender: 'female' });
+  t.addLocalProfile({ name: 'Noa', grade: 5, gender: 'female' });
+  t.setSheetLearners([{ name: 'נועה', grade: 5, gender: 'female', fromSheet: true }]);
+  t.mapLearner('noa', 'נועה');
+  t.mapLearner('Noa', 'נועה');
+  const p = JSON.parse(env.storage.getItem('math_app__נועה_food-5'));
+  assert.equal(p.correct, 8);
+  assert.equal(p.total, 10);
+  assert.equal(p.bestStreak, 4);
+  assert.deepEqual(p.flagged.slice().sort((a, b) => a - b), [1, 7]);
+  assert.equal(JSON.parse(env.storage.getItem('math_app__נועה_other')).total, 1);
+  const v = JSON.parse(env.storage.getItem('tirgul_vocab__נועה_english-food-5'));
+  assert.deepEqual(v.apple, { r: 4, w: 2, last: 0 });   // a miss on either side keeps it "to strengthen"
+  assert.deepEqual(v.egg, { r: 1, w: 0, last: 1 });
+  const left = [...env.storage._map.keys()].filter(k => /__(noa|Noa)_/.test(k));
+  assert.deepEqual(left, []);
+});
+
+test('migration merges into progress written before it ran', () => {
+  const env = fakeEnv({ storage: {
+    math_app_username: 'noa',
+    'math_app_food-5': JSON.stringify({ correct: 7, total: 9, streak: 0, bestStreak: 3, flagged: [] }),
+    'math_app__noa_food-5': JSON.stringify({ correct: 1, total: 1, streak: 1, bestStreak: 1, flagged: [] }),
+  } });
+  createTracker(env).migrateLegacy();
+  const p = JSON.parse(env.storage.getItem('math_app__noa_food-5'));
+  assert.equal(p.correct, 8);
+  assert.equal(p.total, 10);
+  assert.equal(env.storage.getItem('math_app_food-5'), null);
+});
+
+test('browser code avoids syntax older iPads cannot parse', () => {
+  const fs = require('fs');
+  for (const f of ['app/tracker.js', 'app/report.js', 'app/vocab.js', 'app/core.js']) {
+    const src = fs.readFileSync(require('path').join(__dirname, '..', f), 'utf8');
+    assert.ok(!/\?\?|\?\.[A-Za-z_$(\[]/.test(src), f + ' uses ?? or ?.');
+  }
+});
