@@ -17,6 +17,7 @@ const DEVICE_LINK = `${B}/#setup=${b64({ url: `${B}/gas`, key: 'w' })}`;
 const REPORT_LINK = `${B}/app/report.html#setup=${b64({ url: `${B}/gas`, key: 'p' })}`;
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 const ONLY = process.argv[2];
+const SKIP = process.env.E2E_SKIP || '';   // e.g. E2E_SKIP=report
 
 function startServer() {
   return new Promise((resolve, reject) => {
@@ -42,6 +43,7 @@ async function flush(page) {
 const results = [];
 async function step(name, fn) {
   if (ONLY && !name.includes(ONLY)) return;
+  if (SKIP && name.includes(SKIP)) return;
   try { await fn(); results.push(['PASS', name]); console.log('PASS', name); }
   catch (e) { results.push(['FAIL', name]); console.log('FAIL', name, '\n  ', e.message.split('\n').slice(0, 6).join('\n   ')); }
 }
@@ -213,7 +215,7 @@ async function step(name, fn) {
     await ctx3.close();
   });
 
-  if (!ONLY || 'report'.includes(ONLY) || ONLY.includes('report')) {
+  {
     await step('report shows both girls', async () => {
       const r = await page.goto(REPORT_LINK);
       assert.ok(r.ok(), 'report.html exists');
