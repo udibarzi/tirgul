@@ -45,6 +45,10 @@ The core library contains battle-tested solutions for:
 - **`getCongratsMessage(name, streak)`** — 100+ personalized Hebrew congratulatory messages, scaled by streak length.
 - **`launchConfetti(count)`** — CSS-only confetti animation.
 
+## Practice Tracking
+
+Each learner's practice time, answers and flashcards can be sent to a Google Sheet owned by the parent, through a small Apps Script web app (`_tracking/Code.gs`). The parent sets weekly goals and sees a report at `app/report.html`, and each learner sees her weekly progress on the home screen. Nothing is sent until the parent does the one-time setup in [`_tracking/SETUP.md`](_tracking/SETUP.md) (Hebrew, about 5 minutes). The sheet address and keys are never in this repo: each device gets them once, from a private setup link.
+
 ## Adding Content
 
 1. Create a new JSON file in `/content/` following the schema in `docs/CONTENT-FORMAT.md`

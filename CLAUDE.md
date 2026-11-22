@@ -15,6 +15,8 @@ app/
   quiz.html             Quiz engine (loads topic JSON, renders questions)
   vocab.js              English vocab engine — generates questions from a word list
   vocab.html            English topic menu: flashcards, word list, quiz modes
+  tracker.js            Practice tracking: learners, per-learner keys, active time, event outbox, sending
+  report.html / report.js  Parent report page (weekly goals, activity, words she keeps missing)
   speed.html            Speed drill (timed multiplication/division practice)
 content/
   manifest.json         Topic registry with grades array and topic list
@@ -24,6 +26,9 @@ _build_grade7.js        Extractor script for 7th grade content
 _validate.js            Validates all content JSON + manifest
 _build_audio.py         Generates English recordings → audio/en/*.mp3 (local Kokoro TTS)
 audio/en/               One MP3 per English word/phrase, named by vocabSlug()
+_tracking/Code.gs       Google Apps Script web app (runs in the parent's Google Sheet; holds no secrets)
+_tracking/SETUP.md      Parent's one-time Google setup, in Hebrew
+tests/                  node --test unit tests, Apps Script mocks, mock server, Playwright e2e
 ```
 
 ### Data flow
@@ -84,6 +89,19 @@ Question kinds:
 - Both levels: `speak` (say it; uses browser speech recognition, experimental). It's hidden when unsupported and never included in mix. Audio plays from `audio/en/{vocabSlug(en)}.mp3`; if the file is missing, the browser voice is used instead. `vocabSlug` in `app/vocab.js` and `vocab_slug` in `_build_audio.py` must stay identical.
 Never pass English text through `fixBidi()`; vocab UI uses `escapeHtml()` inside `dir="ltr"` elements.
 Per-word stats live in localStorage under `tirgul_vocab_{topicId}`. They drive the "מילים לחיזוק" mode and weight question selection toward missed words.
+
+## Practice tracking (goals and parent report)
+
+Spec: `docs/superpowers/specs/2026-11-21-practice-tracking-design.md`.
+- Each girl's device records events (`time`, `answer`, `card`, `session`) into a localStorage outbox (`tirgul_outbox`). It sends them to the parent's Google Apps Script (`_tracking/Code.gs`) on load, every 60 s, and by beacon when the page is hidden. Events leave the outbox only after the script confirms their ids; the script drops duplicate ids.
+- Active time counts only while the page is visible and there was a tap or keypress in the last 60 s. Goal minutes exclude `topic: 'menu'`. A practice day is ≥ 5 minutes. The week is Sunday–Saturday, Asia/Jerusalem. `app/report.js` and `Code.gs:weekSummary` must agree; a test checks it.
+- **No sheet URL or key in the repo, ever.** A device gets `{url, key}` from the hash link `#setup=<base64url JSON>`, which `showLinks()` in the script prints. It's stored in `tirgul_sync` (devices) or `tirgul_report` (parent), then stripped from the address bar. The write key adds events; the parent key reads events and edits goals.
+- Learners: on a set-up device the sheet's `learners` tab is the source of truth, and the home page shows "מי מתרגלת?". Without setup, the old name → grade → gender flow stays, with per-learner profiles in `tirgul_profiles`.
+- Per-learner local keys: topic progress `math_app__<name>_<topic>` via `new ProgressManager(Tracker.progressPrefix())`; vocab stats `tirgul_vocab__<name>_<topic>` via `VocabStats._key` → `Tracker.vocabKey()`. `Tracker.setCurrent()` keeps `math_app_username/grade/gender` in sync, because the speed drills read them. `migrateLegacy()` moves old un-prefixed keys once.
+- New pages must load `tracker.js` after `core.js`, then call `Tracker.setPage({topic, level, mode})` and `Tracker.attach()`. Never let tracking break practice: every storage access is in try/catch.
+- Store only a first name. No email, location or device ids. The only free text stored is typed spelling answers (`write` kind, 60 chars max).
+- Tests: `node --test 'tests/*.test.js'` (Node 25 needs the quoted glob). Browser e2e: `NODE_PATH=<dir with playwright> node tests/e2e/tracking.e2e.js`. It starts `tests/mock-server.js`, which serves the site plus `Code.gs` on mocks at `/gas` (write key `w`, parent key `p`). Playwright is not committed.
+- After changing `Code.gs`, the parent must publish a new version of the deployment (see SETUP.md); the URL stays the same.
 
 ## Common pitfalls
 
