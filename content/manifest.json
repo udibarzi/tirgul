@@ -447,6 +447,94 @@
       "track": "ladder",
       "ladder": {"level": "C1", "unit": 3},
       "itemCount": 48
+    },
+    {
+      "id": "ladder-c1-04",
+      "name": "פעלים שנשמעים עברית",
+      "icon": "🗣️",
+      "description": "מה שאנחנו מתרגמים מילה במילה מעברית, ואיך אומרים את זה באמת — turn off the light, make a decision",
+      "type": "vocab",
+      "subject": "english",
+      "track": "ladder",
+      "ladder": {"level": "C1", "unit": 4},
+      "itemCount": 50
+    },
+    {
+      "id": "ladder-c1-05",
+      "name": "מילות יחס שנשמעות עברית",
+      "icon": "🧭",
+      "description": "מילות יחס וניסוחים שאנחנו מתרגמים מעברית, ואיך אומרים אותם באמת — a question for you, good at, on the bus",
+      "type": "vocab",
+      "subject": "english",
+      "track": "ladder",
+      "ladder": {"level": "C1", "unit": 5},
+      "itemCount": 50
+    },
+    {
+      "id": "ladder-c1-06",
+      "name": "תיקונים בבית",
+      "icon": "🔧",
+      "description": "כלי עבודה, חשמל ותקלות בבית — Phillips screwdriver, the breaker tripped, wobbly",
+      "type": "vocab",
+      "subject": "english",
+      "track": "ladder",
+      "ladder": {"level": "C1", "unit": 6},
+      "itemCount": 50
+    },
+    {
+      "id": "ladder-c1-07",
+      "name": "המכונית והכביש",
+      "icon": "🚗",
+      "description": "חלקי המכונית, תקלות בדרך ונהיגה — windshield, pull over, a flat tire",
+      "type": "vocab",
+      "subject": "english",
+      "track": "ladder",
+      "ladder": {"level": "C1", "unit": 7},
+      "itemCount": 50
+    },
+    {
+      "id": "ladder-c1-08",
+      "name": "גוף, בריאות ורופא",
+      "icon": "🩹",
+      "description": "פציעות קטנות, תסמינים ותרופות — a splinter, a stuffy nose, over the counter",
+      "type": "vocab",
+      "subject": "english",
+      "track": "ladder",
+      "ladder": {"level": "C1", "unit": 8},
+      "itemCount": 50
+    },
+    {
+      "id": "ladder-c1-09",
+      "name": "בגדים, בד וכביסה",
+      "icon": "🧺",
+      "description": "חלקי בגד, תקלות ומילים מתווית הכביסה — the zipper is stuck, it shrank, tumble dry",
+      "type": "vocab",
+      "subject": "english",
+      "track": "ladder",
+      "ladder": {"level": "C1", "unit": 9},
+      "itemCount": 50
+    },
+    {
+      "id": "ladder-c1-10",
+      "name": "צירופים טבעיים",
+      "icon": "🧩",
+      "description": "איזה פועל הולך עם איזו מילה — make an effort, take your time, heavy traffic",
+      "type": "vocab",
+      "subject": "english",
+      "track": "ladder",
+      "ladder": {"level": "C1", "unit": 10},
+      "itemCount": 48
+    },
+    {
+      "id": "ladder-c1-11",
+      "name": "כסף, חשבונות וניירת",
+      "icon": "💳",
+      "description": "בנק, חשבונות הבית, ביטוח וטפסים — overdraft, utilities, deductible",
+      "type": "vocab",
+      "subject": "english",
+      "track": "ladder",
+      "ladder": {"level": "C1", "unit": 11},
+      "itemCount": 50
     }
   ]
 }
