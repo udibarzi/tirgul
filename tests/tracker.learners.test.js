@@ -164,7 +164,7 @@ test('migration merges into progress written before it ran', () => {
 
 test('browser code avoids syntax older iPads cannot parse', () => {
   const fs = require('fs');
-  for (const f of ['app/tracker.js', 'app/report.js', 'app/vocab.js', 'app/core.js']) {
+  for (const f of ['app/tracker.js', 'app/report.js', 'app/vocab.js', 'app/core.js', 'app/ladder.js']) {
     const src = fs.readFileSync(require('path').join(__dirname, '..', f), 'utf8');
     assert.ok(!/\?\?|\?\.[A-Za-z_$(\[]/.test(src), f + ' uses ?? or ?.');
   }
