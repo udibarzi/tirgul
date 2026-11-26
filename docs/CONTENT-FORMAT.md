@@ -242,6 +242,23 @@ Recordings: run `~/.cache/explain-skill/venv/bin/python -I _build_audio.py` afte
 The manifest entry needs `"type": "vocab"` (plus `"subject": "english"`).
 Apostrophes, end punctuation and letter case are ignored when checking typed answers; spaces are not.
 
+### English ladder units (`"track": "ladder"`)
+
+The ladder (A1 → C1) is made of ordinary vocab topics with a few extra fields. Spec: `docs/superpowers/specs/2026-11-26-english-ladder-design.md`.
+
+- File: `content/ladder-<level lowercase>-<NN>.json`, e.g. `ladder-b2-04.json`.
+- Content file: everything above, plus `"ladder": {"level": "B2", "unit": 4}`. 20–30 `words` and 15–25 `sentences`; **every sentence has a `blank`**.
+- `heM` (optional, on any item): the masculine Hebrew, only where it differs from `he`. First-person `he` is feminine; a male learner sees `heM` instead (`localizeVocabContent` in `app/vocab.js`).
+- Manifest entry: `"type": "vocab"`, `"subject": "english"`, `"track": "ladder"`, the same `"ladder"` object, `"itemCount"` (= words + sentences), and **no `grade`**. `name` is the Hebrew unit title only; screens add the level and unit number.
+- Manifest `ladderLevels`: `[{id, name, description, plannedUnits}]` for exactly A1, A2, B1, B2, C1. `plannedUnits` minus the built units shows as "בקרוב".
+
+```json
+{ "id": "ladder-b2-04", "name": "בריאות והגוף", "icon": "🩺", "description": "...", "type": "vocab", "subject": "english",
+  "track": "ladder", "ladder": { "level": "B2", "unit": 4 }, "itemCount": 47 }
+```
+
+`content/ladder-placement.json` (not in the manifest) holds the placement quiz: `{"levels": {"A1": {"words": [{en, he}], "sentences": [{en, he, blank, choices}]}, ...}}`, 12+ words and 4+ sentences per level, each sentence with 3+ wrong `choices`. Hebrew meanings within a level must all differ (they are each other's wrong options). `_validate.js` checks the ladder fields, unit numbering, `itemCount`, blanks, `heM` and the placement file.
+
 ## BiDi / RTL Rules
 
 These rules are **critical** for correct rendering:

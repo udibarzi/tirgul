@@ -15,6 +15,7 @@ app/
   quiz.html             Quiz engine (loads topic JSON, renders questions)
   vocab.js              English vocab engine — generates questions from a word list
   vocab.html            English topic menu: flashcards, word list, quiz modes
+  ladder.js / ladder.html  English ladder A1→C1: unlocking, placement, review picking / map + placement page
   tracker.js            Practice tracking: learners, per-learner keys, active time, event outbox, sending
   report.html / report.js  Parent report page (weekly goals, activity, words she keeps missing)
   speed.html            Speed drill (timed multiplication/division practice)
@@ -89,6 +90,17 @@ Question kinds:
 - Both levels: `speak` (say it; uses browser speech recognition, experimental). It's hidden when unsupported and never included in mix. Audio plays from `audio/en/{vocabSlug(en)}.mp3`; if the file is missing, the browser voice is used instead. `vocabSlug` in `app/vocab.js` and `vocab_slug` in `_build_audio.py` must stay identical.
 Never pass English text through `fixBidi()`; vocab UI uses `escapeHtml()` inside `dir="ltr"` elements.
 Per-word stats live in localStorage under `tirgul_vocab__{learner}_{topicId}` (see Practice tracking). They drive the "מילים לחיזוק" mode and weight question selection toward missed words.
+
+## English ladder (A1 → C1)
+
+Spec: `docs/superpowers/specs/2026-11-26-english-ladder-design.md`. One shared path for both girls and the parent: placement quiz → themed units in order → review.
+- `app/ladder.js` (pure, tested in `tests/ladder.test.js`): levels/units from the manifest, unit completion (80% of items known), unit states (done / current / open / locked / new), level advance (never backwards), placement steps (blocks of 6, start A2, ≥5 up, ≤3 down, 4 = this level), review picking (practiced items only, needs-work then oldest `t`).
+- Screens: `#ladderCard` on `index.html`; `app/ladder.html` (map, "פתח בכל זאת", choose a level, `?placement=1`); units open in `vocab.html` (sentences tab and Hebrew flashcard side by default); review is `quiz.html?ladder=review` (stats go to each item's own unit via `q.topicId`; events use topic `ladder-review`).
+- Position per learner in localStorage `tirgul_ladder__<name>` (`Tracker.ladderKey()`); it stays on the device. Unit progress comes from the normal `VocabStats`, which now stores `t` (last seen).
+- Ladder-only learners (the parent): a sheet learner with an empty/0/unknown grade, or a local profile made with the "מבוגר/ת — רק המסלול" card (`ladderOnly: true`). They see only the ladder card.
+- Unit files, `heM` and manifest fields: see `docs/CONTENT-FORMAT.md` → "English ladder units".
+- **Adding the next units** (same steps as a word list, plus the ladder fields): write `content/ladder-<level>-<NN>.json` with the next unit number, add the manifest entry with `track`, `ladder`, `itemCount` and no `grade`, run `_build_audio.py`, then `node _validate.js`. Phase 1 shipped units 1–3 of every level (2026-11-26). Build order: level by level, staying at least 2 units ahead of the furthest learner in each level. Units added to a level a learner already left show as "חדש" (optional) and never move her back.
+- Content: written by Claude, not copied from published lists. Up to B1 suits a 10-year-old; B2–C1 suits a 13-year-old and leans to the parent's need: everyday household/errand words, collocations, phrasal verbs, idioms, small talk and polite softening.
 
 ## Practice tracking (goals and parent report)
 
