@@ -361,6 +361,53 @@ async function step(name, fn) {
     await page.goto(`${B}/app/quiz.html?ladder=review`);
     await page.waitForSelector('#errorScreen:not(.hidden)');
     assert.ok((await page.textContent('#errorScreen')).includes('עוד אין מה לחזור עליו'));
+    assert.ok((await page.textContent('#errorScreen')).includes('יחידות שסיימת'), 'says what review is made of');
+  });
+
+  await step('new units stay marked on the map', async () => {
+    await asLearner(page, 'נועה');
+    const m = await getJSON('content/manifest.json');
+    const all = m.topics.filter(t => t.track === 'ladder').map(t => t.id);
+    await page.evaluate(seen => localStorage.setItem('tirgul_ladder__נועה', JSON.stringify({ level: 'A2', placedAt: 'A2', opened: {}, seen })),
+      all.filter(id => id !== 'ladder-a1-03'));
+    await page.reload();
+    await page.waitForSelector('#topicsScreen:not(.hidden)');
+    assert.ok((await page.textContent('#ladderCard')).includes('יחידות חדשות'), 'home mentions it');
+    await page.click('#ladderCard a:has-text("למסלול המלא")');
+    await page.waitForSelector('[data-unit="ladder-a1-03"]');
+    assert.equal(await page.getAttribute('[data-unit="ladder-a1-03"]', 'data-state'), 'new', 'map marks it');
+    await page.reload();
+    await page.waitForSelector('[data-unit="ladder-a1-03"]');
+    assert.equal(await page.getAttribute('[data-unit="ladder-a1-03"]', 'data-state'), 'open', 'seen once on the map');
+  });
+
+  await step('a ladder error never hides the topics', async () => {
+    const c6 = await browser.newContext({ viewport: { width: 390, height: 844 } });
+    const p6 = await c6.newPage();
+    const errs6 = [];
+    p6.on('pageerror', e => errs6.push(e.message));
+    await p6.addInitScript(() => {
+      let L;
+      Object.defineProperty(window, 'Ladder', { configurable: true, get: () => L, set: v => { L = v; v.ladderUnits = () => { throw new Error('ladder broke'); }; } });
+    });
+    await p6.goto(`${B}/`);
+    await p6.fill('#nameInput', 'רוני');
+    await p6.click('#startBtn');
+    await p6.click('#gradeGrid .picker-card:has-text("כיתה ד׳")');
+    await p6.click('#genderScreen .picker-card:has-text("בת")');
+    await p6.waitForSelector('#topicsScreen:not(.hidden)');
+    assert.ok(await p6.isVisible('a.topic-card[href*="fractions-4"]'), 'math topics still shown');
+    assert.equal(await p6.isVisible('#ladderCard'), false);
+    assert.deepEqual(errs6, []);
+    await c6.close();
+  });
+
+  await step('gender in the address is never HTML', async () => {
+    await page.goto(`${B}/app/ladder.html?gender=${encodeURIComponent('"><img src=x onerror="window.__x=1">')}`);
+    await page.waitForSelector('#mapView:not(.hidden)');
+    assert.equal(await page.evaluate(() => window.__x), undefined);
+    assert.equal(await page.$$eval('#levels img', i => i.length), 0);
+    assert.ok(/gender=female/.test(await page.getAttribute('[data-unit="ladder-a1-01"]', 'href')));
   });
 
   await step('local adult card', async () => {

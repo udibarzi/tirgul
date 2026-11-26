@@ -80,7 +80,7 @@
     const isReview = params.get('ladder') === 'review';   // English ladder: review across units
     const topicId = isReview ? 'ladder-review' : params.get('topic');
     const userName = decodeURIComponent(params.get('name') || '');
-    const userGender = params.get('gender') || localStorage.getItem('math_app_gender') || 'female';
+    const userGender = (params.get('gender') || storedGender()) === 'male' ? 'male' : 'female';
     
     const progress = new ProgressManager(Tracker.progressPrefix());
     Tracker.setPage({ topic: topicId || '', mode: params.get('mode') || '', level: params.get('level') || '' });
@@ -177,7 +177,7 @@
         const cur = Tracker.getCurrent();
         const manifest = await loadManifest('../content/manifest.json');
         if (!cur || !manifest) return showError('שגיאה בטעינת החזרה');
-        const st = Ladder.ladderState(manifest, Ladder.loadPosition(localStorage, cur.name), id => VocabStats.get(id));
+        const st = Ladder.ladderState(manifest, Ladder.loadPosition(safeStorage(), cur.name), id => VocabStats.get(id));
         const ids = Ladder.reviewUnitIds(st).filter(id => Object.keys(VocabStats.get(id)).length);
         const contents = {};
         await Promise.all(ids.map(async id => {
@@ -186,7 +186,7 @@
         }));
         const units = ids.filter(id => contents[id]).map(id => ({ id, items: (contents[id].words || []).concat(contents[id].sentences || []) }));
         const picks = Ladder.reviewPick(units, id => VocabStats.get(id), 20);
-        if (!picks.length) return showError('עוד אין מה לחזור עליו — תרגלו יחידה ותחזרו לכאן');
+        if (!picks.length) return showError('עוד אין מה לחזור עליו — החזרה היא על יחידות שסיימת. סיימו יחידה ותחזרו לכאן');
         state.isVocab = true;
         state.vocabMode = 'mix';
         const content = { name: 'חזרה — המסלול שלי', questions: buildReviewQuestions(picks.map(p => Object.assign({ unitContent: contents[p.unitId] }, p))), shuffle: false, questionsPerSession: 0 };

@@ -801,6 +801,16 @@ const CONGRATS_MESSAGES = {
  * @param {string} gender - 'male' or 'female' (default: 'female')
  * @returns {string} Personalized Hebrew congratulation
  */
+/** localStorage, or null when the browser blocks it (reading the global can throw). */
+function safeStorage() {
+  try { return window.localStorage; } catch (e) { return null; }
+}
+
+/** The gender saved on this device ('male' | 'female' | ''), never throws. */
+function storedGender() {
+  try { return window.localStorage.getItem('math_app_gender') || ''; } catch (e) { return ''; }
+}
+
 function getCongratsMessage(name, streak, gender) {
   const msgs = CONGRATS_MESSAGES[gender === 'male' ? 'male' : 'female'];
   let pool;
@@ -911,7 +921,7 @@ async function loadManifest(manifestUrl = '../content/manifest.json') {
 // If using modules in the future:
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = {
-    fixBidi, renderFractions, setMixedText, gcd, lcm, randInt, randChoice, shuffle,
+    safeStorage, storedGender, fixBidi, renderFractions, setMixedText, gcd, lcm, randInt, randChoice, shuffle,
     formatFraction, renderVisual, ProgressManager, getCongratsMessage,
     launchConfetti, getConfettiCSS, loadContent, loadManifest,
     CONGRATS_MESSAGES,

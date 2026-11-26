@@ -232,7 +232,8 @@
 <body>
 
   <!-- Screen 1: Name Entry (first visit) -->
-  <div id="nameScreen" class="landing-container">
+  <div id="bootScreen" class="landing-container"><div class="picker-subtitle" style="text-align:center;">טוען...</div></div>
+  <div id="nameScreen" class="landing-container hidden">
     <div class="welcome-card">
       <div class="landing-logo text-center">🧮</div>
       <h1 class="landing-title text-center">תרגול מתמטיקה</h1>
@@ -587,7 +588,8 @@
       document.getElementById('settingsDivider').classList.toggle('hidden', cur.fromSheet || ladderOnly);
       document.getElementById('changeGradeLink').onclick = () => showGradePicker(cur.name);
 
-      renderLadderCard(cur);
+      try { renderLadderCard(cur); }
+      catch (e) { document.getElementById('ladderCard').classList.add('hidden'); }   // the ladder never hides practice
       document.getElementById('totalStats').classList.toggle('hidden', ladderOnly);
       document.getElementById('topicsGrid').classList.toggle('hidden', ladderOnly);
       if (ladderOnly) document.getElementById('topicsGrid').innerHTML = '';
@@ -598,14 +600,14 @@
 
     // ---- English ladder card ----
     function ladderStats(id) {
-      try { return JSON.parse(localStorage.getItem(T.vocabKey(id))) || {}; } catch (e) { return {}; }
+      try { return JSON.parse(safeStorage().getItem(T.vocabKey(id))) || {}; } catch (e) { return {}; }
     }
     function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])); }
     function renderLadderCard(cur) {
       const el = document.getElementById('ladderCard');
       if (!window.Ladder || !Ladder.ladderUnits(manifest).length) { el.classList.add('hidden'); return; }
       const q = `name=${encodeURIComponent(cur.name)}&gender=${cur.gender}`;
-      const pos = Ladder.loadPosition(localStorage, cur.name);
+      const pos = Ladder.loadPosition(safeStorage(), cur.name);
       el.classList.remove('hidden');
       if (!pos.level && !pos.placedAt) {
         el.innerHTML = `<div class="ladder-kicker">🪜 המסלול שלי באנגלית</div>
@@ -616,7 +618,8 @@
         return;
       }
       const st = Ladder.ladderState(manifest, pos, ladderStats);
-      Ladder.savePosition(localStorage, cur.name, st.position);
+      // Save a level change, but leave "seen" to the ladder page, so it can still mark new units 🆕
+      Ladder.savePosition(safeStorage(), cur.name, Object.assign({}, st.position, { seen: pos.seen }));
       const lvl = st.levels.find(l => l.id === st.currentLevel);
       const u = st.units.find(x => x.id === st.currentUnitId);
       let html = `<div class="ladder-kicker">🪜 המסלול שלי באנגלית</div>
@@ -744,7 +747,7 @@
     }
 
     function hideAll() {
-      ['nameScreen', 'gradeScreen', 'genderScreen', 'topicsScreen', 'learnerScreen', 'mapScreen'].forEach(id => {
+      ['bootScreen', 'nameScreen', 'gradeScreen', 'genderScreen', 'topicsScreen', 'learnerScreen', 'mapScreen'].forEach(id => {
         document.getElementById(id).classList.add('hidden');
       });
     }

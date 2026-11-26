@@ -80,7 +80,7 @@
     const params = new URLSearchParams(window.location.search);
     const topicId = params.get('topic');
     const userName = params.get('name') || '';
-    const userGender = params.get('gender') || localStorage.getItem('math_app_gender') || 'female';
+    const userGender = (params.get('gender') || storedGender()) === 'male' ? 'male' : 'female';
     let content = null;
     let level = 'words';
 
@@ -107,6 +107,7 @@
       document.title = content.name;
       document.getElementById('menuTitle').textContent = content.name;
       if (isLadder()) {
+        VocabStats.prune(topicId, (content.words || []).concat(content.sentences || []));
         // English ladder unit: back to the path; start on sentences, Hebrew side first (say it in English)
         document.getElementById('menuBack').href = `ladder.html?name=${encodeURIComponent(userName)}&gender=${userGender}`;
         document.getElementById('menuTitle').textContent = `${content.ladder.level} · יחידה ${content.ladder.unit} — ${content.name}`;

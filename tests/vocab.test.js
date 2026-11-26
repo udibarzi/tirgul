@@ -71,3 +71,11 @@ test('review questions keep their unit', () => {
   }
   assert.deepEqual(V.buildReviewQuestions([]), []);
 });
+
+test('prune drops stats for items no longer in the unit', () => {
+  localStorage.setItem('tirgul_vocab_pr', JSON.stringify({ cat: { r: 1, w: 0, last: 1 }, 'old typo': { r: 3, w: 0, last: 1 } }));
+  V.VocabStats.prune('pr', [{ en: 'cat' }, { en: 'dog' }]);
+  assert.deepEqual(Object.keys(V.VocabStats.get('pr')), ['cat']);
+  V.VocabStats.prune('empty', [{ en: 'cat' }]);
+  assert.equal(localStorage.getItem('tirgul_vocab_empty'), null, 'nothing written when there is nothing to drop');
+});

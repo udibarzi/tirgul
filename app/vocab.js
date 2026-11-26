@@ -128,6 +128,15 @@ const VocabStats = {
     all[en] = s;
     try { localStorage.setItem(this._key(topicId), JSON.stringify(all)); } catch (e) {}
   },
+  /** Drop stats for items that are no longer in the topic (edited content), so they can't count as known. */
+  prune(topicId, items) {
+    const all = this.get(topicId);
+    const keep = new Set((items || []).map(it => it.en));
+    const gone = Object.keys(all).filter(k => !keep.has(k));
+    if (!gone.length) return;
+    gone.forEach(k => { delete all[k]; });
+    try { localStorage.setItem(this._key(topicId), JSON.stringify(all)); } catch (e) {}
+  },
   /** An item "needs work" if the last answer was wrong, or it was missed more than it was hit. */
   needsWork(s) { return !!s && (s.last === 0 || s.w > s.r); },
   hardWords(topicId, items) {

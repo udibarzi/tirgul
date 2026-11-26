@@ -55,15 +55,15 @@
   <script>
     const params = new URLSearchParams(location.search);
     const cur = Tracker.getCurrent();
-    const gender = params.get('gender') || (cur && cur.gender) || 'female';
+    const gender = (params.get('gender') || (cur && cur.gender)) === 'male' ? 'male' : 'female';
     const q = cur ? `name=${encodeURIComponent(cur.name)}&gender=${gender}` : '';
     let manifest = null;
 
     const $ = id => document.getElementById(id);
     function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])); }
     function statsOf(id) { return VocabStats.get(id); }
-    function load() { return Ladder.loadPosition(localStorage, cur.name); }
-    function save(p) { Ladder.savePosition(localStorage, cur.name, p); }
+    function load() { return Ladder.loadPosition(safeStorage(), cur.name); }
+    function save(p) { Ladder.savePosition(safeStorage(), cur.name, p); }
     function show(id) { ['loading', 'mapView', 'placementView'].forEach(v => $(v).classList.toggle('hidden', v !== id)); window.scrollTo(0, 0); }
 
     Tracker.setPage({ topic: 'menu' });
