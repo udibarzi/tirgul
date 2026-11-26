@@ -70,13 +70,15 @@
   <script src="core.js"></script>
   <script src="tracker.js"></script>
   <script src="vocab.js"></script>
+  <script src="ladder.js"></script>
   <script>
     // ============================================
     // STATE
     // ============================================
     
     const params = new URLSearchParams(window.location.search);
-    const topicId = params.get('topic');
+    const isReview = params.get('ladder') === 'review';   // English ladder: review across units
+    const topicId = isReview ? 'ladder-review' : params.get('topic');
     const userName = decodeURIComponent(params.get('name') || '');
     const userGender = params.get('gender') || localStorage.getItem('math_app_gender') || 'female';
     
@@ -98,6 +100,7 @@
     // ============================================
     
     async function init() {
+      if (isReview) return initReview();
       if (!topicId) {
         showError('לא צוין נושא');
         return;
@@ -164,6 +167,52 @@
       }
     }
     
+    // ---- Ladder review: practiced items from finished units, needs-work and longest-unseen first ----
+    async function initReview() {
+      const ladderHref = `ladder.html?name=${encodeURIComponent(userName)}&gender=${userGender}`;
+      document.getElementById('backBtn').href = ladderHref;
+      document.querySelector('#errorScreen a').href = ladderHref;
+      document.querySelector('#errorScreen a').textContent = 'למסלול';
+      try {
+        const cur = Tracker.getCurrent();
+        const manifest = await loadManifest('../content/manifest.json');
+        if (!cur || !manifest) return showError('שגיאה בטעינת החזרה');
+        const st = Ladder.ladderState(manifest, Ladder.loadPosition(localStorage, cur.name), id => VocabStats.get(id));
+        const ids = Ladder.reviewUnitIds(st).filter(id => Object.keys(VocabStats.get(id)).length);
+        const contents = {};
+        await Promise.all(ids.map(async id => {
+          const c = await loadContent(`../content/${id}.json`);
+          if (c) contents[id] = localizeVocabContent(c, userGender);
+        }));
+        const units = ids.filter(id => contents[id]).map(id => ({ id, items: (contents[id].words || []).concat(contents[id].sentences || []) }));
+        const picks = Ladder.reviewPick(units, id => VocabStats.get(id), 20);
+        if (!picks.length) return showError('עוד אין מה לחזור עליו — תרגלו יחידה ותחזרו לכאן');
+        state.isVocab = true;
+        state.vocabMode = 'mix';
+        const content = { name: 'חזרה — המסלול שלי', questions: buildReviewQuestions(picks.map(p => Object.assign({ unitContent: contents[p.unitId] }, p))), shuffle: false, questionsPerSession: 0 };
+        state.topicMeta = content;
+        state.questions = prepareQuestions(content);
+        Tracker.setPage({ topic: 'ladder-review', mode: 'review' });
+        Tracker.session();
+        document.getElementById('topicTitle').textContent = '🪜 ' + content.name;
+        document.title = content.name;
+        document.getElementById('flagBtn').classList.add('hidden');
+        const input = document.getElementById('answerInput');
+        input.placeholder = 'הקלידו באנגלית';
+        input.setAttribute('lang', 'en');
+        input.setAttribute('autocapitalize', 'off');
+        input.setAttribute('autocorrect', 'off');
+        input.setAttribute('spellcheck', 'false');
+        document.getElementById('loadingScreen').classList.add('hidden');
+        document.getElementById('quizContainer').classList.remove('hidden');
+        renderDots();
+        showQuestion(0);
+      } catch (e) {
+        console.error('Failed to build review:', e);
+        showError('שגיאה בטעינת החזרה');
+      }
+    }
+
     function showError(msg) {
       document.getElementById('loadingScreen').classList.add('hidden');
       document.getElementById('quizContainer').classList.add('hidden');
@@ -401,9 +450,9 @@
         state.streak = 0;
       }
       
-      progress.recordAnswer(topicId, isCorrect);
       const q = state.questions[state.currentQ];
-      if (q.vocab) VocabStats.record(topicId, q.word.en, isCorrect);
+      progress.recordAnswer(q.topicId || topicId, isCorrect);
+      if (q.vocab) VocabStats.record(q.topicId || topicId, q.word.en, isCorrect);
       const given = (state.answers[state.currentQ] || {}).selected;
       Tracker.answer({
         kind: q.vocab ? q.kind : q.type,

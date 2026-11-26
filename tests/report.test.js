@@ -107,3 +107,18 @@ test('week helpers and setup hash', () => {
   assert.deepEqual(parseSetupHash('#setup=' + b), { url: 'https://x/exec', key: 'p' });
   assert.equal(parseSetupHash('#nope'), null);
 });
+
+test('latestLadderUnit', () => {
+  const { latestLadderUnit } = require('../app/report.js');
+  const ids = ['ladder-a1-01', 'ladder-a1-02'];
+  const events = [
+    ev({ topic: 'ladder-a1-02', ts: '2026-11-20T08:00:00Z' }),
+    ev({ topic: 'ladder-a1-01', ts: '2026-11-22T08:00:00Z' }),
+    ev({ topic: 'ladder-review', ts: '2026-11-23T08:00:00Z' }),
+    ev({ topic: 'english-food-5', ts: '2026-11-24T08:00:00Z' }),
+    ev({ topic: 'ladder-a1-02', ts: '2026-11-25T08:00:00Z', learner: 'מאיה' }),
+  ];
+  assert.equal(latestLadderUnit(events, 'נועה', ids), 'ladder-a1-01');
+  assert.equal(latestLadderUnit(events, 'מאיה', ids), 'ladder-a1-02');
+  assert.equal(latestLadderUnit(events, 'אבא', ids), null);
+});

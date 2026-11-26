@@ -285,7 +285,7 @@
   <div id="learnerScreen" class="landing-container hidden">
     <div class="welcome-card">
       <div class="landing-logo text-center">👋</div>
-      <h1 class="landing-title text-center">מי מתרגלת?</h1>
+      <h1 class="landing-title text-center" id="learnerTitle">מי מתרגלת?</h1>
       <div class="picker-grid" id="learnerGrid"></div>
     </div>
   </div>
@@ -319,6 +319,8 @@
       <div class="progress-bar"><div class="progress-fill" id="weekFill"></div></div>
     </div>
 
+    <div class="ladder-card hidden" id="ladderCard"></div>
+
     <div class="total-stats" id="totalStats">
       <div class="stat-label">תשובות נכונות</div>
       <div class="big-number" id="totalCorrect">0</div>
@@ -331,6 +333,7 @@
 
   <script src="app/core.js"></script>
   <script src="app/tracker.js"></script>
+  <script src="app/ladder.js"></script>
   <script>
     const T = window.Tracker;
     let manifest = null;
@@ -343,6 +346,11 @@
     function sheetProfiles() { return T.getProfiles().filter(p => p.fromSheet); }
     function isConfigured() { return !!T.getConfig() && sheetProfiles().length > 0; }
     function gradeInfo(g) { return (manifest.grades || []).find(x => x.id === g); }
+    // The parent (or any learner without a school grade) sees only the English ladder.
+    // Sheet learners whose grade is empty, 0 or not in the manifest count too — no grade-picker dead end.
+    function isLadderOnly(p) { return !!p && (!!p.ladderOnly || (!!p.fromSheet && !gradeInfo(p.grade))); }
+    function hasGradeOrLadder(p) { return !!p && (isLadderOnly(p) || !!gradeInfo(p.grade)); }
+    const ADULT_LABEL = 'מבוגר/ת — רק המסלול';
 
     // ---- Initialization ----
     async function init() {
@@ -374,7 +382,7 @@
       }
       // Not set up: the original name → grade → gender flow
       if (!cur) return showNameScreen();
-      if (!gradeInfo(cur.grade)) return showGradePicker(cur.name);
+      if (!hasGradeOrLadder(cur)) return showGradePicker(cur.name);
       if (!getGender()) return showGenderPicker(cur.name);
       showTopics();
     }
@@ -389,6 +397,7 @@
       if (!list.length && !isConfigured()) return showNameScreen();
       hideAll();
       document.getElementById('learnerScreen').classList.remove('hidden');
+      document.getElementById('learnerTitle').textContent = list.some(p => p.gender === 'male') ? 'מי מתרגל/ת?' : 'מי מתרגלת?';
       const grid = document.getElementById('learnerGrid');
       grid.innerHTML = '';
       list.forEach(p => {
@@ -398,11 +407,11 @@
         card.innerHTML = '<span class="learner-avatar"></span><span class="picker-label"></span><span class="learner-grade"></span>';
         card.querySelector('.learner-avatar').textContent = p.name.charAt(0);
         card.querySelector('.picker-label').textContent = p.name;
-        card.querySelector('.learner-grade').textContent = g ? g.name : '';
+        card.querySelector('.learner-grade').textContent = g ? g.name : (isLadderOnly(p) ? 'מסלול אנגלית' : '');
         card.addEventListener('click', () => {
           T.setCurrent(p.name);
           markChosen();
-          if (!gradeInfo(p.grade)) return showGradePicker(p.name);
+          if (!hasGradeOrLadder(T.getCurrent())) return showGradePicker(p.name);
           showTopics();
         });
         grid.appendChild(card);
@@ -503,17 +512,23 @@
         card.addEventListener('click', () => selectGrade(g.id));
         grid.appendChild(card);
       });
+      const adult = document.createElement('div');
+      adult.className = 'picker-card';
+      adult.innerHTML = `<span class="picker-icon">🪜</span><span class="picker-label">${ADULT_LABEL}</span>`;
+      adult.addEventListener('click', () => selectGrade(0));
+      grid.appendChild(adult);
 
       // Back link: go to topics if the current learner is complete, else name screen
       document.getElementById('gradeBackLink').onclick = () => {
         adding.name = '';
         const cur = T.getCurrent();
-        if (cur && gradeInfo(cur.grade) && getGender()) showTopics();
+        if (hasGradeOrLadder(cur) && getGender()) showTopics();
         else showNameScreen();
       };
     }
 
     function selectGrade(gradeId) {
+      // gradeId 0 = adult, ladder only
       if (adding.name) {
         adding.grade = gradeId;
         showGenderPicker(adding.name);
@@ -521,7 +536,7 @@
       }
       const cur = T.getCurrent();
       if (!cur) return showNameScreen();
-      T.addLocalProfile({ ...cur, grade: gradeId });
+      T.addLocalProfile({ ...cur, grade: gradeId, ladderOnly: !gradeId });
       T.setCurrent(cur.name);
       if (getGender()) showTopics(); else showGenderPicker(cur.name);
     }
@@ -539,7 +554,7 @@
 
     function selectGender(gender) {
       if (adding.name) {
-        T.addLocalProfile({ name: adding.name, grade: adding.grade, gender });
+        T.addLocalProfile({ name: adding.name, grade: adding.grade, gender, ladderOnly: !adding.grade });
         T.setCurrent(adding.name);
         adding.name = '';
       } else {
@@ -560,20 +575,68 @@
       document.getElementById('displayName').textContent = cur.name;
 
       const info = gradeInfo(cur.grade);
-      document.getElementById('gradeBadge').textContent = info ? info.name : '';
+      const ladderOnly = isLadderOnly(cur);
+      document.getElementById('gradeBadge').textContent = info ? info.name : (ladderOnly ? 'מסלול אנגלית' : '');
 
       const nameLink = document.getElementById('changeNameLink');
       nameLink.textContent = isConfigured() ? 'החלפה' : 'שינוי שם';
       nameLink.onclick = () => showLearnerScreen();
 
       // Grade comes from the sheet for sheet learners
-      document.getElementById('changeGradeLink').classList.toggle('hidden', cur.fromSheet);
-      document.getElementById('settingsDivider').classList.toggle('hidden', cur.fromSheet);
+      document.getElementById('changeGradeLink').classList.toggle('hidden', cur.fromSheet || ladderOnly);
+      document.getElementById('settingsDivider').classList.toggle('hidden', cur.fromSheet || ladderOnly);
       document.getElementById('changeGradeLink').onclick = () => showGradePicker(cur.name);
 
-      renderTopicGrid(cur);
+      renderLadderCard(cur);
+      document.getElementById('totalStats').classList.toggle('hidden', ladderOnly);
+      document.getElementById('topicsGrid').classList.toggle('hidden', ladderOnly);
+      if (ladderOnly) document.getElementById('topicsGrid').innerHTML = '';
+      else renderTopicGrid(cur);
       updateTotalStats();
       renderWeekLine(cur);
+    }
+
+    // ---- English ladder card ----
+    function ladderStats(id) {
+      try { return JSON.parse(localStorage.getItem(T.vocabKey(id))) || {}; } catch (e) { return {}; }
+    }
+    function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])); }
+    function renderLadderCard(cur) {
+      const el = document.getElementById('ladderCard');
+      if (!window.Ladder || !Ladder.ladderUnits(manifest).length) { el.classList.add('hidden'); return; }
+      const q = `name=${encodeURIComponent(cur.name)}&gender=${cur.gender}`;
+      const pos = Ladder.loadPosition(localStorage, cur.name);
+      el.classList.remove('hidden');
+      if (!pos.level && !pos.placedAt) {
+        el.innerHTML = `<div class="ladder-kicker">🪜 המסלול שלי באנגלית</div>
+          <div class="ladder-title">בואו נמצא את הרמה שלך</div>
+          <div class="ladder-sub">מבחן קצר של כ־5 דקות, ומשם ממשיכים יחידה אחרי יחידה</div>
+          <div class="ladder-btns"><a class="ladder-btn primary" href="app/ladder.html?placement=1&${q}">למבחן רמה</a></div>
+          <a class="ladder-link" href="app/ladder.html?${q}">למסלול המלא</a>`;
+        return;
+      }
+      const st = Ladder.ladderState(manifest, pos, ladderStats);
+      Ladder.savePosition(localStorage, cur.name, st.position);
+      const lvl = st.levels.find(l => l.id === st.currentLevel);
+      const u = st.units.find(x => x.id === st.currentUnitId);
+      let html = `<div class="ladder-kicker">🪜 המסלול שלי באנגלית</div>
+        <div class="ladder-title">רמה <span class="lvl-id">${st.currentLevel}</span> · ${esc(lvl.name)}</div>`;
+      if (u) {
+        const pct = u.status.total ? Math.round(u.status.known / u.status.total * 100) : 0;
+        html += `<div class="ladder-sub">יחידה ${u.unit}: ${esc(u.name)}</div>
+          <div class="ladder-bar"><div class="ladder-fill" style="width:${pct}%"></div></div>
+          <div class="ladder-sub"><span dir="ltr">${u.status.known}/${u.status.total}</span> ידועים</div>
+          <div class="ladder-btns">
+            <a class="ladder-btn primary" href="app/vocab.html?topic=${u.id}&${q}">להמשיך</a>
+            <a class="ladder-btn" href="app/quiz.html?ladder=review&${q}">חזרה</a>
+          </div>`;
+      } else {
+        html += `<div class="ladder-sub">סיימת את כל היחידות שיש כרגע ברמה הזו — עוד יחידות בדרך!</div>
+          <div class="ladder-btns"><a class="ladder-btn primary" href="app/quiz.html?ladder=review&${q}">חזרה</a></div>`;
+      }
+      if (st.newUnitIds.length) html += `<div class="ladder-note">🆕 נוספו ${st.newUnitIds.length} יחידות חדשות ברמות קודמות</div>`;
+      html += `<a class="ladder-link" href="app/ladder.html?${q}">למסלול המלא</a>`;
+      el.innerHTML = html;
     }
 
     // ---- This week's progress toward the goal ----

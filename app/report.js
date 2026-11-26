@@ -124,7 +124,17 @@
     } catch (e) { return null; }
   }
 
-  const api = { aggregate, keepsMissing, parseSetupHash, weekStartOf, addDays, dayKey, emptyWeek, TREND_WEEKS };
+  /** The ladder unit this learner practiced most recently (by event time), or null. */
+  function latestLadderUnit(events, learner, unitIds) {
+    const ids = new Set(unitIds);
+    let best = null, bestTs = '';
+    for (const e of events) {
+      if (e.learner === learner && ids.has(e.topic) && String(e.ts) > bestTs) { best = e.topic; bestTs = String(e.ts); }
+    }
+    return best;
+  }
+
+  const api = { aggregate, keepsMissing, latestLadderUnit, parseSetupHash, weekStartOf, addDays, dayKey, emptyWeek, TREND_WEEKS };
   if (typeof window !== 'undefined') window.Report = api;
   if (typeof module !== 'undefined') module.exports = api;
 })();

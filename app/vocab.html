@@ -11,7 +11,7 @@
   <!-- Menu: pick a practice mode -->
   <div id="menuScreen" class="topics-container hidden">
     <div class="quiz-top-bar">
-      <a href="../index.html" class="back-btn">חזרה ←</a>
+      <a href="../index.html" class="back-btn" id="menuBack">חזרה ←</a>
       <div class="quiz-topic-title" id="menuTitle"></div>
       <div></div>
     </div>
@@ -84,6 +84,7 @@
     let content = null;
     let level = 'words';
 
+    function isLadder() { return !!(content && content.ladder); }
     function getPref(k, d) { try { return localStorage.getItem('tirgul_vocab_pref_' + k) || d; } catch (e) { return d; } }
     function setPref(k, v) { try { localStorage.setItem('tirgul_vocab_pref_' + k, v); } catch (e) {} }
 
@@ -105,10 +106,16 @@
       }
       document.title = content.name;
       document.getElementById('menuTitle').textContent = content.name;
+      if (isLadder()) {
+        // English ladder unit: back to the path; start on sentences, Hebrew side first (say it in English)
+        document.getElementById('menuBack').href = `ladder.html?name=${encodeURIComponent(userName)}&gender=${userGender}`;
+        document.getElementById('menuTitle').textContent = `${content.ladder.level} · יחידה ${content.ladder.unit} — ${content.name}`;
+        document.getElementById('menuTitle').dir = 'rtl';
+      }
       document.getElementById('cardsBack').onclick = (e) => { e.preventDefault(); showMenu(); };
       document.getElementById('listBack').onclick = (e) => { e.preventDefault(); showMenu(); };
       const levels = vocabLevels(content);
-      const wanted = params.get('level') || getPref('level_' + topicId, levels[0]);
+      const wanted = params.get('level') || getPref('level_' + topicId, isLadder() && levels.includes('sentences') ? 'sentences' : levels[0]);
       level = levels.includes(wanted) ? wanted : levels[0];
       showMenu();
     }
@@ -138,7 +145,8 @@
 
       document.getElementById('menuSummary').innerHTML =
         `<div><strong>${words.length}</strong> ${unit} ברשימה</div>` +
-        (seen ? `<div>✅ ${known} יודעים · 💪 ${hard.length} לחיזוק · 🆕 ${words.length - seen} עוד לא תורגלו</div>` : '');
+        (seen ? `<div>✅ ${known} יודעים · 💪 ${hard.length} לחיזוק · 🆕 ${words.length - seen} עוד לא תורגלו</div>` : '') +
+        (isLadder() ? ladderUnitLine(stats) : '');
 
       // Question-count chips
       const n = getPref('n', String(content.questionsPerSession || 20));
@@ -182,6 +190,16 @@
       });
     }
 
+    /** Unit progress toward opening the next unit: 80% of all its items known (see ladder.js). */
+    function ladderUnitLine(stats) {
+      const all = (content.words || []).concat(content.sentences || []);
+      const known = all.filter(w => stats[w.en] && !VocabStats.needsWork(stats[w.en])).length;
+      const need = Math.ceil(all.length * 0.8);
+      return known >= need
+        ? `<div>🪜 היחידה הושלמה — <span dir="ltr">${known}/${all.length}</span> ידועים. היחידה הבאה פתוחה!</div>`
+        : `<div>🪜 ביחידה: <span dir="ltr">${known}/${all.length}</span> ידועים — עוד ${need - known} כדי לפתוח את היחידה הבאה</div>`;
+    }
+
     // ---------------- Flashcards ----------------
     const cards = { deck: [], i: 0, flipped: false, yes: 0, missed: [] };
 
@@ -216,7 +234,7 @@
     }
 
     function renderCard() {
-      const side = getPref('side', 'en');
+      const side = getPref('side', isLadder() ? 'he' : 'en');
       document.querySelectorAll('#cardsScreen .count-chip').forEach(chip =>
         chip.classList.toggle('active', chip.dataset.side === side));
 
@@ -240,7 +258,7 @@
       if (cards.i >= cards.deck.length || cards.busy) return;
       cards.flipped = !cards.flipped;
       document.getElementById('cardBack').classList.toggle('hidden', !cards.flipped);
-      if (cards.flipped && getPref('side', 'en') === 'he') playEnglish(cards.deck[cards.i].en);
+      if (cards.flipped && getPref('side', isLadder() ? 'he' : 'en') === 'he') playEnglish(cards.deck[cards.i].en);
       document.getElementById('cardTap').classList.toggle('hidden', cards.flipped);
     }
 
@@ -259,7 +277,7 @@
       cards.flipped = true;
       document.getElementById('cardBack').classList.remove('hidden');
       document.getElementById('cardTap').classList.add('hidden');
-      if (getPref('side', 'en') === 'he') playEnglish(word.en);
+      if (getPref('side', isLadder() ? 'he' : 'en') === 'he') playEnglish(word.en);
       const deckId = cards.deckId;
       setTimeout(() => { if (cards.deckId === deckId) { cards.busy = false; nextCard(); } }, knew ? 1500 : 2500);
     }

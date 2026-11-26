@@ -107,7 +107,7 @@
       'order': 'בניית משפט', 'cloze': 'השלמת מילה', 'speak': 'להגיד בקול', 'card': 'כרטיסיות',
       'multiple-choice': 'חשבון — בחירה', 'free-input': 'חשבון — כתיבה',
     };
-    const data = { cfg: null, learners: [], events: [], topicNames: {}, gradeNames: {}, thisWeek: '', week: '', editing: '' };
+    const data = { cfg: null, learners: [], events: [], topicNames: {}, ladderUnits: [], gradeNames: {}, thisWeek: '', week: '', editing: '' };
 
     function esc(s) {
       return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -174,7 +174,12 @@
         data.learners = l.learners || [];
         data.events = e.events || [];
         if (manifest) {
-          (manifest.topics || []).forEach(t => { data.topicNames[t.id] = t.name; });
+          (manifest.topics || []).forEach(t => {
+            data.topicNames[t.id] = t.track === 'ladder' && t.ladder ? `מסלול ${t.ladder.level} — ${t.name}` : t.name;
+            if (t.track === 'ladder') data.ladderUnits.push(t);
+          });
+          data.topicNames['ladder-review'] = 'מסלול — חזרה';
+          data.topicNames['ladder-placement'] = 'מסלול — מבחן רמה';
           (manifest.grades || []).forEach(g => { data.gradeNames[g.id] = g.name; });
         }
         setStatus('');
@@ -254,12 +259,15 @@
       const trendMax = Math.max(goal, ...trend, 1);
       const missing = R.keepsMissing(data.events, l.name, Date.now());
       const last = data.events.filter(e => e.learner === l.name).reduce((m, e) => (e.ts > m ? e.ts : m), '');
+      const ladderId = R.latestLadderUnit(data.events, l.name, data.ladderUnits.map(t => t.id));
+      const ladderUnit = ladderId && data.ladderUnits.find(t => t.id === ladderId);
 
       return `<article class="learner-card" data-learner="${esc(l.name)}">
         <div class="lc-head">
           <div class="lc-avatar">${esc(l.name.charAt(0))}</div>
           <div><div class="lc-name">${esc(l.name)}</div>
-            <div class="lc-sub">${esc(data.gradeNames[l.grade] || '')}${last ? ' · לאחרונה: ' + esc(when(last)) : ''}</div></div>
+            <div class="lc-sub">${esc(data.gradeNames[l.grade] || '')}${last ? ' · לאחרונה: ' + esc(when(last)) : ''}</div>
+            ${ladderUnit ? `<div class="lc-sub lc-ladder">🪜 במסלול: <span dir="ltr" style="unicode-bidi:isolate">${esc(ladderUnit.ladder.level)}</span> · יחידה ${esc(ladderUnit.ladder.unit)} — ${esc(ladderUnit.name)}</div>` : ''}</div>
           ${pill}
         </div>
 

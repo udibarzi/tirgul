@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>המסלול שלי באנגלית</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="ladder-page">
+    <div class="quiz-top-bar">
+      <a href="../index.html" class="back-btn" id="backBtn">חזרה ←</a>
+      <div class="quiz-topic-title" id="pageTitle">🪜 המסלול שלי</div>
+      <div></div>
+    </div>
+
+    <div id="loading" class="ladder-sub" style="text-align:center;padding:30px;">טוען...</div>
+
+    <!-- The map: levels and units -->
+    <div id="mapView" class="hidden">
+      <div class="ladder-card hidden" id="placeInvite">
+        <div class="ladder-title">עוד לא בחרנו רמה</div>
+        <div class="ladder-sub">מבחן קצר של כ־5 דקות יתאים לך רמה. אפשר גם לבחור לבד.</div>
+        <div class="ladder-btns"><a class="ladder-btn primary" id="placeBtn">למבחן רמה</a></div>
+      </div>
+      <div id="levels"></div>
+      <div class="ladder-btns" style="margin:16px 0 8px;">
+        <a class="ladder-btn" id="reviewBtn">חזרה על מה שלמדתי</a>
+        <a class="ladder-btn" id="retakeBtn">מבחן רמה מחדש</a>
+        <button type="button" class="ladder-btn" id="chooseBtn">לבחור רמה בעצמי</button>
+      </div>
+      <div id="chooseBox" class="hidden">
+        <div class="ladder-sub" style="text-align:center;">מאיזו רמה להתחיל? הרמות שלפניה ייפתחו לחזרה.</div>
+        <div class="choose-levels" id="chooseList"></div>
+      </div>
+    </div>
+
+    <!-- Placement quiz -->
+    <div id="placementView" class="hidden">
+      <div class="placement-box" id="placementQ">
+        <div class="placement-meta" id="pMeta"></div>
+        <div class="placement-prompt" id="pPrompt"></div>
+        <div class="placement-item" id="pItem"></div>
+        <div class="options-grid" id="pOptions"></div>
+        <button type="button" class="dont-know" id="pDontKnow"></button>
+      </div>
+      <div class="ladder-card hidden" id="placementResult"></div>
+    </div>
+  </div>
+
+  <script src="core.js"></script>
+  <script src="tracker.js"></script>
+  <script src="vocab.js"></script>
+  <script src="ladder.js"></script>
+  <script>
+    const params = new URLSearchParams(location.search);
+    const cur = Tracker.getCurrent();
+    const gender = params.get('gender') || (cur && cur.gender) || 'female';
+    const q = cur ? `name=${encodeURIComponent(cur.name)}&gender=${gender}` : '';
+    let manifest = null;
+
+    const $ = id => document.getElementById(id);
+    function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])); }
+    function statsOf(id) { return VocabStats.get(id); }
+    function load() { return Ladder.loadPosition(localStorage, cur.name); }
+    function save(p) { Ladder.savePosition(localStorage, cur.name, p); }
+    function show(id) { ['loading', 'mapView', 'placementView'].forEach(v => $(v).classList.toggle('hidden', v !== id)); window.scrollTo(0, 0); }
+
+    Tracker.setPage({ topic: 'menu' });
+    Tracker.attach();
+
+    async function init() {
+      if (!cur) { $('loading').innerHTML = 'קודם בוחרים מי מתרגל/ת — <a href="../index.html">לעמוד הבית</a>'; return; }
+      manifest = await loadManifest('../content/manifest.json');
+      if (!manifest) { $('loading').textContent = 'שגיאה בטעינת התוכן. נסו לרענן את הדף.'; return; }
+      if (params.get('placement') === '1') startPlacement();
+      else renderMap();
+    }
+
+    // ================= Map =================
+    const STATE_ICON = { done: '✓', current: '▶', open: '🔓', locked: '🔒', new: '🆕' };
+    function renderMap() {
+      show('mapView');
+      Tracker.setPage({ topic: 'menu' });
+      const pos = load();
+      const placed = !!(pos.level || pos.placedAt);
+      const st = Ladder.ladderState(manifest, pos, statsOf);
+      if (placed) save(st.position);
+      $('placeInvite').classList.toggle('hidden', placed);
+      $('placeBtn').href = `ladder.html?placement=1&${q}`;
+      $('retakeBtn').href = `ladder.html?placement=1&${q}`;
+      $('retakeBtn').classList.toggle('hidden', !placed);
+      $('reviewBtn').href = `quiz.html?ladder=review&${q}`;
+      $('reviewBtn').classList.toggle('hidden', !placed);
+
+      $('levels').innerHTML = st.levels.map(l => {
+        const units = st.units.filter(u => u.level === l.id);
+        const isCur = placed && l.id === st.currentLevel;
+        const rows = units.map(u => {
+          const href = u.state !== 'locked' ? ` href="vocab.html?topic=${u.id}&${q}"` : '';
+          const count = u.status.seen ? `<span class="unit-count" dir="ltr">${u.status.known}/${u.status.total}</span>` : '';
+          const anyway = (u.state === 'locked' && isCur) ? '<button type="button" class="open-anyway">פתח בכל זאת</button>' : '';
+          return `<a class="unit-row" data-unit="${u.id}" data-state="${u.state}"${href}>
+            <span class="unit-state">${STATE_ICON[u.state]}</span>
+            <span class="unit-name">${u.icon ? u.icon + ' ' : ''}יחידה ${u.unit} — ${esc(u.name)}</span>${count}${anyway}</a>`;
+        }).join('');
+        const soon = l.soon ? `<div class="unit-soon">בקרוב: עוד ${l.soon} יחידות</div>` : '';
+        return `<section class="ladder-level${isCur ? ' is-current' : ''}" data-level="${l.id}">
+          <h2><span class="lvl-id">${l.id}</span> · ${esc(l.name)}${isCur ? (gender === 'male' ? ' — אתה כאן' : ' — את כאן') : ''}</h2>
+          <div class="ladder-sub">${esc(l.description)}</div>${rows}${soon}</section>`;
+      }).join('');
+
+      $('levels').querySelectorAll('.open-anyway').forEach(b => b.addEventListener('click', e => {
+        e.preventDefault();
+        const p = load();
+        p.opened[b.closest('.unit-row').dataset.unit] = true;
+        save(p);
+        renderMap();
+      }));
+
+      $('chooseBox').classList.add('hidden');
+      $('chooseBtn').onclick = () => {
+        $('chooseList').innerHTML = st.levels.map(l =>
+          `<button type="button" class="choose-level" data-level="${l.id}"><span class="lvl-id">${l.id}</span> · ${esc(l.name)} — <span class="ladder-sub">${esc(l.description)}</span></button>`).join('');
+        $('chooseList').querySelectorAll('.choose-level').forEach(b => b.addEventListener('click', () => {
+          const p = load();
+          p.placedAt = p.level = b.dataset.level;
+          save(p);
+          renderMap();
+        }));
+        $('chooseBox').classList.remove('hidden');
+        $('chooseBox').scrollIntoView({ behavior: 'smooth' });
+      };
+    }
+
+    // ================= Placement =================
+    const BLOCK = { words: 4, sentences: 2 };
+    const pl = { data: null, history: [], level: null, block: [], i: 0, right: 0 };
+
+    async function startPlacement() {
+      show('placementView');
+      $('pageTitle').textContent = '🪜 מבחן רמה';
+      $('backBtn').href = `ladder.html?${q}`;
+      $('pDontKnow').textContent = gender === 'male' ? 'לא יודע — לדלג' : 'לא יודעת — לדלג';
+      const raw = await loadContent('../content/ladder-placement.json');
+      if (!raw || !raw.levels) { $('placementQ').textContent = 'שגיאה בטעינת המבחן.'; return; }
+      pl.data = raw;
+      Tracker.setPage({ topic: 'ladder-placement', mode: 'placement' });
+      Tracker.session();
+      nextBlock();
+    }
+
+    function nextBlock() {
+      const step = Ladder.placementStep(pl.history);
+      if (step.result) return showResult(step.result);
+      pl.level = step.next;
+      const L = localizeVocabContent(pl.data.levels[pl.level], gender);
+      const words = shuffle(L.words.slice()).slice(0, BLOCK.words);
+      const sents = shuffle(L.sentences.slice()).slice(0, BLOCK.sentences);
+      pl.block = shuffle(words.map(w => buildVocabQuestion(w, 'en-he', L.words, L.words))
+        .concat(sents.map(s => buildVocabQuestion(s, 'cloze', L.sentences, L.words))));
+      pl.i = 0;
+      pl.right = 0;
+      showQ();
+    }
+
+    function showQ() {
+      const qq = pl.block[pl.i];
+      const box = $('placementQ');
+      box.dataset.level = pl.level;
+      box.dataset.kind = qq.kind;
+      box.dataset.item = qq.word.en;
+      $('pMeta').textContent = `שלב ${pl.history.length + 1} · שאלה ${pl.i + 1} מתוך ${pl.block.length}`;
+      $('pPrompt').textContent = qq.kind === 'cloze' ? 'איזו מילה חסרה?' : 'מה הפירוש?';
+      $('pItem').innerHTML = qq.kind === 'cloze' ? clozeSentenceHtml(qq.word, false) : vocabWordHtml(qq.word.en, 'en', true);
+      const sp = $('pItem').querySelector('.speak-btn');
+      if (sp) sp.onclick = () => speakEnglish(qq.word.en);
+      const en = qq.optionsLang === 'en';
+      $('pOptions').innerHTML = qq.options.map((o, i) =>
+        `<button type="button" class="option-btn${en ? ' opt-en' : ''}" data-i="${i}" dir="${en ? 'ltr' : 'rtl'}"${en ? ' lang="en"' : ''}>${esc(o)}</button>`).join('');
+      $('pOptions').querySelectorAll('.option-btn').forEach(b => b.addEventListener('click', () => answer(Number(b.dataset.i))));
+      $('pDontKnow').onclick = () => answer(-1);
+      box.dataset.ready = '1';
+    }
+
+    function answer(i) {
+      const qq = pl.block[pl.i];
+      const box = $('placementQ');
+      if (box.dataset.busy === '1') return;
+      box.dataset.busy = '1';
+      box.removeAttribute('data-ready');
+      const ok = i === qq.correct;
+      if (ok) pl.right++;
+      Tracker.answer({ kind: qq.kind, item: qq.word.en, correct: ok });
+      const btns = $('pOptions').querySelectorAll('.option-btn');
+      btns.forEach(b => b.classList.add('disabled'));
+      if (i >= 0) btns[i].classList.add('selected');
+      setTimeout(() => {
+        box.dataset.busy = '';
+        pl.i++;
+        if (pl.i < pl.block.length) return showQ();
+        pl.history.push({ level: pl.level, correct: pl.right, total: pl.block.length });
+        nextBlock();
+      }, 350);
+    }
+
+    function showResult(levelId) {
+      Tracker.setPage({ topic: 'menu' });
+      const p = load();
+      p.placedAt = p.level = levelId;
+      const st = Ladder.ladderState(manifest, p, statsOf);
+      save(st.position);
+      const lvl = st.levels.find(l => l.id === levelId);
+      $('placementQ').classList.add('hidden');
+      const r = $('placementResult');
+      const start = st.currentUnitId ? `vocab.html?topic=${st.currentUnitId}&${q}` : `ladder.html?${q}`;
+      r.innerHTML = `<div class="ladder-kicker">🎉 סיימת את מבחן הרמה</div>
+        <div class="ladder-title">הרמה שלך: <span class="lvl-id">${levelId}</span> · ${esc(lvl.name)}</div>
+        <div class="ladder-sub">${esc(lvl.description)}</div>
+        <div class="ladder-btns"><a class="ladder-btn primary" href="${start}">להתחיל!</a></div>
+        <a class="ladder-link" href="ladder.html?${q}">למסלול המלא</a>`;
+      r.classList.remove('hidden');
+    }
+
+    init();
+  </script>
+</body>
+</html>
