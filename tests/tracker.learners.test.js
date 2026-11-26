@@ -169,3 +169,41 @@ test('browser code avoids syntax older iPads cannot parse', () => {
     assert.ok(!/\?\?|\?\.[A-Za-z_$(\[]/.test(src), f + ' uses ?? or ?.');
   }
 });
+
+test('ladderOnly survives', () => {
+  const env = fakeEnv();
+  const t = createTracker(env);
+  t.addLocalProfile({ name: 'אבא', grade: 0, gender: 'male', ladderOnly: true });
+  t.addLocalProfile({ name: 'נועה', grade: 5, gender: 'female' });
+  const ps = createTracker(env).getProfiles();
+  assert.equal(ps[0].ladderOnly, true);
+  assert.equal(ps[0].grade, 0);
+  assert.equal(ps[1].ladderOnly, undefined);
+  t.setCurrent('אבא');
+  assert.equal(t.ladderKey(), 'tirgul_ladder__אבא');
+  assert.equal(t.ladderKey('נועה'), 'tirgul_ladder__נועה');
+});
+
+test('mapLearner moves the ladder position', () => {
+  const env = fakeEnv({ storage: {
+    tirgul_ladder__noa: '{"level":"A2","placedAt":"A2","opened":{},"seen":[]}',
+    'tirgul_vocab__noa_ladder-a1-01': JSON.stringify({ cat: { r: 1, w: 0, last: 1, t: 50 } }),
+    'tirgul_vocab__נועה_ladder-a1-01': JSON.stringify({ cat: { r: 1, w: 0, last: 1, t: 90 } }),
+  } });
+  const t = createTracker(env);
+  t.addLocalProfile({ name: 'noa', grade: 5, gender: 'female' });
+  t.setSheetLearners([{ name: 'נועה', grade: 5, gender: 'female', fromSheet: true }]);
+  t.mapLearner('noa', 'נועה');
+  assert.equal(env.storage.getItem('tirgul_ladder__נועה'), '{"level":"A2","placedAt":"A2","opened":{},"seen":[]}');
+  assert.equal(env.storage.getItem('tirgul_ladder__noa'), null);
+  assert.deepEqual(JSON.parse(env.storage.getItem('tirgul_vocab__נועה_ladder-a1-01')).cat, { r: 2, w: 0, last: 1, t: 90 });
+});
+
+test('mapLearner keeps an existing ladder position at the destination', () => {
+  const env = fakeEnv({ storage: { tirgul_ladder__noa: '{"level":"A1"}', 'tirgul_ladder__נועה': '{"level":"B1"}' } });
+  const t = createTracker(env);
+  t.addLocalProfile({ name: 'noa', grade: 5, gender: 'female' });
+  t.setSheetLearners([{ name: 'נועה', grade: 5, gender: 'female', fromSheet: true }]);
+  t.mapLearner('noa', 'נועה');
+  assert.equal(env.storage.getItem('tirgul_ladder__נועה'), '{"level":"B1"}');
+});

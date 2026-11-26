@@ -19,6 +19,69 @@ const hebrewInParens = /\([^)]*[\u0590-\u05FF][^)]*\)/;
 
 console.log('=== Validating manifest ===');
 
+// ---- English ladder (see docs/CONTENT-FORMAT.md) ----
+const LADDER_LEVELS = ['A1', 'A2', 'B1', 'B2', 'C1'];
+const ladderTopics = manifest.topics.filter(t => t.track === 'ladder');
+const ladderSeen = new Set();
+if (ladderTopics.length || manifest.ladderLevels !== undefined) {
+  const ids = Array.isArray(manifest.ladderLevels) ? manifest.ladderLevels.map(l => l && l.id) : null;
+  if (!ids || ids.join() !== LADDER_LEVELS.join()) {
+    console.error(`  ERROR: manifest "ladderLevels" must list exactly ${LADDER_LEVELS.join(', ')} in order`);
+    errors++;
+  } else {
+    manifest.ladderLevels.forEach(l => {
+      if (!l.name || !(Number(l.plannedUnits) > 0)) {
+        console.error(`  ERROR: ladderLevels ${l.id}: needs "name" and "plannedUnits"`);
+        errors++;
+      }
+    });
+  }
+}
+function checkLadderTopic(topic, data) {
+  const bad = msg => { console.error(`  ERROR: ${topic.id}: ${msg}`); errors++; };
+  const lad = topic.ladder;
+  if (!lad || !LADDER_LEVELS.includes(lad.level) || !(Number.isInteger(lad.unit) && lad.unit > 0)) {
+    bad('"ladder" needs {level: A1–C1, unit: a positive whole number}');
+    return;
+  }
+  if (!data.ladder || data.ladder.level !== lad.level || data.ladder.unit !== lad.unit) bad('"ladder" in the content file differs from the manifest');
+  const key = lad.level + '-' + lad.unit;
+  if (ladderSeen.has(key)) bad(`duplicate ladder unit ${lad.level} ${lad.unit}`);
+  ladderSeen.add(key);
+  if (topic.grade !== undefined) bad('ladder topics must not have a "grade"');
+  const nw = (data.words || []).length, ns = (data.sentences || []).length;
+  if (topic.itemCount !== nw + ns) bad(`"itemCount" is ${topic.itemCount}, but the file has ${nw + ns} items`);
+  (data.sentences || []).forEach((it, i) => { if (!it.blank) bad(`sentence ${i + 1} "${it.en}" has no "blank"`); });
+  (data.words || []).concat(data.sentences || []).forEach(it => { if (it.heM !== undefined && (!it.heM || it.heM === it.he)) bad(`"${it.en}": "heM" must differ from "he"`); });
+  if (nw < 20 || nw > 30 || ns < 15 || ns > 25) {
+    console.warn(`  WARN: ${topic.id}: ${nw} words and ${ns} sentences — a unit should have 20–30 words and 15–25 sentences`);
+    warnings++;
+  }
+}
+function checkPlacement() {
+  const file = path.join(contentDir, 'ladder-placement.json');
+  if (!fs.existsSync(file)) {
+    if (ladderTopics.length) { console.error('  ERROR: ladder topics exist but content/ladder-placement.json is missing'); errors++; }
+    return;
+  }
+  let p;
+  try { p = JSON.parse(fs.readFileSync(file, 'utf-8')); } catch (e) { console.error(`  ERROR: ladder-placement.json: ${e.message}`); errors++; return; }
+  const lv = p && p.levels;
+  for (const id of LADDER_LEVELS) {
+    const L = lv && lv[id];
+    const w = L && Array.isArray(L.words) ? L.words : [], st = L && Array.isArray(L.sentences) ? L.sentences : [];
+    if (w.length < 12 || st.length < 4) { console.error(`  ERROR: ladder-placement ${id}: needs 12+ words and 4+ sentences (has ${w.length} + ${st.length})`); errors++; }
+    w.concat(st).forEach(it => { if (!it || !it.en || !it.he) { console.error(`  ERROR: ladder-placement ${id}: item without "en"/"he"`); errors++; } });
+    st.forEach(it => {
+      if (!it.blank || !Array.isArray(it.choices) || it.choices.length < 3 || it.choices.includes(it.blank)) {
+        console.error(`  ERROR: ladder-placement ${id} "${it.en}": needs a "blank" and 3+ wrong "choices"`); errors++;
+      }
+    });
+  }
+  console.log(`  ladder-placement: ${LADDER_LEVELS.map(id => id + ' ' + (lv && lv[id] ? ((lv[id].words || []).length + (lv[id].sentences || []).length) : 0)).join(', ')} ✓`);
+}
+checkPlacement();
+
 // Check all topic files exist
 for (const topic of manifest.topics) {
   const filePath = path.join(contentDir, `${topic.id}.json`);
@@ -125,7 +188,8 @@ for (const topic of manifest.topics) {
       console.warn(`  WARN: ${topic.id}: ${noAudio} item(s) have no recording — run _build_audio.py (browser voice is used meanwhile)`);
       warnings++;
     }
-    console.log(`  ${topic.id}: ${counts.join(' + ')} (vocab, grade ${topic.grade || '?'}) ✓`);
+    if (topic.track === 'ladder') checkLadderTopic(topic, data);
+    console.log(`  ${topic.id}: ${counts.join(' + ')} (vocab, ${topic.track === 'ladder' ? 'ladder ' + (topic.ladder && topic.ladder.level) : 'grade ' + (topic.grade || '?')}) ✓`);
     continue;
   }
 
@@ -177,7 +241,7 @@ for (const topic of manifest.topics) {
   });
 
   // Check grade field
-  if (!topic.grade) {
+  if (!topic.grade && topic.track !== 'ladder') {
     console.warn(`  WARN: ${topic.id} has no grade field in manifest`);
     warnings++;
   }

@@ -105,7 +105,7 @@
       
       try {
         // Load topic content
-        const content = await loadContent(`../content/${topicId}.json`);
+        const content = localizeVocabContent(await loadContent(`../content/${topicId}.json`), userGender);
         if (content && content.type === 'vocab') {
           // Vocab topic: questions are generated from the word/sentence lists (vocab.js)
           state.isVocab = true;

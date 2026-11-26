@@ -124,6 +124,7 @@ const VocabStats = {
     const s = all[en] || { r: 0, w: 0 };
     if (isCorrect) s.r++; else s.w++;
     s.last = isCorrect ? 1 : 0;
+    s.t = Date.now();
     all[en] = s;
     try { localStorage.setItem(this._key(topicId), JSON.stringify(all)); } catch (e) {}
   },
@@ -282,6 +283,37 @@ function buildVocabQuestions(content, mode, count, topicId, level) {
     kinds = shuffle(chosen.map((_, i) => allowed[i % allowed.length]));
   }
   return chosen.map((it, i) => buildVocabQuestion(it, fitKind(it, kinds[i]), items, words));
+}
+
+/**
+ * Masculine Hebrew: items may carry "heM" (the masculine first-person form)
+ * where it differs from "he". For a male learner, return a copy with he = heM.
+ */
+function localizeVocabContent(content, gender) {
+  if (gender !== 'male' || !content) return content;
+  const swap = list => Array.isArray(list) ? list.map(it => (it && it.heM) ? Object.assign({}, it, { he: it.heM }) : it) : list;
+  return Object.assign({}, content, { words: swap(content.words), sentences: swap(content.sentences) });
+}
+
+/**
+ * Ladder review: questions from items of several units.
+ * picks = [{unitId, item, unitContent}]. Each question carries q.topicId so
+ * stats are recorded against the item's own unit. No speaking in review.
+ */
+function buildReviewQuestions(picks) {
+  const list = shuffle((picks || []).slice());
+  const counters = {};
+  return list.map(p => {
+    const c = p.unitContent || {};
+    const level = (Array.isArray(c.sentences) && c.sentences.indexOf(p.item) >= 0) ? 'sentences' : 'words';
+    const allowed = vocabKinds(c, level).filter(k => k !== 'speak');
+    const key = p.unitId + '|' + level;
+    const i = counters[key] = (counters[key] || 0) + 1;
+    const kind = allowed.length ? allowed[(i + Math.floor(Math.random() * allowed.length)) % allowed.length] : 'he-en';
+    const q = buildVocabQuestion(p.item, fitKind(p.item, kind), vocabItems(c, level), c.words || []);
+    q.topicId = p.unitId;
+    return q;
+  });
 }
 
 /** CSS class for long texts (sentences) so they fit on a phone. */
@@ -548,5 +580,6 @@ if (typeof module !== 'undefined' && module.exports) {
   module.exports = {
     VOCAB_MODES, VOCAB_KINDS, vocabKinds, vocabLevels, vocabSlug, vocabNormalize, buildVocabQuestions,
     vocabDistractors, escapeHtml, orderTokens, clozeRegex, speechTokens, speechScore, speechMatches,
+    VocabStats, localizeVocabContent, buildReviewQuestions, buildVocabQuestion,
   };
 }

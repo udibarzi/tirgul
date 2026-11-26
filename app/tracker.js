@@ -23,6 +23,7 @@
   };
   const PROGRESS_BASE = 'math_app__';
   const VOCAB_BASE = 'tirgul_vocab__';
+  const LADDER_BASE = 'tirgul_ladder__';   // same as ladder.js positionKey()
   const LEGACY_TOPIC_RE = /^math_app_(?!_)(?!username$|grade$|gender$)(.+)$/;
   const LEGACY_VOCAB_RE = /^tirgul_vocab_(?!_)(?!pref_)(.+)$/;
   const OUTBOX_CAP = 5000;
@@ -88,6 +89,7 @@
           if (p.last !== undefined || q.last !== undefined) {
             m.last = Math.min(p.last === undefined ? 1 : p.last, q.last === undefined ? 1 : q.last);
           }
+          if (typeof p.t === 'number' || typeof q.t === 'number') m.t = Math.max(p.t || 0, q.t || 0);
           out[w] = m;
         }
         return JSON.stringify(out);
@@ -121,6 +123,7 @@
       if (Number(p.minutesPerWeek) > 0) out.minutesPerWeek = Number(p.minutesPerWeek);
       if (Number(p.daysPerWeek) > 0) out.daysPerWeek = Number(p.daysPerWeek);
       if (!fromSheet && p.handled) out.handled = true;
+      if (p.ladderOnly) out.ladderOnly = true;
       return out;
     }
     function sheetLearners() {
@@ -169,6 +172,7 @@
     }
     function progressPrefix(name) { return PROGRESS_BASE + (name == null ? currentName() : name); }
     function vocabKey(topicId, name) { return VOCAB_BASE + (name == null ? currentName() : name) + '_' + topicId; }
+    function ladderKey(name) { return LADDER_BASE + (name == null ? currentName() : name); }
 
     // ---- migration and mapping ----
     function migrateLegacy() {
@@ -206,6 +210,11 @@
       for (const k of allKeys()) {
         if (k.startsWith(fromP)) moveKey(k, toP + k.slice(fromP.length));
         else if (k.startsWith(fromV)) moveKey(k, toV + k.slice(fromV.length));
+      }
+      const ladderFrom = get(LADDER_BASE + from);
+      if (ladderFrom != null) {
+        if (get(LADDER_BASE + to) == null) set(LADDER_BASE + to, ladderFrom);
+        if (get(LADDER_BASE + to) != null) del(LADDER_BASE + from);
       }
       const fromDays = getJSON(KEYS.days(from), null);
       if (fromDays) {
@@ -361,7 +370,7 @@
     return {
       getConfig, applySetupHash,
       getProfiles, addLocalProfile, setSheetLearners, getCurrent, setCurrent,
-      progressPrefix, vocabKey, migrateLegacy, unmappedLocalNames, mapLearner,
+      progressPrefix, vocabKey, ladderKey, migrateLegacy, unmappedLocalNames, mapLearner,
       setPage, session, answer, card, activity, tick, flushTime, outbox,
       send, beacon, localWeek, fetchLearners, fetchWeek, attach,
     };

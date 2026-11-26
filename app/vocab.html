@@ -97,7 +97,7 @@
     Tracker.attach();
 
     async function init() {
-      content = topicId ? await loadContent(`../content/${topicId}.json`) : null;
+      content = topicId ? localizeVocabContent(await loadContent(`../content/${topicId}.json`), userGender) : null;
       if (!content || content.type !== 'vocab' || !vocabLevels(content).length) {
         document.getElementById('loadingScreen').innerHTML =
           '<div style="text-align:center;">😕 לא נמצאה רשימת מילים<br><a href="../index.html">חזרה לתפריט</a></div>';
