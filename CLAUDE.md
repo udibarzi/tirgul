@@ -117,6 +117,8 @@ Spec: `docs/superpowers/specs/2026-11-21-practice-tracking-design.md`.
 
 ## Common pitfalls
 
+- **Phone caches after a deploy**: GitHub Pages lets browsers keep files for 10 minutes. Script tags carry `?v=<version>` (e.g. `core.js?v=20261126b`) so a new page never runs with an old script. **When you change any `app/*.js`, bump that version in every HTML file** (`grep -rl '?v=' index.html app/*.html`). Content JSON is fetched with `cache: 'no-cache'`, so it needs no bump.
+
 - **Unicode minus vs hyphen**: 7th grade content uses U+2212 (−) but keyboards type U+002D (-). Always include both in `correct` arrays.
 - **Screenshots**: macOS may block reading screenshot files. Describe the visual issue or paste the image directly.
 - **Testing BiDi**: The best way to verify is to view the live site. `npx serve .` from project root works for local testing.

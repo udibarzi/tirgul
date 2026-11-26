@@ -894,7 +894,8 @@ function getConfettiCSS() {
  */
 async function loadContent(url) {
   try {
-    const response = await fetch(url);
+    // no-cache: always ask the server whether the file changed (cheap with ETags), so new content shows right after an update
+    const response = await fetch(url, { cache: 'no-cache' });
     if (!response.ok) throw new Error(`HTTP ${response.status}`);
     return await response.json();
   } catch (e) {
