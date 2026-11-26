@@ -1,6 +1,6 @@
 # English ladder: a learning path from A1 to C1 — design
 
-Date: 2026-11-26 · Status: draft for approval. Decisions marked *(my call)* were made by Claude and are open to change.
+Date: 2026-11-26 · Status: draft for approval, after a builder check. Decisions marked *(my call)* were made by Claude and are open to change.
 
 ## Why
 
@@ -100,7 +100,7 @@ The way the girls use the app today is to see Hebrew, try to say it in English, 
 - It's adaptive by level. Each level gets a block of about 6 items:
   - mostly "what does this mean?" multiple choice on words from across that level's full planned vocabulary;
   - plus 1–2 fill-in sentences.
-- It starts at A2. Five or more right out of 6 moves up a level; 3 or fewer moves down. It stops when the result settles.
+- It starts at A2. Five or more right out of 6 moves up a level; 3 or fewer moves down; 4 means this is the level *(my call)*. It stops when the result settles.
 - **Result:** the learner is placed at the highest level they passed, plus one. Earlier levels are marked as passed: open and reviewable, but not required.
 - It's also possible to choose a level by hand, which covers the "I just want to start at B2" case.
 - Placement items come from a separate `content/ladder-placement.json`, so placement doesn't depend on which units are built yet.
@@ -109,14 +109,15 @@ The way the girls use the app today is to see Hebrew, try to say it in English, 
 
 - **Units:** within a level, units are done in order. Unit N+1 opens when 80% of unit N's items have been seen and are not "needs work" (`VocabStats.needsWork`). A small "פתח בכל זאת" (open anyway) link opens the next unit early, so the ladder is never a wall.
 - **Levels:** a level is complete when all its built units are complete. The next level then opens.
+- **Units added later to a level already left** *(my call)*: they are optional extras. The learner's current level and "להמשיך" (continue) never move backwards. The ladder page marks the new units "חדש" (new), and the home card mentions them once. So the build order "at least 2 units ahead" is a goal, not a requirement.
 - **Unbuilt units:** they appear as "בקרוב" (coming soon), so the path's length is visible.
 
 ### Review
 
-- "חזרה" (review) draws 20 items from the units the learner has completed or passed. It prefers:
+- "חזרה" (review) draws 20 items from the units the learner has completed or passed, **only from items she has actually practiced** *(my call)*, meaning they have a stats record. Levels skipped through placement add nothing to review until she practices them. It prefers:
   - "needs work" items;
   - items not seen for the longest time.
-- `VocabStats` records gain a `t` timestamp, the last-seen time, so "longest unseen" works. Records without `t` count as long unseen.
+- `VocabStats` records gain a `t` timestamp, the last-seen time, so "longest unseen" works. Practiced records without `t`, from before this change, count as long unseen.
 - This is not a full spaced-repetition scheduler *(my call)*. It's simpler, and good enough for daily use.
 
 ### Screens
