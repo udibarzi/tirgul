@@ -7,6 +7,13 @@
     { "id": 7, "name": "כיתה ז׳", "icon": "7️⃣" },
     { "id": 8, "name": "כיתה ח׳", "icon": "8️⃣" }
   ],
+  "ladderLevels": [
+    {"id": "A1", "name": "מתחילים", "description": "המילים והמשפטים הראשונים — להציג את עצמי, משפחה, בית ואוכל", "plannedUnits": 12},
+    {"id": "A2", "name": "בסיסי", "description": "חיי היום־יום — סדר היום, קניות, ולספר מה עשיתי", "plannedUnits": 16},
+    {"id": "B1", "name": "ביניים", "description": "דעות, תוכניות וסיפורים — ופעלים עם מילית", "plannedUnits": 20},
+    {"id": "B2", "name": "מתקדמים", "description": "אוצר מילים יומיומי לעומק — הבית, המטבח, סידורים, צירופים ופעלים עם מילית", "plannedUnits": 20},
+    {"id": "C1", "name": "שוטף וטבעי", "description": "לדבר טבעי ושוטף — ניבים, ניסוח מנומס ותגובות בשיחה", "plannedUnits": 16}
+  ],
   "topics": [
     {
       "id": "fractions-4",
@@ -275,6 +282,171 @@
       "difficulty": 1,
       "order": 0,
       "grade": 5
+    },
+    {
+      "id": "ladder-a1-01",
+      "name": "קצת עליי",
+      "icon": "👋",
+      "description": "ברכות, היכרות, מספרים ונימוסים — hello, my name is, thank you",
+      "type": "vocab",
+      "subject": "english",
+      "track": "ladder",
+      "ladder": {"level": "A1", "unit": 1},
+      "itemCount": 50
+    },
+    {
+      "id": "ladder-a1-02",
+      "name": "המשפחה והבית שלי",
+      "icon": "🏠",
+      "description": "בני המשפחה, החדרים והחפצים בבית — this is my mom, I have a dog",
+      "type": "vocab",
+      "subject": "english",
+      "track": "ladder",
+      "ladder": {"level": "A1", "unit": 2},
+      "itemCount": 48
+    },
+    {
+      "id": "ladder-a1-03",
+      "name": "אוכל ושתייה",
+      "icon": "🍎",
+      "description": "מאכלים, משקאות וארוחות, מה אוהבים ואיך מבקשים — I like pizza, can I have water",
+      "type": "vocab",
+      "subject": "english",
+      "track": "ladder",
+      "ladder": {"level": "A1", "unit": 3},
+      "itemCount": 47
+    },
+    {
+      "id": "ladder-a2-01",
+      "name": "היום שלי והשעה",
+      "icon": "⏰",
+      "description": "סדר היום, ימים, שעות וכמה פעמים — wake up, at 7 o'clock, usually",
+      "type": "vocab",
+      "subject": "english",
+      "track": "ladder",
+      "ladder": {"level": "A2", "unit": 1},
+      "itemCount": 48
+    },
+    {
+      "id": "ladder-a2-02",
+      "name": "קניות ובגדים",
+      "icon": "🛍️",
+      "description": "בגדים, צבעים, מידות ומשפטים לחנות — How much is it? Can I try it on?",
+      "type": "vocab",
+      "subject": "english",
+      "track": "ladder",
+      "ladder": {"level": "A2", "unit": 2},
+      "itemCount": 48
+    },
+    {
+      "id": "ladder-a2-03",
+      "name": "בסוף השבוע שעבר",
+      "icon": "🎡",
+      "description": "לספר מה עשינו — זמן עבר: went, saw, ate, played, it was fun",
+      "type": "vocab",
+      "subject": "english",
+      "track": "ladder",
+      "ladder": {"level": "A2", "unit": 3},
+      "itemCount": 47
+    },
+    {
+      "id": "ladder-b1-01",
+      "name": "תוכניות ועתיד",
+      "icon": "📅",
+      "description": "לדבר על תוכניות, תקוות ומה יהיה — I'm going to, I hope to, next week",
+      "type": "vocab",
+      "subject": "english",
+      "track": "ladder",
+      "ladder": {"level": "B1", "unit": 1},
+      "itemCount": 49
+    },
+    {
+      "id": "ladder-b1-02",
+      "name": "דעות ורגשות",
+      "icon": "💭",
+      "description": "להגיד מה חושבים ומה מרגישים — I think, I agree, nervous, proud",
+      "type": "vocab",
+      "subject": "english",
+      "track": "ladder",
+      "ladder": {"level": "B1", "unit": 2},
+      "itemCount": 48
+    },
+    {
+      "id": "ladder-b1-03",
+      "name": "פעלים עם מילית",
+      "icon": "🧩",
+      "description": "פעלים שמשנים משמעות עם מילה קטנה — get up, turn off, look for",
+      "type": "vocab",
+      "subject": "english",
+      "track": "ladder",
+      "ladder": {"level": "B1", "unit": 3},
+      "itemCount": 49
+    },
+    {
+      "id": "ladder-b2-01",
+      "name": "מטלות הבית",
+      "icon": "🧹",
+      "description": "דברים בבית, עבודות בית ותקלות — do the dishes, the sink is clogged",
+      "type": "vocab",
+      "subject": "english",
+      "track": "ladder",
+      "ladder": {"level": "B2", "unit": 1},
+      "itemCount": 47
+    },
+    {
+      "id": "ladder-b2-02",
+      "name": "מבשלים במטבח",
+      "icon": "🍳",
+      "description": "פעולות בישול, כלי מטבח וסביב השולחן — chop, simmer, set the table",
+      "type": "vocab",
+      "subject": "english",
+      "track": "ladder",
+      "ladder": {"level": "B2", "unit": 2},
+      "itemCount": 49
+    },
+    {
+      "id": "ladder-b2-03",
+      "name": "סידורים ותורים",
+      "icon": "📋",
+      "description": "סידורים, תורים, חנויות ומשרדים — run errands, a refund, I'm running late",
+      "type": "vocab",
+      "subject": "english",
+      "track": "ladder",
+      "ladder": {"level": "B2", "unit": 3},
+      "itemCount": 47
+    },
+    {
+      "id": "ladder-c1-01",
+      "name": "שיחת חולין ותגובות",
+      "icon": "💬",
+      "description": "ביטויים לשיחה קלילה ולתגובה טבעית — fair enough, no way, how's it going",
+      "type": "vocab",
+      "subject": "english",
+      "track": "ladder",
+      "ladder": {"level": "C1", "unit": 1},
+      "itemCount": 49
+    },
+    {
+      "id": "ladder-c1-02",
+      "name": "לבקש בעדינות",
+      "icon": "🙏",
+      "description": "ניסוחים מנומסים שמרככים בקשה או אי הסכמה — would you mind, I'm afraid",
+      "type": "vocab",
+      "subject": "english",
+      "track": "ladder",
+      "ladder": {"level": "C1", "unit": 2},
+      "itemCount": 49
+    },
+    {
+      "id": "ladder-c1-03",
+      "name": "ניבים יומיומיים",
+      "icon": "💡",
+      "description": "ניבים שאומרים כל יום, והמשמעות האמיתית שלהם — piece of cake, play it by ear",
+      "type": "vocab",
+      "subject": "english",
+      "track": "ladder",
+      "ladder": {"level": "C1", "unit": 3},
+      "itemCount": 48
     }
   ]
 }

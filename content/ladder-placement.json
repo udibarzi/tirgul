@@ -1,0 +1,133 @@
+{
+  "id": "ladder-placement",
+  "name": "מסלול — מבחן רמה",
+  "type": "placement",
+  "version": "1.0.0",
+  "levels": {
+    "A1": {
+      "words": [
+        {"en": "Monday", "he": "יום שני"},
+        {"en": "yellow", "he": "צהוב"},
+        {"en": "teacher", "he": "מורה"},
+        {"en": "shirt", "he": "חולצה"},
+        {"en": "rain", "he": "גשם"},
+        {"en": "sleep", "he": "לישון"},
+        {"en": "hungry", "he": "רעב"},
+        {"en": "brother", "he": "אח"},
+        {"en": "under", "he": "מתחת"},
+        {"en": "write", "he": "לכתוב"},
+        {"en": "cold", "he": "קר"},
+        {"en": "horse", "he": "סוס"},
+        {"en": "breakfast", "he": "ארוחת בוקר"},
+        {"en": "pencil", "he": "עיפרון"}
+      ],
+      "sentences": [
+        {"en": "She has two cats.", "he": "יש לה שני חתולים.", "blank": "has", "choices": ["have", "is", "are"]},
+        {"en": "My sister is eleven years old.", "he": "אחותי בת אחת עשרה.", "blank": "is", "choices": ["has", "are", "am"]},
+        {"en": "There is a big table in the kitchen.", "he": "יש שולחן גדול במטבח.", "blank": "There", "choices": ["Is", "Have", "Has"]},
+        {"en": "We go to school by bus.", "he": "אנחנו נוסעים לבית הספר באוטובוס.", "blank": "by", "choices": ["with", "in", "at"]},
+        {"en": "Where do you live?", "he": "איפה את גרה?", "blank": "do", "choices": ["are", "is", "does"]}
+      ]
+    },
+    "A2": {
+      "words": [
+        {"en": "borrow", "he": "לקחת בהשאלה"},
+        {"en": "careful", "he": "זהיר"},
+        {"en": "angry", "he": "כועס"},
+        {"en": "neighbor", "he": "שכן", "alt": ["neighbour"]},
+        {"en": "forget", "he": "לשכוח"},
+        {"en": "healthy", "he": "בריא"},
+        {"en": "quiet", "he": "שקט"},
+        {"en": "dangerous", "he": "מסוכן"},
+        {"en": "invite", "he": "להזמין"},
+        {"en": "weather", "he": "מזג אוויר"},
+        {"en": "expensive", "he": "יקר"},
+        {"en": "cousin", "he": "בן דוד, בת דודה"},
+        {"en": "hurry", "he": "למהר"},
+        {"en": "ticket", "he": "כרטיס"}
+      ],
+      "sentences": [
+        {"en": "Yesterday we went to the zoo.", "he": "אתמול הלכנו לגן החיות.", "blank": "went", "choices": ["go", "goes", "gone"]},
+        {"en": "We're going to visit Grandma tomorrow.", "he": "מחר אנחנו הולכים לבקר את סבתא.", "blank": "going", "choices": ["go", "went", "goes"]},
+        {"en": "She is taller than her brother.", "he": "היא יותר גבוהה מאחיה.", "blank": "taller", "choices": ["tall", "tallest", "more tall"]},
+        {"en": "There isn't any milk in the fridge.", "he": "אין חלב במקרר.", "blank": "any", "choices": ["some", "no", "many"]},
+        {"en": "He usually walks to school.", "he": "הוא בדרך כלל הולך ברגל לבית הספר.", "blank": "walks", "choices": ["walk", "walking", "is walk"]}
+      ]
+    },
+    "B1": {
+      "words": [
+        {"en": "however", "he": "אולם, עם זאת"},
+        {"en": "although", "he": "למרות ש..."},
+        {"en": "experience", "he": "ניסיון, חוויה"},
+        {"en": "decide", "he": "להחליט"},
+        {"en": "improve", "he": "לשפר"},
+        {"en": "advice", "he": "עצה"},
+        {"en": "borrow", "he": "לקחת בהשאלה"},
+        {"en": "environment", "he": "סביבה"},
+        {"en": "avoid", "he": "להימנע מ..."},
+        {"en": "realize", "he": "לקלוט, להבין פתאום"},
+        {"en": "patient", "he": "סבלני"},
+        {"en": "polite", "he": "מנומס"},
+        {"en": "get along with", "he": "להסתדר עם"},
+        {"en": "on purpose", "he": "בכוונה"}
+      ],
+      "sentences": [
+        {"en": "If it rains tomorrow, we will stay home.", "he": "אם ירד גשם מחר, נישאר בבית.", "blank": "rains", "choices": ["will rain", "rained", "rain"]},
+        {"en": "We have lived here since 2020.", "he": "אנחנו גרים כאן מאז 2020.", "blank": "have lived", "choices": ["live", "are living", "lived"]},
+        {"en": "She is interested in learning Spanish.", "he": "היא מתעניינת בלימוד ספרדית.", "blank": "in", "choices": ["on", "about", "at"]},
+        {"en": "I've never been to London.", "he": "אף פעם לא הייתי בלונדון.", "blank": "been", "choices": ["went", "go", "was"]},
+        {"en": "My brother is good at fixing things.", "he": "אחי טוב בתיקון דברים.", "blank": "fixing", "choices": ["fix", "to fix", "fixed"]}
+      ]
+    },
+    "B2": {
+      "words": [
+        {"en": "figure out", "he": "להבין איך לפתור משהו"},
+        {"en": "look forward to", "he": "לחכות בקוצר רוח ל־"},
+        {"en": "put off", "he": "לדחות למועד מאוחר יותר"},
+        {"en": "get along with", "he": "להסתדר טוב עם מישהו"},
+        {"en": "come up with", "he": "להמציא רעיון"},
+        {"en": "run out of", "he": "שנגמר לך משהו"},
+        {"en": "turn down", "he": "לסרב להצעה"},
+        {"en": "make up your mind", "he": "להחליט סופית"},
+        {"en": "take for granted", "he": "לקחת כמובן מאליו"},
+        {"en": "reliable", "he": "אמין"},
+        {"en": "awkward", "he": "מביך"},
+        {"en": "overwhelmed", "he": "מוצף — המום מכל העומס"},
+        {"en": "a bargain", "he": "מציאה — קנייה בזול"},
+        {"en": "a spare key", "he": "מפתח רזרבי"}
+      ],
+      "sentences": [
+        {"en": "We ran out of milk, can you buy some?", "he": "נגמר לנו החלב, תוכלי לקנות?", "blank": "out", "choices": ["off", "away", "over"]},
+        {"en": "I'm looking forward to seeing you.", "he": "אני מחכה בקוצר רוח לראות אותך.", "blank": "seeing", "choices": ["see", "saw", "seen"]},
+        {"en": "Can you turn down the music a bit?", "he": "תוכלי להנמיך קצת את המוזיקה?", "blank": "down", "choices": ["off", "low", "out"]},
+        {"en": "The sink is clogged, we should call a plumber.", "he": "הכיור סתום, כדאי שנזמין אינסטלטור.", "blank": "clogged", "choices": ["closed", "locked", "full"]},
+        {"en": "She gets along with everyone in her class.", "he": "היא מסתדרת עם כולם בכיתה.", "blank": "along", "choices": ["together", "good", "up"]}
+      ]
+    },
+    "C1": {
+      "words": [
+        {"en": "take it for granted", "he": "לקחת כמובן מאליו"},
+        {"en": "a blessing in disguise", "he": "רע שיצא ממנו טוב — גם זו לטובה"},
+        {"en": "bite off more than you can chew", "he": "לקחת על עצמך יותר מדי"},
+        {"en": "think outside the box", "he": "לחשוב מחוץ לקופסה"},
+        {"en": "get on my nerves", "he": "לעלות לי על העצבים"},
+        {"en": "by and large", "he": "בסך הכול — באופן כללי"},
+        {"en": "for what it's worth", "he": "אם זה עוזר במשהו — לפחות לדעתי"},
+        {"en": "make ends meet", "he": "לגמור את החודש"},
+        {"en": "go out of your way", "he": "לצאת מגדרך — לטרוח במיוחד"},
+        {"en": "point taken", "he": "קיבלתי, הבנתי את הנקודה"},
+        {"en": "a far cry from", "he": "רחוק מאוד מ — שונה לגמרי מ"},
+        {"en": "to some extent", "he": "במידה מסוימת"},
+        {"en": "keep me posted", "he": "תמשיכי לעדכן אותי"},
+        {"en": "on the fence", "he": "מתלבט בין שתי אפשרויות"}
+      ],
+      "sentences": [
+        {"en": "Sorry, I didn't mean to come across as rude.", "he": "סליחה, לא רציתי שזה ייראה לא מנומס.", "blank": "come across as", "choices": ["come over as", "get across as", "come along as"]},
+        {"en": "Stop beating around the bush and just tell me.", "he": "תפסיקי לדבר מסביב ופשוט תגידי לי.", "blank": "around", "choices": ["over", "behind", "under"]},
+        {"en": "Let's not jump to conclusions.", "he": "בואו לא נמהר להסיק מסקנות.", "blank": "jump to", "choices": ["jump at", "jump on", "jump into"]},
+        {"en": "It's high time we left.", "he": "הגיע הזמן שנזוז.", "blank": "left", "choices": ["leave", "leaving", "will leave"]},
+        {"en": "I'd rather you didn't tell anyone.", "he": "אני מעדיפה שלא תספרי לאף אחד.", "heM": "אני מעדיף שלא תספרי לאף אחד.", "blank": "didn't", "choices": ["don't", "won't", "not"]}
+      ]
+    }
+  }
+}
